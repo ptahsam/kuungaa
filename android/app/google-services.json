@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1085640591847",
+    "firebase_url": "https://kuungaa-42ba2-default-rtdb.firebaseio.com",
+    "project_id": "kuungaa-42ba2",
+    "storage_bucket": "kuungaa-42ba2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085640591847:android:5fb1a7207f703b215a5542",
+        "android_client_info": {
+          "package_name": "com.developer.kuungaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085640591847-c4u8ioek89qj2thh2a0q9v856mq8na7i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.developer.kuungaa",
+            "certificate_hash": "362607f4fd4995339d9bed65c585c90415aa6878"
+          }
+        },
+        {
+          "client_id": "1085640591847-4g6bna59t7k0b50gnp720c364s5mjsgp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiPeRy-RynBroBshkU6cJlBQJzvX13ToI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085640591847-4g6bna59t7k0b50gnp720c364s5mjsgp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
