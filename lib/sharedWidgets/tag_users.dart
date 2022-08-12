@@ -1,4 +1,6 @@
+import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/tagged.dart';
@@ -18,121 +20,152 @@ class TagUsers extends StatefulWidget {
 class _TagUsersState extends State<TagUsers> {
 
   //bool _isChecked = false;
+  TextEditingController textEditingController = TextEditingController();
+  List<Users> listUsers = [];
+  List<Users> searchedList = [];
+  Query? itemRefUsers;
+  bool _anchorToBottom = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //taggedUsers.clear();
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    itemRefUsers = database.reference().child("KUUNGAA").child("Users");
+    itemRefUsers!.onChildAdded.listen(_onEntryAddedUsers);
+    textEditingController.addListener(handleTextchange);
+  }
 
+  _onEntryAddedUsers(Event event) async {
+    if(event.snapshot.exists){
+      if(event.snapshot.value["user_id"] != userCurrentInfo!.user_id!){
+        Users users = Users();
+        users.user_id = event.snapshot.value["user_id"];
+        users.user_firstname = event.snapshot.value["user_firstname"];
+        users.user_lastname = event.snapshot.value["user_lastname"];
+        users.user_profileimage = event.snapshot.value["user_profileimage"];
+
+        setState(() {
+          listUsers.add(users);
+        });
+      }
+    }
+  }
+
+  void handleTextchange() {
+    if(textEditingController.text != "" || textEditingController != null){
+      List<Users> result = listUsers.where((Users user)
+      => user.user_firstname!.toLowerCase().contains(textEditingController.text.toLowerCase())
+          || user.user_lastname!.toLowerCase().contains(textEditingController.text.toLowerCase())
+      ).toSet().toList();
+      setState(() {
+        searchedList = result.toSet().toList();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Flexible(
-            flex: 2,
-            child: Container(
-              height: 100.0,
-              decoration: BoxDecoration(
-                color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 40.0, right: 12.0,bottom: 0.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 5.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap:()
-                              {
-                                Navigator.pop(context, taggedUsers);
-                              },
-                              child: const Icon(
-                                  Icons.arrow_back
-                              ),
-                            ),
-                            const SizedBox(width: 10.0,),
-                            const Text("Tag other people", style: TextStyle(fontSize: 18.0,),
-                            ),
-                          ],
-                        ),
-                        ElevatedButton(
-                          onPressed: () => {
-                          Navigator.pop(context, taggedUsers),
-                          },
-                          child: const Text("Done"),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
+            pinned: true,
+            leadingWidth: 30.0,
+            title: Text("Tag other people", style: TextStyle(fontSize: 18.0,color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black)),
+            leading: GestureDetector(
+              onTap:()
+              {
+                Navigator.pop(context, taggedUsers);
+              },
+              child: Icon(
+                  Icons.arrow_back,
+                  color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
               ),
             ),
+            actions: [
+              Container(
+                padding:  EdgeInsets.only(top: 5.0,right: 5.0,bottom: 5.0),
+                child: ElevatedButton(
+                  onPressed: () => {
+                    Navigator.pop(context, taggedUsers),
+                  },
+                  child: const Text("Done"),
+                ),
+              ),
+            ],
           ),
-          Expanded(
+          SliverToBoxAdapter(
             child: Container(
               width: double.infinity,
               color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 12.0,),
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("Tag other people to include in your post"),
-                  const SizedBox(height: 4.0,),
                   Row(
-                    children: const [
-                      Text("SUGGESTED"),
-                      /*Container(
-                        width: 40.0,
-                        height: 35.0,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Text(taggedUsers.length.toString()),
-                      ),*/
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("SELECT"),
+                      AnimSearchBar(
+                        width: MediaQuery.of(context).size.width * 0.65,
+                        textController: textEditingController,
+                        rtl: true,
+                        onSuffixTap: () {
+                          setState(() {
+                            textEditingController.clear();
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0,),
-            height: MediaQuery.of(context).size.height * 0.75,
-            child: FutureBuilder(
-                future: fetchListItems(),
-                builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                  if (snapshot.hasData) {
-                      //print("User list" + snapshot.data!.toString());
-                      return Column (
-                        children: <Widget>[
-                          Expanded(
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (BuildContext context, int index){
-
-                                  return UsersList(user: snapshot.data![index]);
-                                },
-                              ),
-                          ),
-                        ],
-                      );
-
+          SliverToBoxAdapter(
+            child: searchedList.isNotEmpty?Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0,),
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: searchedList.length,
+                itemBuilder: (ctx, int index){
+                  return UsersList(user: searchedList[index],);
+                },
+              ),
+            ): Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0,),
+              child: listUsers.isNotEmpty?FirebaseAnimatedList(
+                physics: const NeverScrollableScrollPhysics(),
+                query: itemRefUsers!,
+                reverse: _anchorToBottom,
+                key: ValueKey<bool>(_anchorToBottom),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
+                  if(snapshot.exists){
+                    if(index + 1 <= listUsers.length){
+                      return UsersList(user: listUsers[index],);
+                    }else{
+                      return SizedBox.shrink();
+                    }
                   }else{
-                    return const Center(child: CircularProgressIndicator());
+                    return SizedBox.shrink();
                   }
                 }
-            ),
-            /*ListView.builder(
+              ):Align(
+                alignment: Alignment.center,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              /*ListView.builder(
               itemCount: usersList.length,
               itemBuilder: (BuildContext context, int index)
               {
@@ -156,6 +189,7 @@ class _TagUsersState extends State<TagUsers> {
                 return SizedBox.shrink();
               }
             ),*/
+            ),
           ),
         ],
       ),

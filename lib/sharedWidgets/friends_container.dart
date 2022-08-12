@@ -149,7 +149,10 @@ class _FriendsContainerState extends State<FriendsContainer> {
                         controller: textSearchEditingController,
                         onChanged: (input){
                           if(input != "" || input != null){
-                            List<Users> result = homeFriendsList.where((Users user) => user.user_firstname!.toLowerCase().contains(input.toLowerCase())).toSet().toList();
+                            List<Users> result = homeFriendsList.where((Users user) 
+                              => user.user_firstname!.toLowerCase().contains(input.toLowerCase()) 
+                                || user.user_lastname!.toLowerCase().contains(input.toLowerCase()) 
+                            ).toSet().toList();
                             setState(() {
                               searchList = result.toSet().toList();
                               _iconIsVisible = true;

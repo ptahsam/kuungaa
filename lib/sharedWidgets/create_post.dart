@@ -500,7 +500,7 @@ class _CreatePostState extends State<CreatePost> {
     Future.delayed(Duration.zero,()
     async{
       var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>const SelectExpression()));
-      if(res != ""){
+      if(res != "" || res != null){
         setState(() {
           selectedExpression = res;
         });
