@@ -127,14 +127,17 @@ class _VideosPostContainerState extends State<VideosPostContainer> {
           shrinkWrap: true,
           itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
             if(snapshot.exists){
-              return Column(
-                children: [
-                  PostVideosMainContainer(post: listPosts[index],),
-                  listPosts.length > 1 ?
-                  Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                  ) : const SizedBox.shrink(),
-                ],
-              );
+              if(index + 1 <= listPosts.length){
+                return Column(
+                  children: [
+                    PostVideosMainContainer(post: listPosts[index],),
+                    listPosts.length > 1 ?
+                    Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                    ) : const SizedBox.shrink(),
+                  ],
+                );
+              }
+              return SizedBox.shrink();
             }else{
               return Align(
                 alignment: Alignment.center,

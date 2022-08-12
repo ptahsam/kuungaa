@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -400,7 +401,7 @@ class _StoryCard extends StatelessWidget{
       children: [
         isAddStory ? ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: Image.network(
+          child: ExtendedImage.network(
             userCurrentInfo!.user_profileimage!,
             width: 110.0,
             //cacheWidth: 110,
@@ -411,7 +412,7 @@ class _StoryCard extends StatelessWidget{
           ),
         ) : story!.story_type == "image_story"?  ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: Image.network(
+          child: ExtendedImage.network(
             story!.story_media!,
             height: double.infinity,
             width: 110.0,

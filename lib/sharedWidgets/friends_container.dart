@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -22,14 +23,78 @@ class _FriendsContainerState extends State<FriendsContainer> {
 
   bool isSending = false;
 
+  Query? itemRefFriends;
+  bool _anchorToBottom = false;
+
   List<Users> searchList = [];
 
   List<Users> homeFriendsList = [];
+
+  bool _iconIsVisible = false;
+
+  TextEditingController textSearchEditingController = TextEditingController();
 
   stateSetter(){
     setState(() {
 
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    itemRefFriends = database.reference().child("KUUNGAA").child("Users").orderByKey().limitToLast(100);
+    itemRefFriends!.onChildAdded.listen(_onEntryAddedFriends);
+  }
+
+  _onEntryAddedFriends(Event event) async {
+    if(event.snapshot.exists){
+      String userid = event.snapshot.value["user_id"];
+
+      if(userid != userCurrentInfo!.user_id!){
+
+        Query checkFriendDbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userCurrentInfo!.user_id!).child(userid).orderByKey();
+        await checkFriendDbRef.once().then((DataSnapshot snapshot) async {
+          if(!snapshot.exists){
+
+            Query checkHiddenFriendRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden").child(userCurrentInfo!.user_id!).child(userid).orderByKey();
+            await checkHiddenFriendRef.once().then((DataSnapshot snap) async {
+              if(!snap.exists){
+
+                Users users = Users();
+                Query friendCountRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userid).orderByKey();
+                await friendCountRef.once().then((DataSnapshot count){
+
+                  int friendCount = 0;
+
+                  if(count.exists){
+                    var zees = count.value.keys;
+                    var data = count.value;
+                    for(var zee in zees)
+                    {
+                      if(data [zee]["status"] == "confirmed"){
+                        friendCount = friendCount + 1;
+                      }
+                    }
+                  }
+
+                  users.user_id = event.snapshot.value["user_id"];
+                  users.user_firstname = event.snapshot.value["user_firstname"];
+                  users.user_lastname = event.snapshot.value["user_lastname"];
+                  users.user_profileimage = event.snapshot.value["user_profileimage"];
+                  users.friend_count = friendCount;
+                  setState(() {
+                    homeFriendsList.add(users);
+                  });
+                });
+              }
+            });
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -81,13 +146,22 @@ class _FriendsContainerState extends State<FriendsContainer> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: textSearchEditingController,
                         onChanged: (input){
-                          List<Users> result = homeFriendsList.where((Users user) => user.user_firstname!.toLowerCase().contains(input.toLowerCase())).toSet().toList();
-                          setState(() {
-                            searchList = result.toSet().toList();
-                          });
+                          if(input != "" || input != null){
+                            List<Users> result = homeFriendsList.where((Users user) => user.user_firstname!.toLowerCase().contains(input.toLowerCase())).toSet().toList();
+                            setState(() {
+                              searchList = result.toSet().toList();
+                              _iconIsVisible = true;
+                            });
+                          }else{
+                            setState(() {
+                              searchList.clear();
+                              _iconIsVisible = false;
+                            });
+                          }
                         },
-                        keyboardType: TextInputType.multiline,
+                        keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.newline,
                         minLines: 1,
                         maxLines: 1,
@@ -110,6 +184,21 @@ class _FriendsContainerState extends State<FriendsContainer> {
 
                       ),
                     ),
+                    Visibility(
+                      visible: _iconIsVisible,
+                      child: InkWell(
+                        onTap: (){
+                          setState(() {
+                            searchList.clear();
+                            textSearchEditingController.text = "";
+                            _iconIsVisible = false;
+                          });
+                        },
+                        child: Icon(
+                          Icons.close
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -117,7 +206,7 @@ class _FriendsContainerState extends State<FriendsContainer> {
           ),
         ),
         SliverToBoxAdapter(
-          child: searchList.length > 0?
+          child: searchList.isNotEmpty?
           ListView.builder(
             padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 20.0, top: 0.0),
             scrollDirection: Axis.vertical,
@@ -190,21 +279,175 @@ class _FriendsContainerState extends State<FriendsContainer> {
                 ),
               );
             },
-          )
-          :FutureBuilder<List<Users>>(
+          ):homeFriendsList.isNotEmpty?FirebaseAnimatedList(
+              physics: const NeverScrollableScrollPhysics(),
+              query: itemRefFriends!,
+              reverse: _anchorToBottom,
+              key: ValueKey<bool>(_anchorToBottom),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
+                if(snapshot.exists){
+                  if(index + 1 <= homeFriendsList.length){
+                    Users users = homeFriendsList[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5.0),
+                      decoration: BoxDecoration(
+                        color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: InkWell(
+                              onTap: (){
+                                Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: users.user_id!,)));
+                              },
+                              child: ProfileAvatar(imageUrl: users.user_profileimage!, radius: 28.0,),
+                            ),
+                            title: InkWell(
+                              onTap: (){
+                                Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: users.user_id!,)));
+                              },
+                              child: Text(users.user_firstname! + " " + users.user_lastname!),
+                            ),
+                            subtitle: Text(users.friend_count == 0? "No friends" : users.friend_count!.toString() + " friends"),
+                            trailing: isSending ? const SizedBox(
+                              child: CircularProgressIndicator(),
+                              height: 10.0,
+                              width: 10.0,
+                            ) : const SizedBox.shrink(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 9.0, bottom: 6.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () => addFriend(users.user_id!, context, stateSetter),
+                                  child: const Text(
+                                    "Add Friend",
+                                    style: TextStyle(
+
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                const SizedBox(width: 6.0,),
+                                ElevatedButton(
+                                  onPressed: () => removeFriend(users.user_id!),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.blue,
+                                  ),
+                                  child: const Text(
+                                    "Remove",
+                                    style: TextStyle(
+
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }else{
+                    return SizedBox.shrink();
+                  }
+                }else{
+                  return SizedBox.shrink();
+                }
+              }
+          ):ListView.builder(
+            padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 20.0, top: 0.0),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 15,
+            itemBuilder: (BuildContext context, int index){
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 5.0),
+                decoration: BoxDecoration(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.white,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Shimmer.fromColors(
+                        baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                        highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                        child: Container(
+                          height: 60.0,
+                          width: 60.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                          ),
+                        ),
+                      ),
+                      title: Shimmer.fromColors(
+                        baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                        highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                        child: Container(height: 16.0, color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!),
+                      ),
+                      subtitle: Shimmer.fromColors(
+                        baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                        highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                        child: Container(height: 16.0, color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0, bottom: 6.0, left: 60.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Shimmer.fromColors(
+                              baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                              highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                              child: Container(
+                                height: 30.0,
+                                color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6.0,),
+                          Expanded(
+                            child: Shimmer.fromColors(
+                              baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                              highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                              child: Container(
+                                height: 30.0,
+                                color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          /*:FutureBuilder<List<Users>>(
             future: getHomeFriends(),
             builder: (BuildContext context, AsyncSnapshot<List<Users>> snapshot) {
               if(snapshot.connectionState == ConnectionState.done){
                 if(snapshot.hasData){
                   if(snapshot.data!.isNotEmpty){
+                    List<Users> userList = snapshot.data!;
                     return ListView.builder(
                       padding: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 20.0, top: 0.0),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.length,
+                      itemCount: userList.toSet().toList().length,
                       itemBuilder: (BuildContext context, int index){
-                        Users users = snapshot.data![index];
+                        Users users = userList.toSet().toList()[index];
                         return Container(
                           margin: const EdgeInsets.symmetric(vertical: 5.0),
                           decoration: BoxDecoration(
@@ -377,7 +620,7 @@ class _FriendsContainerState extends State<FriendsContainer> {
                 );
               }
             },
-          ),
+          ),*/
         ),
       ],
     );
