@@ -117,6 +117,7 @@ class _TagUsersState extends State<TagUsers> {
                         onSuffixTap: () {
                           setState(() {
                             textEditingController.clear();
+                            searchedList.clear();
                           });
                         },
                       ),

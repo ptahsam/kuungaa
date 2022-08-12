@@ -30,7 +30,7 @@ import 'package:path/path.dart' as path;
 
 String mapKey = "AIzaSyC0f4vakJg3x1YrnrOZcFvOZibLPgXHfOk";
 
-String gitKey = "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";
+//String gitKey = "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";
 
 const APP_ID = 'fb2bb17b111247ffa6fd0143a6886eeb';
 const Token = '006fb2bb17b111247ffa6fd0143a6886eebIACIJTQqojJ95t9uNkHypDtQcXBhvmub4O9RJlFYEq2BPvq5A7wAAAAAEABHuwtvwXU9YgEAAQDAdT1i';

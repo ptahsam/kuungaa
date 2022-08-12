@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +56,7 @@ class _SinglePageState extends State<SinglePage> {
                 pinned: true,
                 expandedHeight: 200.0,
                 flexibleSpace: FlexibleSpaceBar(
-                    background: Image.network(
+                    background: ExtendedImage.network(
                       widget.kpage.page_icon!,
                       fit: BoxFit.cover,
                     )

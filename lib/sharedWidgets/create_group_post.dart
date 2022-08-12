@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,10 +22,12 @@ import 'widgets.dart';
 class CreateGroupPost extends StatefulWidget {
   final String groupname;
   final String groupid;
+  final String groupicon;
   const CreateGroupPost({
     Key? key,
     required this.groupname,
-    required this.groupid
+    required this.groupid,
+    required this.groupicon
   }) : super(key: key);
 
   @override
@@ -64,21 +67,35 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
             centerTitle: false,
             floating: true,
             automaticallyImplyLeading: true,
+            actionsIconTheme: IconThemeData(opacity: 0.0),
             snap: true,
             elevation: 40.0,
             pinned: true,
-
-            actions: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(0.0, 8.0, 12.0, 8.0),
-                child: ElevatedButton(
-                  onPressed: _isButtonDisabled? (){
-                    saveGroupPost(widget.groupid);
-                  } : null,
-                  child: const Text("Post"),
+            expandedHeight: 70.0,
+            flexibleSpace: Stack(
+              children: [
+                Positioned.fill(
+                    child: ExtendedImage.network(
+                      widget.groupicon,
+                      fit: BoxFit.cover,
+                    ),
                 ),
-              ),
-            ],
+                Positioned(
+                  right: 12.0,
+                  top: 20.0,
+                  bottom: 8.0,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.0),
+                    child: ElevatedButton(
+                      onPressed: _isButtonDisabled? (){
+                        saveGroupPost(widget.groupid);
+                      } : null,
+                      child: const Text("Post"),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           SliverToBoxAdapter(
             child: Container(

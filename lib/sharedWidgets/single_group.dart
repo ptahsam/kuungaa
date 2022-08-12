@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,7 +55,7 @@ class _SingleGroupState extends State<SingleGroup> {
               pinned: true,
               expandedHeight: 200.0,
               flexibleSpace: FlexibleSpaceBar(
-                  background: Image.network(
+                  background: ExtendedImage.network(
                     widget.group.group_icon!,
                     fit: BoxFit.cover,
                   )
@@ -74,7 +75,7 @@ class _SingleGroupState extends State<SingleGroup> {
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
                       ),
                       context: context,
-                      builder: (context) => buildGroupPostSheet(widget.group.group_id!, widget.group.group_name!),
+                      builder: (context) => buildGroupPostSheet(widget.group.group_id!, widget.group.group_name!, widget.group.group_icon!),
                     ),
                   },
                 )
@@ -177,7 +178,7 @@ class _SingleGroupState extends State<SingleGroup> {
     );
   }
 
-  Widget buildGroupPostSheet(String groupid, String groupname) {
+  Widget buildGroupPostSheet(String groupid, String groupname, String groupicon) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
 
@@ -193,7 +194,7 @@ class _SingleGroupState extends State<SingleGroup> {
                     InkWell(
                       onTap: () async {
                         Navigator.pop(context);
-                        var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateGroupPost(groupname: groupname, groupid: groupid,)));
+                        var res = await Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateGroupPost(groupname: groupname, groupid: groupid, groupicon: groupicon,)));
                         if(res != null){
                           setState(() {
                             Navigator.pop(context);

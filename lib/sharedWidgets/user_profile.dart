@@ -99,11 +99,10 @@ class _UserProfileState extends State<UserProfile> {
                     expandedHeight: 200.0,
                     flexibleSpace: FlexibleSpaceBar(
                         background: user.user_coverimage != ""? Stack(
-
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
-                              child: Image.network(
+                              child: ExtendedImage.network(
                                 user.user_coverimage!,
                                 fit: BoxFit.cover,
                                 height: 250.0,
