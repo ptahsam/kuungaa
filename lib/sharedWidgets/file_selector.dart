@@ -167,11 +167,11 @@ class _FileSelectorState extends State<FileSelector> {
                 itemCount: assets.length,
                 itemBuilder: (_, index) {
                   final AssetEntity asset = assets[index];
-                  bool fileExists = false;
                   return FutureBuilder<Uint8List?>(
                     future: asset.thumbnailData,
                     builder: (_, snapshot) {
                       final bytes = snapshot.data;
+                      File? file;
                       // If we have no data, display a spinner
                       if (bytes == null) return Align(
                           alignment: Alignment.center,
@@ -187,7 +187,7 @@ class _FileSelectorState extends State<FileSelector> {
                       return InkWell(
                         onTap: () async {
                           AssetEntity imageAsset = asset;
-                          File? file = await asset.file;
+                          file = await asset.file;
                           if(isSelectMultiple && asset.type == AssetType.image){
                             setState(() {
 
@@ -196,7 +196,6 @@ class _FileSelectorState extends State<FileSelector> {
                                 userSelectedFiles.removeWhere((File oldfile) => oldfile.path== file!.path);
                               }else{
                                 userSelectedFiles.add(file!);
-                                fileExists = true;
                               }
 
                               if(userSelectedFiles.isNotEmpty){
@@ -256,7 +255,7 @@ class _FileSelectorState extends State<FileSelector> {
                             isSelectMultiple? Positioned(
                               top: 10.0,
                               right: 10.0,
-                              child: fileExists? const Icon(
+                              child: userSelectedFiles.any((File oldfile) => oldfile.path == file!.path)? const Icon(
                                 MdiIcons.checkboxMarked,
                                 color: Palette.kuungaaDefault,
                               ): const Icon(
