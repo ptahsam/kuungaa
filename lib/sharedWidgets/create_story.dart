@@ -65,7 +65,7 @@ class _CreateStoryState extends State<CreateStory> {
 
   void requestPhotoPermission() async{
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
-    if (ps != PermissionState.authorized && ps != PermissionState.limited){
+    if (ps == PermissionState.authorized && ps != PermissionState.limited){
       _fetchAssets();
     }
   }
