@@ -109,14 +109,20 @@ class _PageContainerState extends State<PageContainer> {
         shrinkWrap: true,
         itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
           if(snapshot.exists){
+            if(index + 1 <= listPosts.length){
             return Column(
               children: [
-                PagePostMainContainer(post: listPosts[index],),
-                listPosts.length > 1 ?
-                Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                ) : const SizedBox.shrink(),
+                  PagePostMainContainer(post: listPosts[index],),
+                  listPosts.length > 1 ?
+                  Divider(color: Provider
+                      .of<AppData>(context)
+                      .darkTheme ? Palette.mediumDarker : Colors.grey[300]!,
+                  ) : const SizedBox.shrink(),
               ],
             );
+          }else{
+              return SizedBox.shrink();
+            }
           }else{
             return Align(
               alignment: Alignment.center,

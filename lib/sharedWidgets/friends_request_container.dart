@@ -5,6 +5,7 @@ import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -129,8 +130,29 @@ class _FriendsRequestContainerState extends State<FriendsRequestContainer> {
               );
             }
           }else{
-            return const Center(
-              child: Text("No friends requests", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),),
+            return Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.13,
+                width: MediaQuery.of(context).size.width * 0.65,
+                decoration: BoxDecoration(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.userPlus,
+                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                      ),
+                      SizedBox(height: 6.0,),
+                      Text("You have no friend requests", textAlign: TextAlign.center,),
+                    ],
+                  ),
+                ),
+              ),
             );
           }
         }else{

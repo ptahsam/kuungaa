@@ -126,7 +126,7 @@ class _FriendsContainerState extends State<FriendsContainer> {
           ),
         ),
         SliverToBoxAdapter(
-          child: Container(
+          child: homeFriendsList.isNotEmpty || searchList.isNotEmpty?Container(
             color: Colors.transparent,
             child: Container(
               width: double.infinity,
@@ -206,7 +206,7 @@ class _FriendsContainerState extends State<FriendsContainer> {
                 ),
               ),
             ),
-          ),
+          ):SizedBox.shrink(),
         ),
         SliverToBoxAdapter(
           child: searchList.isNotEmpty?

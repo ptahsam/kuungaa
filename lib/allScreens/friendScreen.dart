@@ -159,7 +159,7 @@ class _FriendsPageState extends State<FriendsPage> {
               FriendsContainer(),
               CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(
+                  /*SliverToBoxAdapter(
                     child: Container(
                       color: Colors.transparent,
                       child: Container(
@@ -208,69 +208,37 @@ class _FriendsPageState extends State<FriendsPage> {
                         ),
                       ),
                     ),
+                  ),*/
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 25.0, bottom: 10.0),
+                    sliver: SliverToBoxAdapter(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                  child: Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,)
+                              ),
+
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text("Your friend requests", style: TextStyle(fontWeight: FontWeight.bold),),
+                              ),
+
+                              Expanded(
+                                  child: Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!)
+                              ),
+                            ]
+                        ),
+                      ),
+                    ),
                   ),
                   const SliverToBoxAdapter(
                     child: FriendsRequestContainer(),
                   ),
                 ],
               ),
-              CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-                        padding: const EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                          color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.search,
-                              ),
-                              Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.multiline,
-                                  textInputAction: TextInputAction.newline,
-                                  minLines: 1,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
-                                  ),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding:
-                                      EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                                      hintText: "Search your friends ...",
-                                    hintStyle: TextStyle(
-                                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
-                                    ),
-                                  ),
-
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: UserFriendsContainer(),
-                  ),
-                ],
-              ),
+              UserFriendsContainer(),
             ],
           ),
         ),

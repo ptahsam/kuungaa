@@ -208,7 +208,13 @@ class _PostContainerState extends State<PostContainer> {
         if(snapshot.exists){
           List<Posts> posts = listPosts.reversed.toList();
           if(listPosts.length > 1){
-            return PostMainContainer(post: posts[index], postIndex: index, postsLength: posts.length,);
+            if(index + 1 <= posts.length) {
+              return PostMainContainer(post: posts[index],
+                postIndex: index,
+                postsLength: posts.length,);
+            }else{
+              return SizedBox.shrink();
+            }
           }else{
             return SizedBox.shrink();
           }
