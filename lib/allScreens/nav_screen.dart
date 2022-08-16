@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -10,6 +13,7 @@ import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
 
 import 'screens.dart';
 
@@ -80,7 +84,120 @@ class _NavScreenState extends State<NavScreen> {
     final Size screenSize = MediaQuery.of(context).size;
     return DefaultTabController(
       length: _icons.length,
-      child: Scaffold(
+      child: Platform.isIOS?Scaffold(
+        appBar: PreferredSize(
+          child: Container(
+            padding: EdgeInsets.only(top: 50.0),
+            decoration: BoxDecoration(
+              color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
+              border: Border(
+                bottom: BorderSide(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.lessDarker,
+                  width: 1.0,
+                ),
+              ),
+            ),
+            child: Container(
+              padding: _selectedIndex == 0?EdgeInsets.only(left: 12.0, right: 12.0):EdgeInsets.zero,
+              child: Column(
+                children: [
+                  _selectedIndex == 0?Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 35.0,
+                        child: Image.asset(
+                          "images/klogo.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Stack(
+                            children: [
+                              CircleButton(
+                                icon: const IconData(0xe903, fontFamily: "icomoon"),
+                                iconSize: 22.0,
+                                onPressed: (){
+                                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const UserNotification()));
+                                },
+                              ),
+                              Provider.of<AppData>(context).userNotifications != null && userNotificationsCount > 0? Positioned(
+                                top: 5.0,
+                                right: 5.0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4.0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(Provider.of<AppData>(context).userNotifications!.notification_count!.toString(), style: const TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.white
+                                  ),),
+                                ),
+                              ) : const SizedBox.shrink(),
+                            ],
+                          ),
+                          SizedBox(width: 6.0,),
+                          Stack(
+                            children: [
+                              CircleButton(
+                                icon: const IconData(0xe908, fontFamily: "icomoon"),
+                                iconSize: 22.0,
+                                onPressed: (){
+                                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const KuungaaChat()));
+                                },
+                              ),
+                              Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Positioned(
+                                top: 5.0,
+                                right: 5.0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4.0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text(Provider.of<AppData>(context).messageCount!.message_count!.toString(), style: const TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.white
+                                  ),),
+                                ),
+                              ): const SizedBox.shrink(),
+                            ],
+                          ),
+                          SizedBox(width: 6.0,),
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: FirebaseAuth.instance.currentUser!.uid,)));
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.all(6.0),
+                                child: ProfileAvatar(imageUrl: uProfile, hasBorder: true, radius: 22.0, borderWidth: 21.0,)
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ):SizedBox.shrink(),
+                  Expanded(
+                    child: CustomTabBar(
+                      icons: _icons,
+                      selectedIndex: _selectedIndex,
+                      onTap: (index) => setState(() => _selectedIndex = index),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          preferredSize: _selectedIndex == 0?Size(screenSize.width, 120.0):Size(screenSize.width, 50.0),
+        ),
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
+        ),
+      ):Scaffold(
         appBar: Responsive.isDesktop(context) ?
           PreferredSize(
               child: CustomAppBar(
@@ -94,17 +211,22 @@ class _NavScreenState extends State<NavScreen> {
           index: _selectedIndex,
           children: _screens,
         ),
-        bottomNavigationBar: !Responsive.isDesktop(context) ?
-        Padding(
+        bottomNavigationBar: !Responsive.isDesktop(context) && Platform.isAndroid ?
+        Container(
           padding: const EdgeInsets.only(bottom: 0.0),
-          child: Container(
-            color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
-
-            child: CustomTabBar(
-              icons: _icons,
-              selectedIndex: _selectedIndex,
-              onTap: (index) => setState(() => _selectedIndex = index),
+            decoration: BoxDecoration(
+              color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
+              border: Border(
+                top: BorderSide(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.lessDarker,
+                  width: 1.0,
+                ),
+              ),
             ),
+          child: CustomTabBar(
+            icons: _icons,
+            selectedIndex: _selectedIndex,
+            onTap: (index) => setState(() => _selectedIndex = index),
           ),
         ) : const SizedBox.shrink(),
       ),

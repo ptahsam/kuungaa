@@ -3,14 +3,12 @@ import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mime/mime.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
@@ -167,11 +165,11 @@ class _FileSelectorState extends State<FileSelector> {
                 itemCount: assets.length,
                 itemBuilder: (_, index) {
                   final AssetEntity asset = assets[index];
+                  bool fileExists = false;
                   return FutureBuilder<Uint8List?>(
                     future: asset.thumbnailData,
                     builder: (_, snapshot) {
                       final bytes = snapshot.data;
-                      File? file;
                       // If we have no data, display a spinner
                       if (bytes == null) return Align(
                           alignment: Alignment.center,
@@ -179,7 +177,7 @@ class _FileSelectorState extends State<FileSelector> {
                             child: SizedBox(
                               height: 60,
                               width: 60,
-                              child: const CircularProgressIndicator(),
+                              child: CircularProgressIndicator(),
                             ),
                           )
                       );
@@ -187,7 +185,7 @@ class _FileSelectorState extends State<FileSelector> {
                       return InkWell(
                         onTap: () async {
                           AssetEntity imageAsset = asset;
-                          file = await asset.file;
+                          File? file = await asset.file;
                           if(isSelectMultiple && asset.type == AssetType.image){
                             setState(() {
 
@@ -196,6 +194,7 @@ class _FileSelectorState extends State<FileSelector> {
                                 userSelectedFiles.removeWhere((File oldfile) => oldfile.path== file!.path);
                               }else{
                                 userSelectedFiles.add(file!);
+                                fileExists = true;
                               }
 
                               if(userSelectedFiles.isNotEmpty){
@@ -210,7 +209,7 @@ class _FileSelectorState extends State<FileSelector> {
                            }else{
                              displayToastMessage("Select only image", context);
                            }
-                          } else{
+                          }else{
                             List<File> userSingleFileSelectedList = [];
                             userSingleFileSelectedList.add(file!);
                             Navigator.pop(context, userSingleFileSelectedList);
@@ -225,6 +224,7 @@ class _FileSelectorState extends State<FileSelector> {
 
                               }
                             }*/
+
                           // TODO: navigate to Image/Video screen
                         },
                         child: Stack(
@@ -255,7 +255,7 @@ class _FileSelectorState extends State<FileSelector> {
                             isSelectMultiple? Positioned(
                               top: 10.0,
                               right: 10.0,
-                              child: userSelectedFiles.any((File oldfile) => oldfile.path == file!.path)? const Icon(
+                              child: fileExists? const Icon(
                                 MdiIcons.checkboxMarked,
                                 color: Palette.kuungaaDefault,
                               ): const Icon(
@@ -323,7 +323,7 @@ class _FileSelectorState extends State<FileSelector> {
               ],
             ),
           ),
-          widget.isUserPhoto?SizedBox.shrink():InkWell(
+          widget.isUserPhoto?const SizedBox.shrink():InkWell(
             onTap: () async{
               Navigator.pop(context);
                _showCamera("Video");
@@ -408,7 +408,7 @@ class _FileSelectorState extends State<FileSelector> {
         File file = File(xFile.path);
         String basename = path.basename(file.path);
         File waterMarkFile = await watermarkPicture(file, basename);
-        print("photo :: " + waterMarkFile.lengthSync().toString());
+        //print("photo :: " + waterMarkFile.lengthSync().toString());
         //File compressedFile = await testCompressAndGetFile(file, file.path);
         //print("photo :: " + compressedFile.lengthSync().toString());
 
@@ -457,7 +457,6 @@ class _FileSelectorState extends State<FileSelector> {
       }
     }
   }
-
 }
 
 class AssetThumbnailClass extends StatelessWidget {
@@ -527,5 +526,4 @@ class AssetThumbnailClass extends StatelessWidget {
       },
     );
   }
-
 }

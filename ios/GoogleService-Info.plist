@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1085640591847-0qhuh1nngulg7tmo2qgcpcf030144d45.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1085640591847-0qhuh1nngulg7tmo2qgcpcf030144d45</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1085640591847-c4u8ioek89qj2thh2a0q9v856mq8na7i.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyASWdJHJW-QkPJye5v_PZjR3crunGHVh00</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1085640591847</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.developer.kuungaa</string>
+	<key>PROJECT_ID</key>
+	<string>kuungaa-42ba2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kuungaa-42ba2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1085640591847:ios:f39a8e996b8d92305a5542</string>
+	<key>DATABASE_URL</key>
+	<string>https://kuungaa-42ba2-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

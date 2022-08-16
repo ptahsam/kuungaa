@@ -102,7 +102,8 @@ class AssistantMethods
         con.onDisconnect().remove();
         con.set(true);
 
-        int time = await getCurrentTime();
+        var resp = await getCurrentTime();
+        var time = resp.toInt();
         Map lastOnlineMap = {
           "last_seen" : time
         };

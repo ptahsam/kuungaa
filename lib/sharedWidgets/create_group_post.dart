@@ -440,62 +440,52 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
 
       }
 
-      var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
-      offsetRef.onValue.listen((event){
-        int offset = event.snapshot.value;
-        var posttime = ((DateTime.now().millisecondsSinceEpoch) + offset);
-        Map postDataMap = {
-          "poster_id" : posterId,
-          "post_id" : groupid,
-          "post_description" : description,
-          "post_time" : posttime,
-          "post_category" : "groupsfeed",
-          "post_city" : postcitylocation,
-          "post_countryname" : postcountrylocation,
-          "post_privacy" : postprivacy,
-          "post_media" : postmedia,
-          "post_tagged" : tagged,
-        };
-        postRef.set(postDataMap).then((onValue) {
-          displayToastMessage("Your post was uploaded successfully", context);
-          imageFileListAll!.clear();
-          createNotification(refKey);
-          Navigator.pop(context);
-          Navigator.pop(context, "created_group_post");
-        }).catchError((onError) {
-          Navigator.pop(context);
-          displayToastMessage("An error occurred. Please try again later", context);
-        });
-        //print("Server offset: " + posttime);
+      var posttime = ((DateTime.now().millisecondsSinceEpoch));
+      Map postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : groupid,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "groupsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : postmedia,
+        "post_tagged" : tagged,
+      };
+      postRef.set(postDataMap).then((onValue) {
+        displayToastMessage("Your post was uploaded successfully", context);
+        imageFileListAll!.clear();
+        createNotification(refKey);
+        Navigator.pop(context);
+        Navigator.pop(context, "created_group_post");
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
       });
 
     }else{
-      var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
-      offsetRef.onValue.listen((event){
-        int offset = event.snapshot.value;
-        var posttime = ((DateTime.now().millisecondsSinceEpoch) + offset);
-        Map postDataMap = {
-          "poster_id" : posterId,
-          "post_id" : groupid,
-          "post_description" : description,
-          "post_time" : posttime,
-          "post_category" : "groupsfeed",
-          "post_city" : postcitylocation,
-          "post_countryname" : postcountrylocation,
-          "post_privacy" : postprivacy,
-          "post_media" : "",
-          "post_tagged" : tagged,
-        };
-        postRef.set(postDataMap).then((onValue) {
-          createNotification(refKey);
-          displayToastMessage("Your post was uploaded successfully", context);
-          Navigator.pop(context);
-          Navigator.pop(context, "created_group_post");
-        }).catchError((onError) {
-          Navigator.pop(context);
-          displayToastMessage("An error occurred. Please try again later", context);
-        });
-        //print("Server offset: " + posttime);
+      var posttime = ((DateTime.now().millisecondsSinceEpoch));
+      Map postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : groupid,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "groupsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : "",
+        "post_tagged" : tagged,
+      };
+      postRef.set(postDataMap).then((onValue) {
+        createNotification(refKey);
+        displayToastMessage("Your post was uploaded successfully", context);
+        Navigator.pop(context);
+        Navigator.pop(context, "created_group_post");
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
       });
     }
   }

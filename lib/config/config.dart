@@ -189,6 +189,29 @@ Future<String> getPostVideo(key) async {
   return videoUrl;
 }
 
+Future<String> checkUserFriendStatus(String userid) async{
+  String? status;
+  final DatabaseReference statusRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userCurrentInfo!.user_id!).child(userid);
+  await statusRef.once().then((DataSnapshot snapshot){
+    if(snapshot.exists){
+      String data = snapshot.value["status"];
+      if(data == "confirmed"){
+        status = "is_friend";
+      }else if(data == "unconfirmed"){
+        if(snapshot.value["friendtype"] == "requester"){
+          status = "requesting";
+        }else{
+          status = "requested";
+        }
+      }
+    }else{
+      status = "not_friends";
+    }
+  });
+  //print("user_status ::" + status!);
+  return status!;
+}
+
 unFriend(String friendid, Function stateSetter){
 
   DatabaseReference userDBRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userCurrentInfo!.user_id!).child(friendid);

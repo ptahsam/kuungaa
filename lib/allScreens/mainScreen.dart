@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +81,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Platform.isIOS?
+    Scaffold(
+      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+      body: _HomeScreenIos(),
+    ):
+    GestureDetector(
       onTap: (){
         FocusScope.of(context).unfocus();
       },
@@ -119,6 +126,95 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
   }
 }
 
+class _HomeScreenIos extends StatelessWidget {
+  const _HomeScreenIos({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: CreatePostContainer(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Divider(color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[300]!,),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    //child: Text("Stories", style: TextStyle(fontWeight: FontWeight.bold),) ,
+                    child: InkWell(
+                      onTap: (){
+                        /*setState(() {
+                              refresh = true;
+                            });*/
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          color: Palette.kuungaaDefault,
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.arrow_upward_outlined,
+                              color: Colors.white,
+                              size: 14.0,
+                            ),
+                            SizedBox(width: 3.0,),
+                            Text(
+                              "New posts",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                      child: Divider(color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[300]!)
+                  ),
+                ]
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+            child: const Stories(),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 1.0,
+            width: MediaQuery.of(context).size.width,
+            color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[300]!,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity,
+            ),
+            child: PostContainer(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
 class _HomescreenMobile extends StatelessWidget {
   const _HomescreenMobile({Key? key}) : super(key: key);
 
@@ -127,181 +223,7 @@ class _HomescreenMobile extends StatelessWidget {
     return CustomScrollView(
       //controller: postScrollController!,
       slivers: [
-        SliverAppBar(
-          backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
-          leadingWidth: 0.0,
-          //expandedHeight : 200.0,
-          floating : true,
-          pinned : false,
-          title:FutureBuilder(
-              future: getCurrentUserInfo(),
-              builder: (BuildContext context, AsyncSnapshot<Users> snapshot){
-                if(snapshot.connectionState == ConnectionState.done){
-                  return SizedBox(
-                    height: 35.0,
-                    child: Image.asset(
-                      "images/klogo.png",
-                      fit: BoxFit.contain,
-                    ),
-                  );
-                }else{
-                  return Shimmer.fromColors(
-                    baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                    highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
-                    child: Container(
-                      color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                      height: 35.0,
-                      width: MediaQuery.of(context).size.width * 0.45,
-                    ),
-                  );
-                }
-              }
-          ),
-          /*
-              title: Text(
-                "KUUNGAA",
-                style: TextStyle(
-                  color: HexColor("#2dce89"),
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -1.2,
-                ),
-                textAlign: TextAlign.start,
-              ),
-              centerTitle: false,
-               */
-          /*leading: FittedBox(
-                fit: BoxFit.contain,
-                child: Image.asset(
-                  "images/kuungaaboxlogo.png",
-                  fit: BoxFit.cover,
-                ),
-              ),*/
-          actions: [
-            FutureBuilder(
-              future: getCurrentUserInfo(),
-              builder: (BuildContext context, AsyncSnapshot<Users> snapshot){
-                if(snapshot.connectionState == ConnectionState.done){
-                  return Stack(
-                    children: [
-                      CircleButton(
-                        icon: const IconData(0xe903, fontFamily: "icomoon"),
-                        iconSize: 22.0,
-                        onPressed: (){
-                          Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const UserNotification()));
-                        },
-                      ),
-                      Provider.of<AppData>(context).userNotifications != null && userNotificationsCount > 0? Positioned(
-                        top: 5.0,
-                        right: 5.0,
-                        child: Container(
-                          padding: const EdgeInsets.all(4.0),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(Provider.of<AppData>(context).userNotifications!.notification_count!.toString(), style: const TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.white
-                          ),),
-                        ),
-                      ) : const SizedBox.shrink(),
-                    ],
-                  );
-                }else{
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Shimmer.fromColors(
-                      baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                      highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
-                      child: CircleAvatar(
-                        radius: 20.0,
-                        backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-
-            FutureBuilder(
-              future: getCurrentUserInfo(),
-              builder: (BuildContext context, AsyncSnapshot<Users> snapshot){
-                if(snapshot.connectionState == ConnectionState.done){
-                  return Stack(
-                    children: [
-                      CircleButton(
-                        icon: const IconData(0xe908, fontFamily: "icomoon"),
-                        iconSize: 22.0,
-                        onPressed: (){
-                          Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const KuungaaChat()));
-                        },
-                      ),
-                      Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Positioned(
-                        top: 5.0,
-                        right: 5.0,
-                        child: Container(
-                          padding: const EdgeInsets.all(4.0),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(Provider.of<AppData>(context).messageCount!.message_count!.toString(), style: const TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.white
-                          ),),
-                        ),
-                      ): const SizedBox.shrink(),
-                    ],
-                  );
-                }else{
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Shimmer.fromColors(
-                      baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                      highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
-                      child: CircleAvatar(
-                        radius: 20.0,
-                        backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-
-            FutureBuilder(
-              future: getCurrentUserInfo(),
-              builder: (BuildContext context, AsyncSnapshot<Users> snapshot){
-                if(snapshot.connectionState == ConnectionState.done){
-                  Users user = snapshot.data!;
-                  return InkWell(
-                    onTap: (){
-                      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: user.user_id!,)));
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.all(6.0),
-                        child: ProfileAvatar(imageUrl: user.user_profileimage!, hasBorder: true, radius: 22.0, borderWidth: 21.0,)
-                    ),
-                  );
-                }else{
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Shimmer.fromColors(
-                      baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                      highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
-                      child: CircleAvatar(
-                        radius: 20.0,
-                        backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ],
-          //systemOverlayStyle: SystemUiOverlayStyle.dark,
-        ),
+        HomeTopAppBar(),
         const SliverToBoxAdapter(
           child: CreatePostContainer(),
 

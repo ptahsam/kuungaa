@@ -48,7 +48,7 @@ class _SelectExpressionState extends State<SelectExpression> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+           SliverAppBar(
             systemOverlayStyle: SystemUiOverlayStyle.light,
             shadowColor: Colors.transparent,
             backgroundColor: Palette.kuungaaDefault,
@@ -64,8 +64,17 @@ class _SelectExpressionState extends State<SelectExpression> {
             snap: true,
             elevation: 40.0,
             pinned: true,
-
-
+            leadingWidth: 30.0,
+            leading: GestureDetector(
+              onTap: ()
+              {
+                Navigator.pop(context, "");
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
+              ),
+            ),
           ),
           SliverToBoxAdapter(
             child: Container(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +31,13 @@ class CustomTabBar extends StatelessWidget {
             width: 3.0,
 
           ),
-        ) : Border(
+        ) : Platform.isIOS?Border(
+          bottom: BorderSide(
+            color: HexColor("#2dce89"),
+            width: 3.0,
+
+          ),
+        ):Border(
           top: BorderSide(
             color: HexColor("#2dce89"),
             width: 3.0,

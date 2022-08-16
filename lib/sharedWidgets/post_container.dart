@@ -763,110 +763,114 @@ class _PostMainContainerState extends State<PostMainContainer> {
         builder: (context, AsyncSnapshot<List> snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             if(snapshot.hasData){
-              return SizedBox(
-                height: 350.0,
-                width: MediaQuery.of(context).size.width,
-                //color: Colors.grey[100]!,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                      child: Text("Explore suggested groups", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                        itemCount: snapshot.data!.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, int index){
-                          Group group = snapshot.data![index];
-                          return Container(
-                            width: 250.0,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              //borderRadius: BorderRadius.circular(5.0),
-                              color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
-                              border: Border.all(
-                                width: 0.5,
-                                color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[300]!,
+              if(snapshot.data!.isNotEmpty){
+                return SizedBox(
+                  height: 350.0,
+                  width: MediaQuery.of(context).size.width,
+                  //color: Colors.grey[100]!,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
+                        child: Text("Explore suggested groups", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                          itemCount: snapshot.data!.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, int index){
+                            Group group = snapshot.data![index];
+                            return Container(
+                              width: 250.0,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                //borderRadius: BorderRadius.circular(5.0),
+                                color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
+                                border: Border.all(
+                                  width: 0.5,
+                                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[300]!,
+                                ),
                               ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: SingleGroup(group: group,)));
-                                    },
-                                    child: ExtendedImage.network(
-                                      group.group_icon!,
-                                      width: 250.0,
-                                      height: double.infinity,
-                                      fit: BoxFit.cover,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: SingleGroup(group: group,)));
+                                      },
+                                      child: ExtendedImage.network(
+                                        group.group_icon!,
+                                        width: 250.0,
+                                        height: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 10.0,),
-                                InkWell(
-                                  onTap:() {
-                                    Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: SingleGroup(group: group,)));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                                    child: Text(group.group_name!, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w800), textAlign: TextAlign.start,),
+                                  const SizedBox(height: 10.0,),
+                                  InkWell(
+                                    onTap:() {
+                                      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: SingleGroup(group: group,)));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                                      child: Text(group.group_name!, style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w800), textAlign: TextAlign.start,),
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5.0, left: 7.0, right: 7.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      OutlinedButton.icon(
-                                        onPressed: () {
-                                          // Respond to button press
-                                        },
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: Colors.red,
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0, left: 7.0, right: 7.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        OutlinedButton.icon(
+                                          onPressed: () {
+                                            // Respond to button press
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                          ),
+                                          icon: const Icon(Icons.close, size: 18, color: Colors.white,),
+                                          label: const Text("Remove", style: TextStyle(color: Colors.white,),),
                                         ),
-                                        icon: const Icon(Icons.close, size: 18, color: Colors.white,),
-                                        label: const Text("Remove", style: TextStyle(color: Colors.white,),),
-                                      ),
-                                      OutlinedButton.icon(
-                                        onPressed: () {
-                                          DatabaseReference gRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Groups").child(group.group_id!).child("members");
-                                          gRef.child(userCurrentInfo!.user_id!).set(userCurrentInfo!.user_id!).then((onValue) {
-                                            displayToastMessage("You have joined " + group.group_name!, context);
-                                            setState(() {
+                                        OutlinedButton.icon(
+                                          onPressed: () {
+                                            DatabaseReference gRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Groups").child(group.group_id!).child("members");
+                                            gRef.child(userCurrentInfo!.user_id!).set(userCurrentInfo!.user_id!).then((onValue) {
+                                              displayToastMessage("You have joined " + group.group_name!, context);
+                                              setState(() {
 
+                                              });
+                                            }).catchError((onError) {
+                                              Navigator.pop(context);
+                                              displayToastMessage("An error occurred. Please try again later", context);
                                             });
-                                          }).catchError((onError) {
-                                            Navigator.pop(context);
-                                            displayToastMessage("An error occurred. Please try again later", context);
-                                          });
-                                          // Respond to button press
-                                        },
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: Palette.kuungaaDefault,
+                                            // Respond to button press
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: Palette.kuungaaDefault,
+                                          ),
+                                          icon: const Icon(MdiIcons.plus, size: 18, color: Colors.white,),
+                                          label: const Text("Join", style: TextStyle(color: Colors.white,),),
                                         ),
-                                        icon: const Icon(MdiIcons.plus, size: 18, color: Colors.white,),
-                                        label: const Text("Join", style: TextStyle(color: Colors.white,),),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
+                    ],
+                  ),
+                );
+              }else{
+                return SizedBox.shrink();
+              }
             }else{
               return const SizedBox.shrink();
             }

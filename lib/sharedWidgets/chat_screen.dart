@@ -15,7 +15,6 @@ import 'package:kuungaa/Models/chat.dart';
 import 'package:kuungaa/Models/message.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
-import 'package:kuungaa/sharedWidgets/make_channel.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:page_transition/page_transition.dart';

@@ -60,7 +60,7 @@ class _FriendsPageState extends State<FriendsPage> {
                     _selectedIndex = index;
                   });
                 },
-                padding: const EdgeInsets.symmetric(horizontal: 10.0,),
+                padding: const EdgeInsets.only(left: 10.0, top: 5.0, right: 10.0),
                 indicator: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
