@@ -146,7 +146,6 @@ class _GroupMembersState extends State<GroupMembers> {
         {
           String memberid = key;
 
-
           DatabaseReference reference = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users");
 
           await reference.child(memberid).once().then((DataSnapshot snap)

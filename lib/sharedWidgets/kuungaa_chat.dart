@@ -6,6 +6,7 @@ import 'package:kuungaa/Models/chat.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -172,26 +173,28 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                               Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black54,
-                                                          fontSize: 15.0,
+                                                  Container(
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black54,
+                                                            fontSize: 15.0,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      chat.message != null? Text(
-                                                        convertToDate(chat.message!.time_created!),
-                                                        style: TextStyle(
-                                                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                          fontSize: 12.0,
-                                                          fontWeight: FontWeight.w100,
-                                                        ),
-                                                      ): const Text(""),
-                                                    ],
+                                                        chat.message != null? Text(
+                                                          convertToDate(chat.message!.time_created!),
+                                                          style: TextStyle(
+                                                            color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                            fontSize: 12.0,
+                                                            fontWeight: FontWeight.w100,
+                                                          ),
+                                                        ): const Text(""),
+                                                      ],
+                                                    ),
                                                   ),
                                                   const SizedBox(height: 4.0,),
                                                   Row(
@@ -252,7 +255,10 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                     height: 40,
                                     width: 40,
                                     child: Center(
-                                      child: CircularProgressIndicator(),
+                                      child: LoadingAnimationWidget.horizontalRotatingDots(
+                                        color: Palette.kuungaaDefault,
+                                        size: 40
+                                      ),
                                     ),
                                   ),
                                 ),
