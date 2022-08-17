@@ -53,7 +53,7 @@ class _FriendsContainerState extends State<FriendsContainer> {
     if(event.snapshot.exists){
       String userid = event.snapshot.value["user_id"];
 
-      if(userid != userCurrentInfo!.user_id!){
+      if(userid != FirebaseAuth.instance.currentUser!.uid){
 
         Query checkFriendDbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userCurrentInfo!.user_id!).child(userid).orderByKey();
         await checkFriendDbRef.once().then((DataSnapshot snapshot) async {

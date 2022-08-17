@@ -7,6 +7,7 @@ import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/profile_avatar.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class GroupMembers extends StatefulWidget {
@@ -113,7 +114,16 @@ class _GroupMembersState extends State<GroupMembers> {
             }
             else
             {
-              return const Center(child: CircularProgressIndicator());
+              return Align(
+                alignment: Alignment.center,
+                child: Center(
+                  child: LoadingAnimationWidget.flickr(
+                    leftDotColor: Palette.kuungaaDefault,
+                    rightDotColor: Colors.red,
+                    size: 50,
+                  ),
+                ),
+              );
             }
           }
       ),
