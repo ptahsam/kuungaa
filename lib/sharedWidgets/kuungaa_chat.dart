@@ -158,7 +158,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                         child: Container(
                                           width: MediaQuery.of(context).size.width,
                                           margin: const EdgeInsets.only(top: 5.0, bottom: 0.0,),
-                                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12.0,),
                                           decoration: const BoxDecoration(
                                             //color: Color(0xFFFFEFEE),
                                             borderRadius: BorderRadius.only(
@@ -166,62 +166,47 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                               topRight: Radius.circular(20.0),
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
-                                              const SizedBox(width: 10.0,),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black54,
-                                                            fontSize: 15.0,
-                                                          ),
-                                                        ),
-                                                        chat.message != null? Text(
-                                                          convertToChattime(chat.message!.time_created!),
-                                                          style: TextStyle(
-                                                            color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                            fontSize: 12.0,
-                                                            fontWeight: FontWeight.w100,
-                                                          ),
-                                                        ): const Text(""),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 4.0,),
-                                                  Row(
-                                                    children: [
-                                                      chat.message!.messageMedia != null? Padding(
-                                                        padding: EdgeInsets.only(right: 5.0),
-                                                        child: Icon(
-                                                          Icons.perm_media_outlined,
-                                                          size: 18.0,
-                                                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                        ),
-                                                      ):const SizedBox.shrink(),
-                                                      chat.message != null? Text(
-                                                        chat.message!.message!,
-                                                        style: TextStyle(
-                                                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                                                          fontSize: 14.0,
-                                                          fontWeight: FontWeight.w100,
-                                                        ),
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                      ): const Text(""),
-                                                    ],
-                                                  ),
-                                                ],
+                                          child: ListTile(
+                                            minVerticalPadding: 0,
+                                            leading: ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
+                                            title: Text(
+                                              chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black54,
+                                                fontSize: 15.0,
                                               ),
-                                            ],
+                                            ),
+                                            subtitle: Row(
+                                              children: [
+                                                chat.message!.messageMedia != null? Padding(
+                                                  padding: EdgeInsets.only(right: 5.0),
+                                                  child: Icon(
+                                                    Icons.perm_media_outlined,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ),
+                                                ):const SizedBox.shrink(),
+                                                chat.message != null? Text(
+                                                  chat.message!.message!,
+                                                  style: TextStyle(
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w100,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ): const Text(""),
+                                              ],
+                                            ),
+                                            trailing: Text(
+                                              convertToChattime(chat.message!.time_created!),
+                                              style: TextStyle(
+                                                color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       );

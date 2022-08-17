@@ -449,7 +449,7 @@ class _ChatScreenState extends State<ChatScreen> {
       DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").push();
 
       String msgkey = msgRef.key;
-      int time = await getCurrentTime();
+      var time = DateTime.now().millisecondsSinceEpoch;
       String status = "0";
       List messagemedia = [];
 
@@ -503,7 +503,7 @@ class _ChatScreenState extends State<ChatScreen> {
       DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").push();
 
       String msgkey = msgRef.key;
-      int time = await getCurrentTime();
+      var time = DateTime.now().millisecondsSinceEpoch;
       String status = "0";
 
       Map msgMap = {
