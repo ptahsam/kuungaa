@@ -92,7 +92,7 @@ class _NavScreenState extends State<NavScreen> {
               color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
               border: Border(
                 bottom: BorderSide(
-                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.lessDarker,
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#dddddd"),
                   width: 1.0,
                 ),
               ),
@@ -218,7 +218,7 @@ class _NavScreenState extends State<NavScreen> {
               color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
               border: Border(
                 top: BorderSide(
-                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.lessDarker,
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#dddddd"),
                   width: 1.0,
                 ),
               ),

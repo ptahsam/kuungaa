@@ -113,6 +113,10 @@ class _TagUsersState extends State<TagUsers> {
                       AnimSearchBar(
                         width: MediaQuery.of(context).size.width * 0.65,
                         textController: textEditingController,
+                        color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                        style: TextStyle(
+                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
+                        ),
                         rtl: true,
                         onSuffixTap: () {
                           setState(() {

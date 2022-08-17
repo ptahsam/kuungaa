@@ -203,7 +203,7 @@ class _UserFriendsContainerState extends State<UserFriendsContainer> {
             itemBuilder: (BuildContext context, int index){
               Users users = searchList[index];
               return Container(
-                margin: const EdgeInsets.symmetric(vertical: 5.0),
+                margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
                 decoration: BoxDecoration(
                   color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
                   borderRadius: BorderRadius.circular(5.0),
@@ -254,7 +254,7 @@ class _UserFriendsContainerState extends State<UserFriendsContainer> {
                   if(index + 1 <= userFriendsList.length){
                     Users users = userFriendsList[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5.0),
+                      margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
                       decoration: BoxDecoration(
                         color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
                         borderRadius: BorderRadius.circular(5.0),

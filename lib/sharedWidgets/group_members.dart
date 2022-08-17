@@ -60,7 +60,21 @@ class _GroupMembersState extends State<GroupMembers> {
                             members.user_firstname! + " " + members.user_lastname!,
                           ),
                           subtitle: const Text("Admin", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 12.0),),
-                        trailing: SizedBox.shrink(),
+                        trailing: members.user_id == FirebaseAuth.instance.currentUser!.uid?SizedBox.shrink():InkWell(
+                          onTap: (){
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                              ),
+                              context: context,
+                              builder: (context) => buildFriendsSheet(members),
+                            );
+                          },
+                          child: const Icon(
+                              Icons.more_horiz
+                          ),
+                        ),
                       ),
                     );
                   }
@@ -77,7 +91,7 @@ class _GroupMembersState extends State<GroupMembers> {
                         members.user_firstname! + " " + members.user_lastname!,
                       ),
                       subtitle: const Text("Member", style: TextStyle(fontSize: 12.0),),
-                      trailing: InkWell(
+                      trailing: members.user_id == FirebaseAuth.instance.currentUser!.uid?SizedBox.shrink():InkWell(
                         onTap: (){
                           showModalBottomSheet(
                             isScrollControlled: true,
