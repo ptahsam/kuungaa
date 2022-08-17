@@ -13,6 +13,7 @@ import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/kuungaa_chat.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -157,27 +158,26 @@ class _HomeScreenIos extends StatelessWidget {
                               refresh = true;
                             });*/
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(6.0),
+                      child: Provider.of<AppData>(context).isGettingHomeFeed?Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 10.0),
                         decoration: BoxDecoration(
                           color: Palette.kuungaaDefault,
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Row(
-                          children: const [
-                            Icon(
+                          children: [
+                            /*Icon(
                               Icons.arrow_upward_outlined,
                               color: Colors.white,
                               size: 14.0,
-                            ),
-                            SizedBox(width: 3.0,),
-                            Text(
-                              "New posts",
-                              style: TextStyle(color: Colors.white),
+                            ),*/
+                            LoadingAnimationWidget.staggeredDotsWave(
+                              color: Colors.white,
+                              size: 25,
                             ),
                           ],
                         ),
-                      ),
+                      ):Text("News feed"),
                     ),
                   ),
 
@@ -246,27 +246,26 @@ class _HomescreenMobile extends StatelessWidget {
                               refresh = true;
                             });*/
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(6.0),
+                      child: Provider.of<AppData>(context).isGettingHomeFeed?Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 10.0),
                         decoration: BoxDecoration(
                           color: Palette.kuungaaDefault,
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Row(
-                          children: const [
-                            Icon(
+                          children: [
+                            /*Icon(
                               Icons.arrow_upward_outlined,
                               color: Colors.white,
                               size: 14.0,
-                            ),
-                            SizedBox(width: 3.0,),
-                            Text(
-                              "New posts",
-                              style: TextStyle(color: Colors.white),
+                            ),*/
+                            LoadingAnimationWidget.staggeredDotsWave(
+                              color: Colors.white,
+                              size: 25,
                             ),
                           ],
                         ),
-                      ),
+                      ):Text("News feed"),
                     ),
                   ),
 

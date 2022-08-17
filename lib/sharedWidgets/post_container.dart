@@ -48,6 +48,9 @@ class _PostContainerState extends State<PostContainer> {
 
   bool nextItems = false;
 
+  int itemCount = 0;
+  int itemAddedCount = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -65,20 +68,26 @@ class _PostContainerState extends State<PostContainer> {
     itemRefPosts!.onChildAdded.listen(_onEntryAddedPosts);
     //itemRefComment!.onChildChanged.listen(_onEntryChangedComment);
     itemRefPosts!.onChildRemoved.listen(_onEntryRemovedPosts);
+    database.reference().child('KUUNGAA').child('Posts').once().then(_getAllPosts);
   }
 
-  /*fetchNextItems(){
-    final FirebaseDatabase database = FirebaseDatabase.instance;
-    itemRefPosts = database.reference().child('KUUNGAA').child("Posts");
-    itemRefPosts!.orderByKey().endAt(referenceToOldestKey).limitToLast(11).once().then(_onEntryAddedPosts);
-  }*/
+  _getAllPosts(DataSnapshot snapshot){
+    if(snapshot.exists){
+      var keys = snapshot.value.keys;
+      for(var key in keys){
+        setState(() {
+          itemCount = itemCount + 1;
+        });
+      }
+    }
+  }
 
   _onEntryAddedPosts(Event event) async {
     if(event.snapshot.exists){
-      Users user = await AssistantMethods.getCurrentOnlineUser(FirebaseAuth.instance.currentUser!.uid);
       DatabaseReference hiddenRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden").child(FirebaseAuth.instance.currentUser!.uid).child(event.snapshot.key!);
       await hiddenRef.once().then((DataSnapshot snapshot) async {
         if(!snapshot.exists){
+          Provider.of<AppData>(context, listen: false).updateGettingHomeFeed(true);
           Posts post = Posts();
           post.post_id = event.snapshot.key!;
           post.pid = event.snapshot.value["post_id"];
@@ -120,7 +129,14 @@ class _PostContainerState extends State<PostContainer> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
+            itemAddedCount = itemAddedCount + 1;
           });
+          //print("posts totalcount :: " + itemCount.toString());
+          //print("posts addedcount :: " + itemAddedCount.toString());
+          //Provider.of<AppData>(context, listen: false).updateGettingHomeFeed(false);
+          if(listPosts.length >= itemCount){
+            Provider.of<AppData>(context, listen: false).updateGettingHomeFeed(false);
+          }
         }
       });
     }

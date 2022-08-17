@@ -14,6 +14,8 @@ class AppData extends ChangeNotifier
 
   bool _darkTheme = false;
 
+  bool isGettingHomeFeed = false;
+
   bool get darkTheme => _darkTheme;
 
   Address? userCurrentLocation;
@@ -47,6 +49,11 @@ class AppData extends ChangeNotifier
   set darkTheme(bool value) {
     _darkTheme = value;
     darkThemePreference.setDarkTheme(value);
+    notifyListeners();
+  }
+
+  void updateGettingHomeFeed(bool value) {
+    isGettingHomeFeed = value;
     notifyListeners();
   }
 
