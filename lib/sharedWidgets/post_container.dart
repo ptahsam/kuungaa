@@ -12,6 +12,7 @@ import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -213,10 +214,20 @@ class _PostContainerState extends State<PostContainer> {
                 postIndex: index,
                 postsLength: posts.length,);
             }else{
-              return SizedBox.shrink();
+              return Center(
+                child: LoadingAnimationWidget.fourRotatingDots(
+                  color: Palette.kuungaaDefault,
+                  size: 200,
+                ),
+              );
             }
           }else{
-            return SizedBox.shrink();
+            return Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: Palette.kuungaaDefault,
+                size: 200,
+              ),
+            );
           }
         }else{
           return Align(
