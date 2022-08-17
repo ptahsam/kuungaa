@@ -186,7 +186,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                           ),
                                                         ),
                                                         chat.message != null? Text(
-                                                          convertToDate(chat.message!.time_created!),
+                                                          convertToChattime(chat.message!.time_created!),
                                                           style: TextStyle(
                                                             color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                             fontSize: 12.0,
