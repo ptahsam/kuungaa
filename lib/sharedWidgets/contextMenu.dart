@@ -551,12 +551,16 @@ class _ContextMenuState extends State<ContextMenu> {
 
       DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').child(postid);
       await postRef.remove().then((onValue) {
-        Navigator.pop(context);
-        displayToastMessage("Your post was deleted successfully", context);
-
+        if(mounted) {
+          Navigator.pop(context);
+          displayToastMessage("Your post was deleted successfully", context);
+        }
       }).catchError((onError) {
-        Navigator.pop(context);
-        displayToastMessage("An error occurred. Please try again later", context);
+        if(mounted) {
+          Navigator.pop(context);
+          displayToastMessage(
+              "An error occurred. Please try again later", context);
+        }
       });
     });
   }

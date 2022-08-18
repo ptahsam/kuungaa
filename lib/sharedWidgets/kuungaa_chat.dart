@@ -151,6 +151,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                     itemCount: Provider.of<AppData>(context).userChats!.length,
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
+                                      String message = chat.message!.message!;
                                       return InkWell(
                                         onTap: (){
                                           Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ChatScreen(chat: chat,)));
@@ -188,7 +189,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                   ),
                                                 ):const SizedBox.shrink(),
                                                 chat.message != null? Text(
-                                                  chat.message!.message!,
+                                                  message.length > 20?message.substring(0, 17) + " ...":message,
                                                   style: TextStyle(
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
                                                     fontSize: 14.0,

@@ -673,7 +673,7 @@ class _PostMainContainerState extends State<PostMainContainer> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                      child: Text("People you might know", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      child: Text("People you may know", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
                     ),
                     Expanded(
                       child: ListView.builder(
