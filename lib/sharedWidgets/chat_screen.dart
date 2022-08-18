@@ -165,8 +165,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     padding: const EdgeInsets.only(top: 15.0),
                     itemBuilder: (context, int index){
                       Message message = Provider.of<AppData>(context).chatMessages![index];
+                      Message nextMessage =  Provider.of<AppData>(context).chatMessages!.length - 1 > index?Provider.of<AppData>(context).chatMessages![index + 1]:Provider.of<AppData>(context).chatMessages![index];
+                      //Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
                       final bool isMe = message.sender_id == userCurrentInfo!.user_id!;
-                      return _buildMessage(message, isMe);
+                      return Column(
+                          children: [
+                            checkIsWhen(nextMessage.time_created!) != checkIsWhen(message.time_created!)?Container(
+                              child: Center(
+                                child: Text(checkIsWhen(message.time_created!)),
+                              ),
+                            ):SizedBox.shrink(),
+                            _buildMessage(message, isMe),
+                          ],
+                      );
                     },
                   ),
                 ):const SizedBox.shrink(),
@@ -279,7 +290,7 @@ class _ChatScreenState extends State<ChatScreen> {
             );
           },
           child: Container(
-            margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 15.0),
+            margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerRight,
               clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
@@ -287,15 +298,8 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    convertToDate(message.time_created!),
-                    style: TextStyle(
-                      color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w100,
-                    ),
-                  ),
                   message.messageMedia != null?
                   Padding(
                     padding: const EdgeInsets.only(top: 5.0),
@@ -309,6 +313,21 @@ class _ChatScreenState extends State<ChatScreen> {
                       fontSize: 15.0,
                       fontWeight: FontWeight.w100,
                     ),
+                  ),
+                  SizedBox(height: 10.0,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        convertToPMAM(message.time_created!),
+                        style: TextStyle(
+                          color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -369,23 +388,16 @@ class _ChatScreenState extends State<ChatScreen> {
       alignment: WrapAlignment.start,
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 15.0),
+          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
           child: ChatBubble(
             alignment: Alignment.centerLeft,
             clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
             backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Color(0xFFFFEFEE),
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  convertToDate(message.time_created!),
-                  style: TextStyle(
-                    color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
                 message.messageMedia != null?
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -399,6 +411,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     fontSize: 15.0,
                     fontWeight: FontWeight.w100,
                   ),
+                ),
+                SizedBox(height: 10.0,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      convertToPMAM(message.time_created!),
+                      style: TextStyle(
+                        color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -466,6 +466,18 @@ String convertToDate(int timestamp){
   return d.toString();
 }
 
+String convertToFullDate(int timestamp){
+  var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var m = DateFormat.M().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var y = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+
+  var day = d.length == 1? '0' + d:d;
+  var month = m.length == 1? '0' + m:m;
+
+  return day + '/' + month + '/' + y;
+
+}
+
 String convertToChattime(int timestamp){
   var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
   var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
@@ -482,11 +494,35 @@ String convertToChattime(int timestamp){
       if((int.parse(cd) - int.parse(d)) == 1){
         return "Yesterday";
       }
-      return convertToDate(timestamp);
+      return convertToFullDate(timestamp);
     }
-    return convertToDate(timestamp);
+    return convertToFullDate(timestamp);
   }
-  return convertToDate(timestamp);
+  return convertToFullDate(timestamp);
+}
+
+String checkIsWhen(int timestamp) {
+  var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var e = DateFormat.E().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var m = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var y = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var cy = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cd = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cm = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  if(y == cy){
+    if(cm == m){
+      if(cd == d){
+        return "Today";
+      }
+      if((int.parse(cd) - int.parse(d)) == 1){
+        return "Yesterday";
+      }
+      return e + " " + d;
+    }
+    return convertToFullDate(timestamp);
+  }
+  return convertToFullDate(timestamp);
 }
 
 String convertToDay(int timestamp){
