@@ -34,15 +34,16 @@ class NavScreen extends StatefulWidget {
   _NavScreenState createState() => _NavScreenState();
 }
 
-class _NavScreenState extends State<NavScreen> {
+class _NavScreenState extends State<NavScreen> with RestorationMixin {
 
   final List<Widget> _screens = [
     MainPage(),
-    const TravelPage(),
+    TravelPage(),
     DiscussionPage(),
-    const VideosPage(),
+    VideosPage(),
     FriendsPage(),
   ];
+
   final List<IconData> _icons = const [
     IconData(0xe91f, fontFamily: "icomoon"),
     IconData(0xe900, fontFamily: "icomoon"),
@@ -52,6 +53,19 @@ class _NavScreenState extends State<NavScreen> {
   ];
 
   int _selectedIndex = 0;
+  final RestorableInt _index = RestorableInt(0);
+
+  @override
+  // The restoration bucket id for this page,
+  // let's give it the name of our page!
+  String get restorationId => 'home_page';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    // Register our property to be saved every time it changes,
+    // and to be restored every time our app is killed by the OS!
+    registerForRestoration(_index, 'nav_bar_index');
+  }
 
   @override
   void initState() {
@@ -203,7 +217,10 @@ class _NavScreenState extends State<NavScreen> {
               child: CustomAppBar(
                 icons: _icons,
                 selectedIndex: _selectedIndex,
-                onTap: (index) => setState(() => _selectedIndex = index),
+                onTap: (index) => setState((){
+                  _selectedIndex = index;
+                  _index.value = index;
+                }),
               ),
               preferredSize: Size(screenSize.width, 100.0),
           ) : null,

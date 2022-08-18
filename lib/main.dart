@@ -280,6 +280,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
       child: Consumer<AppData>(
         builder: (BuildContext context, value, Widget? child) {
           return MaterialApp(
+            restorationScopeId: 'root',
             title: 'KUUNGAA',
             theme: Styles.themeData(appData.darkTheme, context),
             /*theme: ThemeData(
