@@ -65,7 +65,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                   onPressed: (){},
                 ),*/
               ],
-              bottom: const TabBar(
+              bottom: TabBar(
                 padding: EdgeInsets.symmetric(horizontal: 10.0,),
                 indicator: BoxDecoration(
                   border: Border(
@@ -78,14 +78,33 @@ class _KuungaaChatState extends State<KuungaaChat> {
                 ),
                 tabs: [
                   Tab(
-                    child: Text(
-                      "Chats",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Chats",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?SizedBox(width: 5.0,):SizedBox.shrink(),
+                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            Provider.of<AppData>(context).messageCount!.message_count!.toString(),
+                            style: TextStyle(
+                              color: Palette.kuungaaDefault,
+                            ),
+                          ),
+                        ):SizedBox.shrink(),
+                      ],
                     ),
 
                   ),
