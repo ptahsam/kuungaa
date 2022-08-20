@@ -142,6 +142,7 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
                 controller: groupPostTextEditingController,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
+                enableInteractiveSelection: true,
                 minLines: 5,
                 maxLines: 5,
                 onTap: (){

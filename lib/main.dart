@@ -163,7 +163,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     getCurrentAppTheme();
     //var initializationSettingsAndroid = new AndroidInitializationSettings('ic_launcher');
     var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');

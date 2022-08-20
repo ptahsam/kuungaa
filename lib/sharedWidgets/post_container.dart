@@ -16,6 +16,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 import 'package:snippet_coder_utils/hex_color.dart';
@@ -1293,7 +1294,15 @@ class _PostMainContainerState extends State<PostMainContainer> {
 
               widget.post!.post_description != ''?Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                child: Text(widget.post!.post_description!),
+                child: ReadMoreText(
+                  widget.post!.post_description!,
+                  trimLines: 2,
+                  preDataTextStyle: TextStyle(fontWeight: FontWeight.w500),
+                  colorClickableText: Colors.pink,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: '...Show more',
+                  trimExpandedText: ' show less',
+                ),
               ):const SizedBox.shrink(),
             ],
           ),

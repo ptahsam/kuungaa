@@ -11,6 +11,7 @@ import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 
@@ -518,7 +519,15 @@ class _SingleGroupPostMainContainerState extends State<SingleGroupPostMainContai
 
               widget.post!.post_description != ""?Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                child: Text(widget.post!.post_description!),
+                child: ReadMoreText(
+                  widget.post!.post_description!,
+                  trimLines: 2,
+                  preDataTextStyle: TextStyle(fontWeight: FontWeight.w500),
+                  colorClickableText: Colors.pink,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: '...Show more',
+                  trimExpandedText: ' show less',
+                ),
               ):SizedBox.shrink(),
             ],
           ),

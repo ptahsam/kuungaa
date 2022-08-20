@@ -380,12 +380,13 @@ getPageFieldValue(String postid, String field) {
 }
 
 Future<int> getCurrentTime() async {
-  int currentTime = 0;
+  /*int currentTime = 0;
   var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
   await offsetRef.once().then((event){
     int offset = event.value;
     currentTime = ((DateTime.now().millisecondsSinceEpoch) + offset);
-  });
+  });*/
+  int currentTime = DateTime.now().microsecondsSinceEpoch;
   return currentTime;
 }
 

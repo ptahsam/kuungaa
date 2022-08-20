@@ -363,23 +363,11 @@ class AssistantMethods
                       }
                       chat.message!.messageMedia = listMedia.toSet().toList();
                     }
-                    /*List<Media> listMedia = [];
-                    await FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatEvent.snapshot.value["chat_id"]).child("messages").child(event.snapshot.value["message_id"]).child("message_media")
-                        .onChildAdded.forEach((mediaEvent){
-                      if(mediaEvent.snapshot.exists){
-
-                          Media media = Media.fromSnapshot(mediaEvent.snapshot);
-                          listMedia.add(media);
-                          //print("message media" + media.url!);
-                          chat.messageMedia = listMedia.toSet().toList();
-                      }
-                    });*/
                   }
                   chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(memberEvent.snapshot.value["member_id"]);
+                  chat.chatCount = await AssistantMethods.getChatCount(chatEvent.snapshot.value["chat_id"]);
                   userChatList.add(chat);
-                  //print("chat list found ::" + chat.chat_opponentid!);
                   Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.reversed.toSet().toList());
-
                 });
               }
             });
@@ -387,6 +375,23 @@ class AssistantMethods
         });
       }
     });
+  }
+
+  static Future<int> getChatCount(String chatid) async {
+    int i = 0;
+    Query query = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("messages");
+    await query.orderByChild("message_status").equalTo("0").once().then((DataSnapshot snapshot){
+      if(snapshot.exists){
+        var keys = snapshot.value.keys;
+        var value = snapshot.value;
+        for(var key in keys){
+          if(value[key]["sender_id"] != userCurrentInfo!.user_id!){
+            i = i + 1;
+          }
+        }
+      }
+    });
+    return i;
   }
 
   static getUserChats(BuildContext context) async {

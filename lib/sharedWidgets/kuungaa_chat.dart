@@ -57,12 +57,12 @@ class _KuungaaChatState extends State<KuungaaChat> {
               centerTitle: false,
               elevation: 0.0,
               actions: [
-                IconButton(
+                /*IconButton(
                   icon: const Icon(Icons.search),
                   //iconSize: 36.0,
                   color: Colors.white,
                   onPressed: (){},
-                ),
+                ),*/
               ],
               bottom: const TabBar(
                 padding: EdgeInsets.symmetric(horizontal: 10.0,),
@@ -71,7 +71,6 @@ class _KuungaaChatState extends State<KuungaaChat> {
                     bottom: BorderSide(
                       color: Colors.white,
                       width: 3.0,
-
                     ),
                   ),
                   //borderRadius: BorderRadius.circular(5.0),
@@ -200,13 +199,32 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                 ): const Text(""),
                                               ],
                                             ),
-                                            trailing: Text(
-                                              convertToChattime(chat.message!.time_created!),
-                                              style: TextStyle(
-                                                color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.w100,
-                                              ),
+                                            trailing: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  convertToChattime(chat.message!.time_created!),
+                                                  style: TextStyle(
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.w100,
+                                                  ),
+                                                ),
+                                                chat.chatCount != null && chat.chatCount != 0?Container(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Palette.kuungaaDefault,
+                                                  ),
+                                                  child: Text(
+                                                    chat.chatCount.toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ):SizedBox.shrink(),
+                                              ],
                                             ),
                                           ),
                                         ),

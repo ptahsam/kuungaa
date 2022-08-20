@@ -175,7 +175,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Text(checkIsWhen(message.time_created!)),
                               ),
                             ):SizedBox.shrink(),
-                            _buildMessage(message, isMe),
+                            MessageContainer(message: message, chat: widget.chat, isMe: isMe),
                           ],
                       );
                     },
@@ -272,203 +272,6 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
-  }
-
-  _buildMessage(Message message, bool isMe) {
-    return isMe ? Wrap(
-      alignment: WrapAlignment.end,
-      children: [
-        InkWell(
-          onLongPress: (){
-            showModalBottomSheet(
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-              ),
-              context: context,
-              builder: (context) => buildMessageSheet(message),
-            );
-          },
-          child: Container(
-            margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
-            child: ChatBubble(
-              alignment: Alignment.centerRight,
-              clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
-              backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.kuungaaAccent,
-              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  message.messageMedia != null?
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: MessageMedia(messageMedia: message.messageMedia!,),
-                  ):const SizedBox.shrink(),
-                  const SizedBox(height: 3.0,),
-                  Text(
-                    message.message!,
-                    style: TextStyle(
-                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w100,
-                    ),
-                  ),
-                  SizedBox(height: 10.0,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        convertToPMAM(message.time_created!),
-                        style: TextStyle(
-                          color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w100,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        /*InkWell(
-          onLongPress: (){
-            showModalBottomSheet(
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-              ),
-              context: context,
-                builder: (context) => buildMessageSheet(message),
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-            margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 15.0),
-            decoration: BoxDecoration(
-              color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.kuungaaAccent,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  convertToDate(message.time_created!),
-                  style: TextStyle(
-                    color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-                message.messageMedia != null?
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: MessageMedia(messageMedia: message.messageMedia!,),
-                ):const SizedBox.shrink(),
-                const SizedBox(height: 3.0,),
-                Text(
-                  message.message!,
-                  style: TextStyle(
-                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),*/
-      ],
-    )
-        :
-    Wrap(
-      alignment: WrapAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
-          child: ChatBubble(
-            alignment: Alignment.centerLeft,
-            clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
-            backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Color(0xFFFFEFEE),
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                message.messageMedia != null?
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: MessageMedia(messageMedia: message.messageMedia!,),
-                ):const SizedBox.shrink(),
-                const SizedBox(height: 3.0,),
-                Text(
-                  message.message!,
-                  style: TextStyle(
-                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-                SizedBox(height: 10.0,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      convertToPMAM(message.time_created!),
-                      style: TextStyle(
-                        color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w100,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        /*Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 15.0),
-          decoration: BoxDecoration(
-            color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Color(0xFFFFEFEE),
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                convertToDate(message.time_created!),
-                style: TextStyle(
-                  color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-              message.messageMedia != null?
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: MessageMedia(messageMedia: message.messageMedia!,),
-              ):const SizedBox.shrink(),
-              const SizedBox(height: 3.0,),
-              Text(
-                message.message!,
-                style: TextStyle(
-                  color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            ],
-          ),
-        ),*/
-      ],
-    )
-    ;
   }
 
   Future<void> saveMessage() async {
@@ -652,89 +455,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget buildMessageSheet(Message message) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: (){
-              Navigator.pop(context);
-              deleteMessage(message);
-            },
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  height: 60.0,
-                  width: 60.0,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
-                        shape: BoxShape.circle,
-                      ),
-                      child: Provider.of<AppData>(context).darkTheme?Icon(
-                        const IconData(0xe929, fontFamily: "icomoon"),
-                        size: 26.0,
-                        color: HexColor("#2dce89"),
-                      ):ShaderMask(
-                        shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                        child: Icon(
-                          const IconData(0xe929, fontFamily: "icomoon"),
-                          size: 26.0,
-                          color: HexColor("#2dce89"),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14.0,),
-                const Text(
-                  "Delete message",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void deleteMessage(Message message) async{
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context)
-        {
-          return ProgressDialog(message: "Deleting message, Please wait...",);
-        }
-    );
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Messages").child(message.message_id!);
-
-    await ref.listAll().then((result) async {
-      for (var file in result.items) {
-        file.delete();
-      }
-
-      DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").child(message.message_id!);
-      await msgRef.remove().then((onValue) {
-        Navigator.pop(context);
-        displayToastMessage("Message deleted successfully", context);
-
-      }).catchError((onError) {
-        Navigator.pop(context);
-        displayToastMessage("An error occurred. Please try again later", context);
-      });
-    });
-  }
-
   getLocationMap() async {
     try {
       final Position position = await Geolocator.getCurrentPosition(
@@ -791,6 +511,261 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     });
     //displayToastMessage("Messages updated successfully", context);
+  }
+
+}
+
+class MessageContainer extends StatefulWidget {
+  final Message message;
+  final Chat chat;
+  final bool isMe;
+  const MessageContainer({
+    Key? key,
+    required this.message,
+    required this.chat,
+    required this.isMe
+  }) : super(key: key);
+
+  @override
+  State<MessageContainer> createState() => _MessageContainerState();
+}
+
+class _MessageContainerState extends State<MessageContainer> {
+
+  String messageStatus = "";
+  Query? msgRef;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    msgRef = database.reference().child('KUUNGAA').child("Chats").child(widget.chat.chat_id!).child("messages").child(widget.message.message_id!);
+    messageStatus = widget.message.message_status!;
+    msgRef!.onChildChanged.listen(_updateStatus);
+  }
+
+  _setStatus(Event event) {
+    if(event.snapshot.exists){
+      setState(() {
+        messageStatus = event.snapshot.value["message_status"];
+        print("message status ::: " + event.snapshot.value["message_status"]);
+      });
+    }
+  }
+
+  _updateStatus(Event event) {
+    if(event.snapshot.exists){
+      print("message status ::: " + event.snapshot.value);
+      setState(() {
+        messageStatus = event.snapshot.value["message_status"];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.isMe ? Wrap(
+      alignment: WrapAlignment.end,
+      children: [
+        InkWell(
+          onLongPress: (){
+            showModalBottomSheet(
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+              ),
+              context: context,
+              builder: (context) => buildMessageSheet(widget.message),
+            );
+          },
+          child: Container(
+            margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
+            child: ChatBubble(
+              alignment: Alignment.centerRight,
+              clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
+              backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.kuungaaAccent,
+              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  widget.message.messageMedia != null?
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: MessageMedia(messageMedia: widget.message.messageMedia!,),
+                  ):const SizedBox.shrink(),
+                  const SizedBox(height: 3.0,),
+                  Text(
+                    widget.message.message!,
+                    style: TextStyle(
+                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                  SizedBox(height: 10.0,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        convertToPMAM(widget.message.time_created!),
+                        style: TextStyle(
+                          color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
+                      SizedBox(width: 10.0,),
+                      widget.message.message_status == "1"?Icon(
+                        MdiIcons.checkAll,
+                        color:Palette.kuungaaDefault,
+                        size: 16.0,
+                      ):Icon(
+                        MdiIcons.check,
+                        color:Colors.grey,
+                        size: 16.0,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    )
+        :
+    Wrap(
+      alignment: WrapAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
+          child: ChatBubble(
+            alignment: Alignment.centerLeft,
+            clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
+            backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Color(0xFFFFEFEE),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                widget.message.messageMedia != null?
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: MessageMedia(messageMedia: widget.message.messageMedia!,),
+                ):const SizedBox.shrink(),
+                const SizedBox(height: 3.0,),
+                Text(
+                  widget.message.message!,
+                  style: TextStyle(
+                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+                SizedBox(height: 10.0,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      convertToPMAM(widget.message.time_created!),
+                      style: TextStyle(
+                        color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void deleteMessage(Message message) async{
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context)
+        {
+          return ProgressDialog(message: "Deleting message, Please wait...",);
+        }
+    );
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Messages").child(message.message_id!);
+
+    await ref.listAll().then((result) async {
+      for (var file in result.items) {
+        file.delete();
+      }
+
+      DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").child(message.message_id!);
+      await msgRef.remove().then((onValue) {
+        Navigator.pop(context);
+        displayToastMessage("Message deleted successfully", context);
+
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+    });
+  }
+
+  Widget buildMessageSheet(Message message) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: (){
+              Navigator.pop(context);
+              deleteMessage(message);
+            },
+            child: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  height: 60.0,
+                  width: 60.0,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Provider.of<AppData>(context).darkTheme?Icon(
+                        Icons.delete_forever_rounded,
+                        size: 26.0,
+                        color: Colors.red,
+                      ):Icon(
+                        Icons.delete_forever_rounded,
+                        size: 26.0,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14.0,),
+                const Text(
+                  "Delete message",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
 }

@@ -10,6 +10,7 @@ class Chat{
   String? chat_opponentid;
   Users? opponentUser;
   Message? message;
+  int? chatCount;
 
-  Chat({this.chat_id, this.chat_createddate, this.chat_creatorid, this.chat_partnerid, this.chat_opponentid, this.opponentUser, this.message});
+  Chat({this.chat_id, this.chat_createddate, this.chat_creatorid, this.chat_partnerid, this.chat_opponentid, this.opponentUser, this.message, this.chatCount});
 }
