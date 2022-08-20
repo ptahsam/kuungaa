@@ -7,6 +7,7 @@ import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -187,7 +188,30 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                   ),
                                                 ):const SizedBox.shrink(),
-                                                chat.message != null? Text(
+                                                chat.message != null? chat.message!.sender_id == userCurrentInfo!.user_id?Row(
+                                                  children: [
+                                                    Text(
+                                                      message.length > 20?message.substring(0, 17) + " ...":message,
+                                                      style: TextStyle(
+                                                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                                                        fontSize: 14.0,
+                                                        fontWeight: FontWeight.w100,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(width: 8.0,),
+                                                    chat.message!.message_status == "1"?Icon(
+                                                      MdiIcons.checkAll,
+                                                      color:Palette.kuungaaDefault,
+                                                      size: 16.0,
+                                                    ):Icon(
+                                                      MdiIcons.check,
+                                                      color:Colors.grey,
+                                                      size: 16.0,
+                                                    ),
+                                                  ],
+                                                ):Text(
                                                   message.length > 20?message.substring(0, 17) + " ...":message,
                                                   style: TextStyle(
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,

@@ -364,6 +364,13 @@ class AssistantMethods
                       chat.message!.messageMedia = listMedia.toSet().toList();
                     }
                   }
+                  chatQuery.orderByKey().limitToLast(1).onChildChanged.forEach((changed) {
+                    if(changed.snapshot.exists){
+                      Message message = Message.fromSnapshot(changed.snapshot);
+                      chat.message = message;
+                    }
+                  });
+
                   chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(memberEvent.snapshot.value["member_id"]);
                   chat.chatCount = await AssistantMethods.getChatCount(chatEvent.snapshot.value["chat_id"]);
                   userChatList.add(chat);
