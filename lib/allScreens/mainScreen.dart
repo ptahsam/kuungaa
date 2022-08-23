@@ -87,16 +87,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
       backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
       body: _HomeScreenIos(),
     ):
-    GestureDetector(
-      onTap: (){
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-        body: Responsive(
-          mobile: _HomescreenMobile(),
-          desktop: _HomeScreenDesktop(),
-        ),
+    Scaffold(
+      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+      body: Responsive(
+        mobile: _HomescreenMobile(),
+        desktop: _HomeScreenDesktop(),
       ),
     );
   }
