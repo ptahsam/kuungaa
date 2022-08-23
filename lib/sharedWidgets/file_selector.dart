@@ -239,7 +239,7 @@ class _FileSelectorState extends State<FileSelector> {
                             ),
                             // Display a Play icon if the asset is a video
                             if (asset.type == AssetType.video)
-                              Center(
+                              /*Center(
                                 child: Container(
                                   padding: const EdgeInsets.all(6.0),
                                   decoration: BoxDecoration(
@@ -255,7 +255,15 @@ class _FileSelectorState extends State<FileSelector> {
                                     color: Palette.kuungaaDefault,
                                   ),
                                 ),
+                              ),*/
+                            Positioned(
+                              left: 10.0,
+                              bottom: 10.0,
+                              child: Icon(
+                                MdiIcons.video,
+                                color: Palette.kuungaaDefault,
                               ),
+                            ),
                             isSelectMultiple? Positioned(
                               top: 10.0,
                               right: 10.0,
