@@ -490,6 +490,8 @@ class _PhotoGridState extends State<PhotoGrid> {
                           image: DecorationImage(
                             image: ExtendedNetworkImageProvider(
                               media.url!,
+                              cache: true,
+                              cacheRawData: true,
                             ),
                             fit: BoxFit.cover,
                           ),

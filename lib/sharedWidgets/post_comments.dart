@@ -6,6 +6,7 @@ import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/comment.dart';
 import 'package:kuungaa/Models/like.dart';
 import 'package:kuungaa/Models/user.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
@@ -344,7 +345,11 @@ class _PostCommentsState extends State<PostComments> {
                           return Align(
                             alignment: Alignment.center,
                             child: Center(
-                              child: CircularProgressIndicator(),
+                              child: LoadingAnimationWidget.flickr(
+                                leftDotColor: Palette.kuungaaDefault,
+                                rightDotColor: Colors.black,
+                                size: 40
+                              ),
                             ),
                           );
                         }

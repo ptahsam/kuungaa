@@ -44,6 +44,8 @@ class _MessageMediaState extends State<MessageMedia> {
                   image: DecorationImage(
                     image: ExtendedNetworkImageProvider(
                       media.url!,
+                      cache: true,
+                      cacheRawData: true
                     ),
                     fit: BoxFit.cover,
                   ),

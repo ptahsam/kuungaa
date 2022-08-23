@@ -64,17 +64,21 @@ class _SelectExpressionState extends State<SelectExpression> {
             snap: true,
             elevation: 40.0,
             pinned: true,
-            leadingWidth: 30.0,
-            leading: GestureDetector(
-              onTap: ()
-              {
-                Navigator.pop(context, "");
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
-              ),
-            ),
+             leading: Container(
+               margin: const EdgeInsets.all(6.0),
+               decoration: BoxDecoration(
+                 color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[200],
+                 shape: BoxShape.circle,
+               ),
+               child: IconButton(
+                 icon: const Icon(
+                   Icons.arrow_back,
+                   color: Colors.green,
+                 ),
+                 iconSize: 22.0,
+                 onPressed: () => Navigator.pop(context,""),
+               ),
+             ),
           ),
           SliverToBoxAdapter(
             child: Container(

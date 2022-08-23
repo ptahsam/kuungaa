@@ -6,6 +6,7 @@ import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/post.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/allScreens/friendScreen.dart';
 import 'package:kuungaa/allScreens/videosScreen.dart';
 import 'package:kuungaa/config/config.dart';
@@ -13,6 +14,7 @@ import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 
 import 'screens.dart';
@@ -181,15 +183,35 @@ class _NavScreenState extends State<NavScreen> with RestorationMixin {
                             ],
                           ),
                           SizedBox(width: 6.0,),
-                          InkWell(
-                            onTap: (){
-                              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: FirebaseAuth.instance.currentUser!.uid,)));
+                          FutureBuilder(
+                            future: getCurrentUserInfo(),
+                            builder: (BuildContext context, AsyncSnapshot<Users> snapshot){
+                              if(snapshot.connectionState == ConnectionState.done){
+                                Users user = snapshot.data!;
+                                return InkWell(
+                                  onTap: (){
+                                    Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: user.user_id!,)));
+                                  },
+                                  child: Container(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: ProfileAvatar(imageUrl: user.user_profileimage!, hasBorder: true, radius: 22.0, borderWidth: 21.0,)
+                                  ),
+                                );
+                              }else{
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                                    highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                                    child: CircleAvatar(
+                                      radius: 20.0,
+                                      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300],
+                                    ),
+                                  ),
+                                );
+                              }
                             },
-                            child: Container(
-                                padding: const EdgeInsets.all(6.0),
-                                child: ProfileAvatar(imageUrl: uProfile, hasBorder: true, radius: 22.0, borderWidth: 21.0,)
-                            ),
-                          )
+                          ),
                         ],
                       ),
                     ],

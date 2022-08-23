@@ -236,6 +236,7 @@ class AssistantMethods
             listMedia.add(media);
           }
           message.messageMedia = listMedia.toSet().toList();
+          message.group_date = convertToChattime(message.time_created!);
         }
         chatMessage.add(message);
         Provider.of<AppData>(context, listen: false).updateChatMessages(chatMessage.reversed.toList());

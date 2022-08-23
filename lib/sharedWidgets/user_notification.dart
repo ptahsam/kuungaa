@@ -10,6 +10,7 @@ import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/allScreens/screens.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -167,8 +168,16 @@ class _UserNotificationState extends State<UserNotification> {
                       );
                     }
                   }else{
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: LoadingAnimationWidget.discreteCircle(
+                          color: Palette.kuungaaDefault,
+                          size: 40,
+                          secondRingColor: Colors.red,
+                          thirdRingColor: Colors.purpleAccent
+                        ),
+                      ),
                     );
                   }
                 },

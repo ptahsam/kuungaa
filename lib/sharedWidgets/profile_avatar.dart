@@ -34,7 +34,11 @@ class ProfileAvatar extends StatelessWidget {
           child: CircleAvatar(
             radius: hasBorder? borderWidth : radius,
             backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[400],
-            backgroundImage: ExtendedNetworkImageProvider(imageUrl),
+            backgroundImage: ExtendedNetworkImageProvider(
+              imageUrl,
+              cache: true,
+              cacheRawData: true
+            ),
           ),
         ),
         isActive ? Positioned(

@@ -21,7 +21,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
-import 'package:snippet_coder_utils/hex_color.dart';
 
 import 'widgets.dart';
 class ChatScreen extends StatefulWidget {

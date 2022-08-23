@@ -8,6 +8,7 @@ import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -175,9 +176,12 @@ class _FileSelectorState extends State<FileSelector> {
                           alignment: Alignment.center,
                           child: Center(
                             child: SizedBox(
-                              height: 60,
-                              width: 60,
-                              child: CircularProgressIndicator(),
+                              height: 40,
+                              width: 40,
+                              child: LoadingAnimationWidget.threeArchedCircle(
+                                color: Palette.kuungaaDefault,
+                                size: 40
+                              ),
                             ),
                           )
                       );
