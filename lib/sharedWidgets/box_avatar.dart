@@ -1,8 +1,6 @@
-import 'dart:html';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:snippet_coder_utils/hex_color.dart';
 
 class BoxAvatar extends StatelessWidget {
   final String imageUrl;
