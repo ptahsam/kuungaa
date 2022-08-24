@@ -591,6 +591,8 @@ class _UserProfileState extends State<UserProfile> {
                                               //cacheHeight: 500,
                                               fit: BoxFit.cover,
                                               filterQuality: FilterQuality.high,
+                                              cacheRawData: true,
+                                              enableMemoryCache: true,
                                             ),
                                           ),
                                         );
@@ -737,6 +739,8 @@ class _UserProfileState extends State<UserProfile> {
                                                             user.user_profileimage!,
                                                             height: 120.0,
                                                             cache: true,
+                                                            enableMemoryCache: true,
+                                                            cacheRawData: true,
                                                             //cacheHeight: 500,
                                                             //cacheWidth: 500,
                                                             width: double.infinity,

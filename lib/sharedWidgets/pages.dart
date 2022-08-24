@@ -151,6 +151,7 @@ class _PageCard extends StatelessWidget {
               height: 120.0,
               width: 120.0,
               fit: BoxFit.cover,
+              enableMemoryCache: true,
             ),
           ),
           ShaderMask(

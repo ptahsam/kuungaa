@@ -22,11 +22,26 @@
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="207" y="448" width="0.5" height="0.5"/>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="r42-7Z-t4v">
+                                <rect key="frame" x="52.5" y="278" width="309" height="340"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="kuungaasplash" translatesAutoresizingMaskIntoConstraints="NO" id="0ue-m7-Y5y">
+                                        <rect key="frame" x="0.0" y="0.0" width="309" height="340"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="0ue-m7-Y5y" secondAttribute="height" multiplier="309:340" id="qTh-14-dzj"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                            </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
+                            <constraint firstItem="r42-7Z-t4v" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="aAn-GF-6xK"/>
+                            <constraint firstItem="r42-7Z-t4v" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="hTp-Jr-p3C"/>
+                            <constraint firstItem="r42-7Z-t4v" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jzH-9f-sxG"/>
+                            <constraint firstItem="r42-7Z-t4v" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="pWq-aV-GZq"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -37,5 +52,6 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="0.5" height="0.5"/>
+        <image name="kuungaasplash" width="309" height="340"/>
     </resources>
 </document>
