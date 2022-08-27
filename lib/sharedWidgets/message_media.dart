@@ -465,7 +465,7 @@ class _ViewMessageImagesState extends State<ViewMessageImages> {
           PageView.builder(
             controller: _pageController,
             itemCount: widget.messageMedia.length,
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.vertical,
             itemBuilder: (context, i) {
               final Media media = widget.messageMedia[i];
               return Image.network(
@@ -486,6 +486,27 @@ class _ViewMessageImagesState extends State<ViewMessageImages> {
                 },
               );
             },
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0),
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

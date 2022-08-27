@@ -129,10 +129,10 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMaps (5.2.0):
-    - GoogleMaps/Maps (= 5.2.0)
-  - GoogleMaps/Base (5.2.0)
-  - GoogleMaps/Maps (5.2.0):
+  - GoogleMaps (6.2.1):
+    - GoogleMaps/Maps (= 6.2.1)
+  - GoogleMaps/Base (6.2.1)
+  - GoogleMaps/Maps (6.2.1):
     - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -367,7 +367,7 @@ SPEC CHECKSUMS:
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
   google_maps_flutter: c59fc576c0d0c7f4dc4bd63832c862d22d5a7c6d
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
-  GoogleMaps: 025272d5876d3b32604e5c080dc25eaf68764693
+  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMSessionFetcher: 681175626052e03fdde7952f7e9c7a9785719506
   image_downloader: 73e190d6c9f286f2649554051348d9cb319cd4b3

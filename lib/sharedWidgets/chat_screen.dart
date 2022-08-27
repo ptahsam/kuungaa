@@ -171,7 +171,16 @@ class _ChatScreenState extends State<ChatScreen> {
                           children: [
                             checkIsWhen(nextMessage.time_created!) != checkIsWhen(message.time_created!)?Container(
                               child: Center(
-                                child: Text(checkIsWhen(message.time_created!)),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100]!,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    checkIsWhen(message.time_created!),
+                                  ),
+                                ),
                               ),
                             ):SizedBox.shrink(),
                             MessageContainer(message: message, chat: widget.chat, isMe: isMe),
@@ -372,16 +381,39 @@ class _ChatScreenState extends State<ChatScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Text("Select", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200]!,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    size: 25.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20.0,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Container(
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey[200]!,
+                  color: Colors.purpleAccent,
                 ),
                 child: Center(
                   child: IconButton(
                     icon: const Icon(MdiIcons.camera),
-                    color: Palette.kuungaaDefault,
+                    color: Colors.white,
                     hoverColor: Colors.grey[100]!,
                     onPressed: (){
 
@@ -393,12 +425,29 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey[200]!,
+                  color: Colors.red,
+                ),
+                child: Center(
+                  child: IconButton(
+                    icon: const Icon(MdiIcons.music),
+                    color: Colors.white,
+                    hoverColor: Colors.grey[100]!,
+                    onPressed: (){
+
+                    },
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blueAccent,
                 ),
                 child: Center(
                   child: IconButton(
                     icon: const Icon(FontAwesomeIcons.photoVideo),
-                    color: Palette.kuungaaDefault,
+                    color: Colors.white,
                     hoverColor: Colors.grey[100]!,
                     onPressed: () async {
                       Navigator.of(context).pop();
@@ -417,15 +466,23 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey[200]!,
+                  color: Colors.amberAccent,
                 ),
                 child: Center(
                   child: IconButton(
                     icon: const Icon(MdiIcons.file),
-                    color: Palette.kuungaaDefault,
+                    color: Colors.white,
                     hoverColor: Colors.grey[100]!,
-                    onPressed: (){
-
+                    onPressed: () async {
+                      /*FilePickerResult? result = await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['txt', 'pdf', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'],
+                      );
+                      if(result != null){
+                        setState(() {
+                          userSelectedFileList = result.paths.map((path) => File(path!)).toList();
+                        });
+                      }*/
                     },
                   ),
                 ),
@@ -434,21 +491,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey[200]!,
+                  color: Colors.green,
                 ),
                 child: Center(
                   child: IconButton(
                     icon: const Icon(MdiIcons.mapMarker),
-                    color: Palette.kuungaaDefault,
+                    color: Colors.white,
                     hoverColor: Colors.grey[100]!,
                     onPressed: (){
-                      //getLocationMap();
+                      getLocationMap();
                     },
                   ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 10.0,),
         ],
       ),
     );
@@ -459,34 +517,35 @@ class _ChatScreenState extends State<ChatScreen> {
       final Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-      final Marker marker = Marker(
-          markerId: MarkerId('locate'),
-          zIndex: 1.0,
-          draggable: true,
-          position: LatLng(position.latitude, position.longitude));
+          var res = await Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ShareLocation(position: position,)));
       
-      showDialog(
+      /*showDialog(
           context: context,
           builder: (_) => AlertDialog(
             content: FittedBox(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height * 0.8,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                 ),
-                child: GoogleMap(
-                  mapType: MapType.hybrid,
-                  markers: Set.of([marker]),
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(position.latitude, position.longitude),
-                    zoom: 18.4746,
-                  ),
+                child: Column(
+                  children: [
+
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      markers: Set.of([marker]),
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(position.latitude, position.longitude),
+                        zoom: 18.4746,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           )
-      );
+      );*/
       
     }  catch (e) {
       print('Map Show Error: ${e.toString()}');
@@ -768,4 +827,138 @@ class _MessageContainerState extends State<MessageContainer> {
   }
 
 }
+
+class ShareLocation extends StatefulWidget {
+  final Position position;
+  const ShareLocation({
+    Key? key,
+    required this.position
+  }) : super(key: key);
+
+  @override
+  State<ShareLocation> createState() => _ShareLocationState();
+}
+
+class _ShareLocationState extends State<ShareLocation> {
+
+  Marker? marker;
+
+  bool isContainerVisible = false;
+  double containerHeight = 0.0;
+  double toolBarHeight = 0.0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    marker = Marker(
+    markerId: MarkerId('locate'),
+    zIndex: 1.0,
+    draggable: true,
+    position: LatLng(widget.position.latitude, widget.position.longitude));
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Palette.kuungaaDefault,
+            pinned: true,
+            leadingWidth: 30.0,
+            leading: InkWell(
+              onTap:()
+              {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+            title: Text("Share location", style: TextStyle(fontSize: 18.0, color: Colors.white)),
+            centerTitle: false,
+            actions: [
+              IconButton(
+                icon: isContainerVisible?Icon(Icons.close):Icon(Icons.search),
+                //iconSize: 36.0,
+                color: Colors.white,
+                onPressed: (){
+                  setState(() {
+                    if(isContainerVisible){
+                      toolBarHeight = 0.0;
+                      containerHeight = 0.0;
+                      isContainerVisible = false;
+                    }else{
+                      toolBarHeight = 150.0;
+                      containerHeight = 130.0;
+                      isContainerVisible = true;
+                    }
+                  });
+                },
+              ),
+            ],
+            bottom: AppBar(
+              backgroundColor: Palette.kuungaaDefault,
+              automaticallyImplyLeading: false,
+              title: Visibility(
+                visible: isContainerVisible,
+                child: Container(
+                  width: double.infinity,
+                  height: containerHeight,
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0)
+                        ),
+                        child: const Center(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search for places...',
+                              hintStyle: TextStyle(
+                                color: Palette.kuungaaDefault
+                              ),
+                              prefixIcon: Icon(Icons.location_pin, color: Palette.kuungaaDefault,),
+                              suffixIcon: Icon(Icons.keyboard_arrow_down_outlined, color: Palette.kuungaaDefault,),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              toolbarHeight: toolBarHeight,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: GoogleMap(
+                mapType: MapType.normal,
+                markers: Set.of([marker!]),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(widget.position.latitude, widget.position.longitude),
+                  zoom: 18.4746,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 

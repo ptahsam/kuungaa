@@ -38,6 +38,7 @@ class _FriendsPageState extends State<FriendsPage> {
               snap: true,
               elevation: 40.0,
               pinned: true,
+              //collapsedHeight: 60.0,
               title: Text(
                 "Friends",
                 style: TextStyle(
@@ -73,80 +74,60 @@ class _FriendsPageState extends State<FriendsPage> {
                 ),
                 tabs: [
                   Tab(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Provider.of<AppData>(context).darkTheme?Icon(
-                          FontAwesomeIcons.home,
-                          color: Colors.white,
-                          size: 18.0,
-                        ):ShaderMask(
-                            shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                            child: Icon(FontAwesomeIcons.home, color: HexColor("#2dce89"), size: 18.0,)),
-                        const SizedBox(height: 6.0,),
-                        Expanded(
-                          child: Provider.of<AppData>(context).darkTheme?Text(
-                            "Suggestions",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ):ShaderMask(
-                              shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                              child: Text("Suggestions", style: TextStyle(color: HexColor("#2dce89"),),)),
-                        ),
-                      ],
+                    icon: Provider.of<AppData>(context).darkTheme?Icon(
+                        FontAwesomeIcons.home,
+                        color: Colors.white,
+                        size: 18.0,
+                      ):ShaderMask(
+                          shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                          child: Icon(FontAwesomeIcons.home, color: HexColor("#2dce89"), size: 18.0,),
                     ),
+                    child: Provider.of<AppData>(context).darkTheme?Text(
+                      "Suggestions",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ):ShaderMask(
+                        shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                        child: Text("Suggestions", style: TextStyle(color: HexColor("#2dce89"),),)),
+                  ),
 
-                  ),
                   Tab(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Provider.of<AppData>(context).darkTheme?Icon(
-                          FontAwesomeIcons.userPlus,
-                          color: Colors.white,
-                          size: 18.0,
-                        ):ShaderMask(
-                            shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                            child: Icon(FontAwesomeIcons.userPlus, color: HexColor("#2dce89"), size: 18.0,)),
-                        const SizedBox(height: 6.0,),
-                        Expanded(
-                          child: Provider.of<AppData>(context).darkTheme?Text(
-                            "Requests",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ):ShaderMask(
-                              shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                              child: Text("Requests", style: TextStyle(color: HexColor("#2dce89"),),)),
-                        ),
-                      ],
+                    icon: Provider.of<AppData>(context).darkTheme?Icon(
+                      FontAwesomeIcons.userPlus,
+                      color: Colors.white,
+                      size: 18.0,
+                    ):ShaderMask(
+                      shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                      child: Icon(FontAwesomeIcons.userPlus, color: HexColor("#2dce89"), size: 18.0,),
                     ),
+                    child: Provider.of<AppData>(context).darkTheme?Text(
+                      "Requests",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ):ShaderMask(
+                        shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                        child: Text("Requests", style: TextStyle(color: HexColor("#2dce89"),),)),
                   ),
+
                   Tab(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Provider.of<AppData>(context).darkTheme?Icon(
-                          FontAwesomeIcons.userFriends,
-                          color: Colors.white,
-                          size: 18.0,
-                        ):ShaderMask(
-                            shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                            child: Icon(FontAwesomeIcons.userFriends, color: HexColor("#2dce89"), size: 18.0,)),
-                        const SizedBox(height: 6.0,),
-                        Expanded(
-                          child: Provider.of<AppData>(context).darkTheme?Text(
-                            "Friends",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ):ShaderMask(
-                              shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
-                              child: Text("Friends", style: TextStyle(color: HexColor("#2dce89"),),)),
-                        ),
-                      ],
+                    icon: Provider.of<AppData>(context).darkTheme?Icon(
+                      FontAwesomeIcons.userFriends,
+                      color: Colors.white,
+                      size: 18.0,
+                    ):ShaderMask(
+                      shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                      child: Icon(FontAwesomeIcons.userFriends, color: HexColor("#2dce89"), size: 18.0,),
                     ),
+                    child: Provider.of<AppData>(context).darkTheme?Text(
+                      "Friends",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ):ShaderMask(
+                        shaderCallback: (rect) => Palette.createIconGradient.createShader(rect),
+                        child: Text("Friends", style: TextStyle(color: HexColor("#2dce89"),),)),
                   ),
                 ],
               ), systemOverlayStyle: SystemUiOverlayStyle.dark,

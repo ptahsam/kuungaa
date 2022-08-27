@@ -917,16 +917,20 @@ class _PostMainContainerState extends State<PostMainContainer> {
             if(snapshot.hasData){
               Kpage page = snapshot.data!;
               //print("suggested page 2::" + page.page_name!.toString());
-              return SizedBox(
-                height: 400.0,
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.55,
                 width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(vertical: 15.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100]!,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                      child: Text("Page you might like", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      child: Text("Suggested Page", style: TextStyle(color: Palette.kuungaaDefault, fontSize: 18.0, fontWeight: FontWeight.w600),textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,),
                     ),
                     Expanded(
                       child: Container(
@@ -934,16 +938,14 @@ class _PostMainContainerState extends State<PostMainContainer> {
                         child: Stack(
                           children: [
                             ClipRRect(
-                              /*borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(5.0),
-                                topRight: Radius.circular(5.0),
-                              ),*/
                               borderRadius: BorderRadius.circular(5.0),
                               child: ExtendedImage.network(
                                 page.page_icon!,
                                 width: MediaQuery.of(context).size.width,
                                 height: double.infinity,
                                 fit: BoxFit.cover,
+                                cacheRawData: true,
+                                cache: true,
                               ),
                             ),
                             Container(
@@ -965,25 +967,10 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                 margin: const EdgeInsets.only(bottom: 1.0, right: 1.0, left: 1.0),
                                 padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0, top: 5.0),
                                 decoration: BoxDecoration(
-                                  /* border: Border(
-                                      left: BorderSide(
-                                        color: Colors.grey,
-                                        width: 0.7,
-                                      ),
-                                      right: BorderSide(
-                                        color: Colors.grey,
-                                        width: 0.7,
-                                      ),
-                                      bottom: BorderSide(
-                                        color: Colors.grey,
-                                        width: 0.7,
-                                      ),
-                                    ),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(5.0),
-                                    bottomRight: Radius.circular(5.0),
-                                  ),*/
-                                  //borderRadius: BorderRadius.circular(5.0),
+                                    bottomRight: Radius.circular(5.0)
+                                  ),
                                   color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
                                 ),
                                 child: Column(
@@ -1022,16 +1009,6 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                           icon: Icon(MdiIcons.thumbUpOutline, size: 18, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),
                                           label: Text("Like", style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),),
                                         ),
-                                        /*OutlinedButton.icon(
-                                          onPressed: () {
-                                            // Respond to button press
-                                          },
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: Palette.kuungaaDefault,
-                                          ),
-                                          icon: const Icon(MdiIcons.messageOutline, size: 18, color: Colors.white,),
-                                          label: const Text("Message", style: TextStyle(color: Colors.white,),),
-                                        ),*/
                                       ],
                                     ),
                                   ],

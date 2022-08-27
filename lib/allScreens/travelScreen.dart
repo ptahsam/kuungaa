@@ -182,6 +182,7 @@ class _TravelScreenMobileState extends State<_TravelScreenMobile> {
         headerSliverBuilder: (context, bool s) => [
           SliverAppBar(
             backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.white,
+            shadowColor: Colors.transparent,
             floating: true,
             leadingWidth: 0.0,
             snap: true,
@@ -468,7 +469,6 @@ class _TravelScreenMobileState extends State<_TravelScreenMobile> {
                   margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   height: 60.0,
                   width: 60.0,
-
                   child: Stack(
                     children: [
                       Center(
