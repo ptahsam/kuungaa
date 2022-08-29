@@ -664,9 +664,12 @@ class _PostMainContainerState extends State<PostMainContainer> {
         builder: (context, AsyncSnapshot<List> snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             if(snapshot.hasData){
-              return SizedBox(
+              return Container(
                 height: 350.0,
                 width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200]!,
+                ),
                 //color: Colors.grey[100]!,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -686,8 +689,9 @@ class _PostMainContainerState extends State<PostMainContainer> {
                           return Container(
                             width: 250.0,
                             height: double.infinity,
+                            margin: EdgeInsets.only(right: 8.0),
                             decoration: BoxDecoration(
-                              //borderRadius: BorderRadius.circular(5.0),
+                              borderRadius: BorderRadius.circular(5.0),
                               color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
                               border: Border.all(
                                 width: 0.5,
@@ -708,6 +712,10 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                       width: 250.0,
                                       height: double.infinity,
                                       fit: BoxFit.cover,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5.0),
+                                        topRight: Radius.circular(5.0),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -734,8 +742,8 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                         style: OutlinedButton.styleFrom(
                                           backgroundColor: Palette.kuungaaDefault,
                                         ),
-                                        icon: const Icon(MdiIcons.plus, size: 18, color: Colors.black,),
-                                        label: const Text("Add Friend", style: TextStyle(color: Colors.black,),),
+                                        icon: const Icon(MdiIcons.plus, size: 18, color: Colors.white,),
+                                        label: const Text("Add Friend", style: TextStyle(color: Colors.white,),),
                                       ),
                                     ],
                                   ),
