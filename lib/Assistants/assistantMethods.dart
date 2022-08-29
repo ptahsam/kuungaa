@@ -102,8 +102,7 @@ class AssistantMethods
         con.onDisconnect().remove();
         con.set(true);
 
-        var resp = await getCurrentTime();
-        var time = resp.toInt();
+        var time = DateTime.now().microsecondsSinceEpoch;
         Map lastOnlineMap = {
           "last_seen" : time
         };
@@ -162,7 +161,7 @@ class AssistantMethods
       }else{
         await dbRef.child("lastOnline").onValue.forEach((snap) {
           if(snap.snapshot.exists){
-            isOnline = "last seen " + convertToHour24(snap.snapshot.value["last_seen"]);
+            isOnline = "Last seen on " + convertToLastSeen(snap.snapshot.value["last_seen"]);
             Provider.of<AppData>(context, listen: false).updateUserOnlineStatus(isOnline);
           }
         });
@@ -364,18 +363,34 @@ class AssistantMethods
                       }
                       chat.message!.messageMedia = listMedia.toSet().toList();
                     }
+
+                    FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").
+                    child(chatEvent.snapshot.value["chat_id"]).child("messages").child(event.snapshot.value["message_id"])
+                    .onChildChanged.forEach((changed) {
+                      if(changed.snapshot.value == "1"){
+                        /*var old = userChatList.singleWhere((entry) {
+                          return entry.message!.message_id == event.snapshot.value["message_id"];
+                        });*/
+
+                        if(event.snapshot.value["sender_id"] == userCurrentInfo!.user_id!) {
+                          chat.message!.message_status = "1";
+                        }else {
+                          if (chat.chatCount != null && chat.chatCount != 0) {
+                            chat.chatCount = chat.chatCount! - 1;
+                          }
+                        }
+                        //print("message status :: " + old.message!.message!);
+
+                        //userChatList[userChatList.indexOf(old)] = chat;
+                        Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                      }
+                    });
                   }
-                  chatQuery.orderByKey().limitToLast(1).onChildChanged.forEach((changed) {
-                    if(changed.snapshot.exists){
-                      Message message = Message.fromSnapshot(changed.snapshot);
-                      chat.message = message;
-                    }
-                  });
 
                   chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(memberEvent.snapshot.value["member_id"]);
                   chat.chatCount = await AssistantMethods.getChatCount(chatEvent.snapshot.value["chat_id"]);
                   userChatList.add(chat);
-                  Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.reversed.toSet().toList());
+                  Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
                 });
               }
             });

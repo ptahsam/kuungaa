@@ -1072,9 +1072,19 @@ class _UserProfileState extends State<UserProfile> {
             width: MediaQuery.of(context).size.width,
             child: ListTile(
               onTap: (){
-                FirebaseAuth.instance.signOut();
-                Navigator.pushNamedAndRemoveUntil(context, LoginPage.idScreen, (route) => false);
-                displayToastMessage("Logging you out....please wait.", context);
+                DatabaseReference lastOnlineRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(FirebaseAuth.instance.currentUser!.uid).child("lastOnline");
+                var time = DateTime.now().microsecondsSinceEpoch;
+                Map lastOnlineMap = {
+                  "last_seen" : time
+                };
+
+                lastOnlineRef.set(lastOnlineMap).then((value){
+                  Navigator.pop(context);
+                  FirebaseAuth.instance.signOut();
+
+                  Navigator.pushNamedAndRemoveUntil(context, LoginPage.idScreen, (route) => false);
+                  displayToastMessage("Logging you out....please wait.", context);
+                });
               },
               //tileColor: Colors.grey[300]!,
               leading: Container(
@@ -1216,10 +1226,19 @@ class _UserProfileState extends State<UserProfile> {
           ),
           InkWell(
             onTap: () async {
-              Navigator.pop(context);
-              FirebaseAuth.instance.signOut();
-              Navigator.pushNamedAndRemoveUntil(context, LoginPage.idScreen, (route) => false);
-              displayToastMessage("Logging you out....please wait.", context);
+              DatabaseReference lastOnlineRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(FirebaseAuth.instance.currentUser!.uid).child("lastOnline");
+              var time = DateTime.now().microsecondsSinceEpoch;
+              Map lastOnlineMap = {
+                "last_seen" : time
+              };
+
+              lastOnlineRef.set(lastOnlineMap).then((value){
+                Navigator.pop(context);
+                FirebaseAuth.instance.signOut();
+
+                Navigator.pushNamedAndRemoveUntil(context, LoginPage.idScreen, (route) => false);
+                displayToastMessage("Logging you out....please wait.", context);
+              });
             },
             child: Row(
               children: [

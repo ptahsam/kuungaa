@@ -66,6 +66,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
         AssistantMethods.getUserNotification(context);
         AssistantMethods.updateUserNotification(context);
         AssistantMethods.getUserChats(context);
+        AssistantMethods.userOnline();
       });
     //logo = Image.asset(AppImages.logo);
     //getCurrentUserInfo();

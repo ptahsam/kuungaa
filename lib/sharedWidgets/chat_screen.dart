@@ -15,6 +15,7 @@ import 'package:kuungaa/Models/chat.dart';
 import 'package:kuungaa/Models/message.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:page_transition/page_transition.dart';
@@ -94,12 +95,30 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     )
 
-                    :Provider.of<AppData>(context).userOnlineStatus != null ? Text(
+                    :Provider.of<AppData>(context).userOnlineStatus != null ?
+                    Provider.of<AppData>(context).userOnlineStatus == "online"?Text(
                       Provider.of<AppData>(context).userOnlineStatus!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w100,
                         fontSize: 11.0,
+                      ),
+                    ):Container(
+                      height: 20,
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: Marquee(
+                        text: Provider.of<AppData>(context).userOnlineStatus!,
+                        style: TextStyle(fontSize: 11.0, color: Colors.white, fontWeight: FontWeight.w100,),
+                        scrollAxis: Axis.horizontal,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        blankSpace: 20.0,
+                        velocity: 100.0,
+                        pauseAfterRound: Duration(seconds: 1),
+                        startPadding: 10.0,
+                        accelerationDuration: Duration(seconds: 1),
+                        accelerationCurve: Curves.linear,
+                        decelerationDuration: Duration(milliseconds: 500),
+                        decelerationCurve: Curves.easeOut,
                       ),
                     ) : const Text(""),
                   ],

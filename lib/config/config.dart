@@ -479,6 +479,29 @@ String convertToFullDate(int timestamp){
 
 }
 
+String convertToLastSeen(int timestamp){
+  var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var m = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var y = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var cy = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cd = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cm = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  if(y == cy){
+    if(cm == m){
+      if(cd == d){
+        return "Today at " + convertToPMAM(timestamp);
+      }
+      if((int.parse(cd) - int.parse(d)) == 1){
+        return "Yesterday at " + convertToPMAM(timestamp);
+      }
+      return convertToFullDate(timestamp) + " at " + convertToPMAM(timestamp);
+    }
+    return convertToFullDate(timestamp)  + " at " + convertToPMAM(timestamp);
+  }
+  return convertToFullDate(timestamp)  + " at " + convertToPMAM(timestamp);
+}
+
 String convertToChattime(int timestamp){
   var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
   var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
