@@ -237,6 +237,18 @@ class AssistantMethods
           message.messageMedia = listMedia.toSet().toList();
           message.group_date = convertToChattime(message.time_created!);
         }
+
+        FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").
+        child(chatid).child("messages").child(event.snapshot.value["message_id"])
+            .onChildChanged.forEach((changed) {
+          if(changed.snapshot.value == "1"){
+            if(event.snapshot.value["sender_id"] == userCurrentInfo!.user_id!) {
+              message.message_status = "1";
+            }
+            Provider.of<AppData>(context, listen: false).updateChatMessages(chatMessage.reversed.toList());
+          }
+        });
+
         chatMessage.add(message);
         Provider.of<AppData>(context, listen: false).updateChatMessages(chatMessage.reversed.toList());
       }

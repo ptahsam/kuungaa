@@ -41,6 +41,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   TextEditingController messageTextEditingController = TextEditingController();
 
+  Chat currentChat = Chat();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -49,6 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
     AssistantMethods.updateOnlineStatus(context, widget.chat.chat_opponentid!);
     AssistantMethods.userIsTyping(context, widget.chat.chat_id!, widget.chat.chat_opponentid!);
     updateChatMessages(widget.chat.chat_id);
+    currentChat = widget.chat;
+    currentChat.chatIsOpen = true;
+    Provider.of<AppData>(context, listen: false).updateCurrentChat(currentChat);
   }
 
   @override

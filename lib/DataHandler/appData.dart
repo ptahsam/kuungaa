@@ -12,6 +12,8 @@ class AppData extends ChangeNotifier
 {
   DarkThemePreference darkThemePreference = DarkThemePreference();
 
+  Chat? currentChat;
+
   bool _darkTheme = false;
 
   bool isGettingHomeFeed = false;
@@ -49,6 +51,11 @@ class AppData extends ChangeNotifier
   set darkTheme(bool value) {
     _darkTheme = value;
     darkThemePreference.setDarkTheme(value);
+    notifyListeners();
+  }
+
+  void updateCurrentChat(Chat cChat) {
+    currentChat = cChat;
     notifyListeners();
   }
 
