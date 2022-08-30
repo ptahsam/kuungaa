@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +23,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
+import 'package:styled_text/styled_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets.dart';
 class ChatScreen extends StatefulWidget {
@@ -678,14 +681,26 @@ class _MessageContainerState extends State<MessageContainer> {
                     child: MessageMedia(messageMedia: widget.message.messageMedia!,),
                   ):const SizedBox.shrink(),
                   const SizedBox(height: 3.0,),
-                  Text(
+                  Linkify(
+                    onOpen: (link) async {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        throw 'Could not launch $link';
+                      }
+                    },
+                    text: widget.message.message!,
+                    style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
+                    linkStyle: TextStyle(color: Colors.blue)
+                  ),
+                  /*Text(
                     widget.message.message!,
                     style: TextStyle(
                       color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
                       fontSize: 15.0,
                       fontWeight: FontWeight.w100,
                     ),
-                  ),
+                  ),*/
                   SizedBox(height: 10.0,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -739,14 +754,26 @@ class _MessageContainerState extends State<MessageContainer> {
                   child: MessageMedia(messageMedia: widget.message.messageMedia!,),
                 ):const SizedBox.shrink(),
                 const SizedBox(height: 3.0,),
-                Text(
+                Linkify(
+                  onOpen: (link) async {
+                    if (await canLaunch(link.url)) {
+                      await launch(link.url);
+                    } else {
+                      throw 'Could not launch $link';
+                    }
+                  },
+                  text: widget.message.message!,
+                  style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
+                  linkStyle: TextStyle(color: Colors.blue),
+                ),
+                /*Text(
                   widget.message.message!,
                   style: TextStyle(
                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
                     fontSize: 15.0,
                     fontWeight: FontWeight.w100,
                   ),
-                ),
+                ),*/
                 SizedBox(height: 10.0,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

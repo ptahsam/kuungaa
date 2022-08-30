@@ -668,7 +668,7 @@ class _PostMainContainerState extends State<PostMainContainer> {
                 height: 350.0,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Colors.grey[200]!,
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[200]!,
                 ),
                 //color: Colors.grey[100]!,
                 child: Column(
@@ -707,14 +707,16 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                     onTap: (){
                                       Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: user.user_id!,)));
                                     },
-                                    child: ExtendedImage.network(
-                                      user.user_profileimage!,
-                                      width: 250.0,
-                                      height: double.infinity,
-                                      fit: BoxFit.cover,
+                                    child: ClipRRect(
                                       borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(5.0),
                                         topRight: Radius.circular(5.0),
+                                      ),
+                                      child: ExtendedImage.network(
+                                        user.user_profileimage!,
+                                        width: 250.0,
+                                        height: double.infinity,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -800,10 +802,12 @@ class _PostMainContainerState extends State<PostMainContainer> {
           if(snapshot.connectionState == ConnectionState.done){
             if(snapshot.hasData){
               if(snapshot.data!.isNotEmpty){
-                return SizedBox(
+                return Container(
                   height: 350.0,
                   width: MediaQuery.of(context).size.width,
-                  //color: Colors.grey[100]!,
+                  decoration: BoxDecoration(
+                    color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[200]!,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -822,8 +826,9 @@ class _PostMainContainerState extends State<PostMainContainer> {
                             return Container(
                               width: 250.0,
                               height: double.infinity,
+                              margin: EdgeInsets.only(right: 8.0,),
                               decoration: BoxDecoration(
-                                //borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(5.0),
                                 color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
                                 border: Border.all(
                                   width: 0.5,
@@ -839,11 +844,17 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                       onTap: () {
                                         Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: SingleGroup(group: group,)));
                                       },
-                                      child: ExtendedImage.network(
-                                        group.group_icon!,
-                                        width: 250.0,
-                                        height: double.infinity,
-                                        fit: BoxFit.cover,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5.0),
+                                          topRight: Radius.circular(5.0),
+                                        ),
+                                        child: ExtendedImage.network(
+                                          group.group_icon!,
+                                          width: 250.0,
+                                          height: double.infinity,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -930,7 +941,7 @@ class _PostMainContainerState extends State<PostMainContainer> {
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(vertical: 15.0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100]!,
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[200]!,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -90,6 +90,9 @@ dependencies:
   loading_animation_widget: ^1.2.0+2
   readmore: ^2.1.0
   marquee: ^2.2.3
+  styled_text: ^5.1.0
+  flutter_linkify: ^5.0.2
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   flutter_test:

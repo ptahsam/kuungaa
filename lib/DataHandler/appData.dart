@@ -14,7 +14,7 @@ class AppData extends ChangeNotifier
 
   Chat? currentChat;
 
-  bool _darkTheme = false;
+  bool _darkTheme = true;
 
   bool isGettingHomeFeed = false;
 

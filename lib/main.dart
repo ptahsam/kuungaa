@@ -17,6 +17,7 @@ import 'package:kuungaa/allScreens/nav_screen.dart';
 import 'package:kuungaa/allScreens/registrationScreen.dart';
 import 'package:kuungaa/allScreens/travelScreen.dart';
 import 'package:kuungaa/allScreens/videosScreen.dart';
+import 'package:kuungaa/config/SharedPreferences.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/config/themedata.dart';
@@ -164,6 +165,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
+    DarkThemePreference darkThemePreference = DarkThemePreference();
+    darkThemePreference.setDarkTheme(true);
     getCurrentAppTheme();
     //var initializationSettingsAndroid = new AndroidInitializationSettings('ic_launcher');
     var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');

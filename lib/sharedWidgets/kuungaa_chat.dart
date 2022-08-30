@@ -21,6 +21,9 @@ class KuungaaChat extends StatefulWidget {
 }
 
 class _KuungaaChatState extends State<KuungaaChat> {
+
+  final intInStr = RegExp(r'\d+');
+
   @override
   void initState() {
     // TODO: implement initState
@@ -171,6 +174,12 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
                                       String message = chat.message!.message!;
+                                      if(intInStr.allMatches(message).map((m) => m.group(0)) != "" || intInStr.allMatches(message).map((m) => m.group(0)) != null){
+                                        String num = intInStr.allMatches(message).map((m) => m.group(0)).toString();
+                                        String fNum = num.replaceAll("(", "");
+                                               fNum = num.replaceAll(")", "");
+                                        print("number string found :: " + fNum);
+                                      }
                                       return InkWell(
                                         onTap: (){
                                           Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ChatScreen(chat: chat,)));
