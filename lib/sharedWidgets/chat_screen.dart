@@ -23,7 +23,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
-import 'package:styled_text/styled_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets.dart';
@@ -70,7 +69,6 @@ class _ChatScreenState extends State<ChatScreen> {
           onTap: (){
             Navigator.pop(context);
             Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: widget.chat.chat_opponentid!,)));
-
           },
           child: Row(
             children: [
@@ -580,7 +578,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void updateChatMessages(String? chat_id) async{
+  void updateChatMessages(String? chat_id) async {
     Query query = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chat_id!).child("messages");
     await query.orderByChild("message_status").equalTo("0").once().then((DataSnapshot snapshot){
       if(snapshot.exists){
@@ -683,8 +681,8 @@ class _MessageContainerState extends State<MessageContainer> {
                   const SizedBox(height: 3.0,),
                   Linkify(
                     onOpen: (link) async {
-                      if (await canLaunch(link.url)) {
-                        await launch(link.url);
+                      if (await canLaunchUrl(Uri.parse(link.url))) {
+                        await launchUrl(Uri.parse(link.url));
                       } else {
                         throw 'Could not launch $link';
                       }

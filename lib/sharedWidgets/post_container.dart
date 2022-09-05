@@ -826,7 +826,7 @@ class _PostMainContainerState extends State<PostMainContainer> {
                             return Container(
                               width: 250.0,
                               height: double.infinity,
-                              margin: EdgeInsets.only(right: 8.0,),
+                              margin: const EdgeInsets.only(right: 8.0,),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
                                 color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
@@ -939,7 +939,7 @@ class _PostMainContainerState extends State<PostMainContainer> {
               return Container(
                 height: MediaQuery.of(context).size.height * 0.55,
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(vertical: 15.0),
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
                 decoration: BoxDecoration(
                   color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.grey[200]!,
                 ),

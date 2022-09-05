@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     if (_timerLink != null) {
       _timerLink!.cancel();
     }
@@ -164,19 +164,39 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     DarkThemePreference darkThemePreference = DarkThemePreference();
     darkThemePreference.setDarkTheme(true);
     getCurrentAppTheme();
     //var initializationSettingsAndroid = new AndroidInitializationSettings('ic_launcher');
     var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');
-    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid);
+    var initialzationSettingsIos = const IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid, iOS: initialzationSettingsIos);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+      AppleNotification? apple = message.notification?.apple;
       if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                color: HexColor("#2dce89"),
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: "@drawable/ic_stat_notif",
+              ),
+            )
+        );
+      }
+
+      if (notification != null && apple != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,

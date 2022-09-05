@@ -906,19 +906,17 @@ class _UserProfileState extends State<UserProfile> {
                               ButtonBar(
                                 alignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  FlatButton(
-                                    textColor: Palette.kuungaaDefault,
+                                  TextButton(
                                     onPressed: () {
                                       Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserExploration(user: user,)));
                                     },
-                                    child: const Text('Start now'),
+                                    child: Text('Start now'),
                                   ),
-                                  FlatButton(
-                                    textColor: Palette.kuungaaDefault,
+                                  TextButton(
                                     onPressed: () {
                                       Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserExploration(user: user,)));
                                     },
-                                    child: const Text('View map'),
+                                    child: Text('View map'),
                                   ),
                                 ],
                               ),

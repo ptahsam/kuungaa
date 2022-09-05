@@ -23,7 +23,7 @@ class Styles {
 
       focusColor: isDarkTheme ? Color(0xff0B2512) : Color(0xffA8DAB5),
       disabledColor: Colors.grey,
-      textSelectionColor: isDarkTheme ? Colors.white : Color(0xff505050),
+      //textSelectionTheme: isDarkTheme ? Colors.white : Color(0xff505050),
       cardColor: isDarkTheme ? Color(0xFF151515) : Colors.white,
       canvasColor: isDarkTheme ? Color(0xff505050) : Colors.grey[50],
       brightness: isDarkTheme ? Brightness.dark : Brightness.light,

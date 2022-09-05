@@ -66,18 +66,28 @@ class PostStatsState extends State<PostStats> {
             children: [
               UserReactionContainer(post: widget.post!,),
               SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-              FlatButton.icon(
-                 onPressed: (){
-                   Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: PostComments(postid: widget.post!.post_id!, posterid: widget.post!.poster_id!,)));
-                   //toggleCommentHeight();
-                 },
-                 icon: Icon(
-                   MdiIcons.commentOutline,
-                   color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                 ),
-                 label: const Text('Comment', style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400),),
-               ),
-
+              TextButton(
+                onPressed: (){
+                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: PostComments(postid: widget.post!.post_id!, posterid: widget.post!.poster_id!,)));
+                  //toggleCommentHeight();
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      MdiIcons.commentOutline,
+                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                    ),
+                    SizedBox(width: 4.0,),
+                    Text(
+                      'Comment',
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -583,7 +583,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AutomaticKeepAlive
                       children: [
 
                         _currentPage > 0
-                            ?FlatButton(
+                            ?TextButton(
                           onPressed: () {
                             _pageController.previousPage(
                               duration: const Duration(milliseconds: 500),
@@ -612,7 +612,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AutomaticKeepAlive
                         ): const SizedBox.shrink(),
 
                         _currentPage != _numPages - 1
-                            ?FlatButton(
+                            ?TextButton(
                           onPressed: () {
                             if(_currentPage == 0){
                               if(validateAndSaveForm1()){

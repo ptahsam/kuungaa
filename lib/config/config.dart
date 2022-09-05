@@ -255,7 +255,6 @@ addFriend(String friendid, BuildContext context, Function stateSetter) async {
       });
     }
   });
-
 }
 
 acceptFriend(String friendid, BuildContext context, Function stateSetter) async {

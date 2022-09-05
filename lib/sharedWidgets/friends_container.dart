@@ -55,11 +55,11 @@ class _FriendsContainerState extends State<FriendsContainer> {
 
       if(userid != FirebaseAuth.instance.currentUser!.uid){
 
-        Query checkFriendDbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(userCurrentInfo!.user_id!).child(userid).orderByKey();
+        Query checkFriendDbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Friends").child(FirebaseAuth.instance.currentUser!.uid).child(userid).orderByKey();
         await checkFriendDbRef.once().then((DataSnapshot snapshot) async {
           if(!snapshot.exists){
 
-            Query checkHiddenFriendRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden").child(userCurrentInfo!.user_id!).child(userid).orderByKey();
+            Query checkHiddenFriendRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden").child(FirebaseAuth.instance.currentUser!.uid).child(userid).orderByKey();
             await checkHiddenFriendRef.once().then((DataSnapshot snap) async {
               if(!snap.exists){
 
