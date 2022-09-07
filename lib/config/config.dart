@@ -478,6 +478,11 @@ String convertToFullDate(int timestamp){
 
 }
 
+String convertToFullMonth(int timestamp){
+  return DateFormat.yMMMMd().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+
+}
+
 String convertToLastSeen(int timestamp){
   var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
   var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
@@ -522,6 +527,30 @@ String convertToChattime(int timestamp){
     return convertToFullDate(timestamp);
   }
   return convertToFullDate(timestamp);
+}
+
+String convertToWhen(int timestamp) {
+  var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var e = DateFormat.E().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var m = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var y = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var cy = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cd = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cm = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  if(y == cy){
+    if(cm == m){
+      if(cd == d){
+        return "Today";
+      }
+      if((int.parse(cd) - int.parse(d)) == 1){
+        return "Yesterday";
+      }
+      return e + " " + d;
+    }
+    return convertToFullMonth(timestamp);
+  }
+  return convertToFullMonth(timestamp);
 }
 
 String checkIsWhen(int timestamp) {

@@ -199,11 +199,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[100]!,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    checkIsWhen(message.time_created!),
+                                    convertToWhen(message.time_created!),
                                   ),
                                 ),
                               ),
