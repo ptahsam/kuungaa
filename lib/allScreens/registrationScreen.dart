@@ -762,7 +762,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AutomaticKeepAlive
     })).user;
 
 
-    int currenttime = await getCurrentTime();
+    var currenttime = DateTime.now().millisecondsSinceEpoch;;
 
     Map userDataMap = {
       "user_id" : user!.uid,

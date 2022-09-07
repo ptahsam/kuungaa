@@ -1327,7 +1327,7 @@ class _StoryScreenState extends State<StoryScreen>
         DatabaseReference commentRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Stories').child(story.story_poster!).child(story.story_id!).child("Comments").push();
         String refKey = commentRef.key;
 
-        int commenttime = await getCurrentTime();
+        var commenttime = DateTime.now().millisecondsSinceEpoch;;
 
           Map commentDataMap = {
             "comment_id" : refKey,

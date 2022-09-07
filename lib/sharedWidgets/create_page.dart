@@ -348,7 +348,7 @@ class _CreatePageState extends State<CreatePage> {
 
       String imageUrl = await(await uploadTask).ref.getDownloadURL();
 
-        int pagetime = await getCurrentTime();
+        int pagetime = DateTime.now().millisecondsSinceEpoch;;
 
         Map pageDataMap = {
           "page_name": pageNameTextEditingController.text,

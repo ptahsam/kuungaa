@@ -81,8 +81,9 @@ class PostStatsState extends State<PostStats> {
                     Text(
                       'Comment',
                       style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w400,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                       ),
                     ),
                   ],

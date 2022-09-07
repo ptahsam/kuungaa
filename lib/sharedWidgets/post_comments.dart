@@ -36,6 +36,7 @@ class _PostCommentsState extends State<PostComments> {
   String tagid = "";
   bool isContainerVisible = false;
   bool isBoxVisible = false;
+  bool commentsExists = false;
   Users? selectedUser, replyUser;
   String commentType = "main-comment";
   String replycommentid = "";
@@ -52,6 +53,18 @@ class _PostCommentsState extends State<PostComments> {
     itemRefComment!.onChildAdded.listen(_onEntryAddedComment);
     itemRefComment!.onChildChanged.listen(_onEntryChangedComment);
     itemRefComment!.onChildRemoved.listen(_onEntryRemovedComment);
+    database.reference().child('KUUNGAA').child("Posts").child(widget.postid).child("comments").once()
+        .then(_onComments);
+  }
+
+  _onComments(DataSnapshot snapshot){
+    if(snapshot.exists){
+      if(snapshot.value != "" || snapshot.value != null){
+        setState(() {
+          commentsExists = true;
+        });
+      }
+    }
   }
 
   _onEntryAddedComment(Event event) async {
@@ -105,14 +118,18 @@ class _PostCommentsState extends State<PostComments> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:HexColor("#e9ecef"),
+      appBar: AppBar(
+        title: Text("Comments"),
+        centerTitle: false,
+      ),
       body: Stack(
         children: [
-          listComments.isNotEmpty?
-          Container(
+          commentsExists?
+          listComments.isNotEmpty?Container(
             color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0, bottom: 90.0),
-            child: listComments.length > 0?FirebaseAnimatedList(
+            child: FirebaseAnimatedList(
               query: itemRefComment!,
               itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
                 Comments comment = listComments[index];
@@ -238,34 +255,38 @@ class _PostCommentsState extends State<PostComments> {
                   ),
                 );
               }
-            ):Align(
-              alignment: Alignment.center,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.13,
-                width: MediaQuery.of(context).size.width * 0.65,
-                decoration: BoxDecoration(
-                  color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[100]!,
-                  borderRadius: BorderRadius.circular(10.0),
+            ),
+          ):Align(
+            alignment: Alignment.center,
+            child: Center(
+                child: LoadingAnimationWidget.flickr(
+                    leftDotColor: Palette.kuungaaDefault,
+                    rightDotColor: Colors.black,
+                    size: 40
                 ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        MdiIcons.comment,
-                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                      ),
-                      SizedBox(height: 6.0,),
-                      Text("No comments", textAlign: TextAlign.center,),
-                    ],
-                  ),
-                ),
-              ),
             ),
           ): Align(
             alignment: Alignment.center,
-            child: Center(
-              child: CircularProgressIndicator(),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.13,
+              width: MediaQuery.of(context).size.width * 0.65,
+              decoration: BoxDecoration(
+                color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[100]!,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      MdiIcons.comment,
+                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                    ),
+                    SizedBox(height: 6.0,),
+                    Text("No comments", textAlign: TextAlign.center,),
+                  ],
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -597,7 +618,7 @@ class _PostCommentsState extends State<PostComments> {
             .push();
         String refKey = commentRef.key;
 
-        var commenttime = await getCurrentTime();
+        var commenttime = DateTime.now().millisecondsSinceEpoch;;
 
         if (selectedUser != null) {
           tagid = selectedUser!.user_id!;
@@ -633,7 +654,7 @@ class _PostCommentsState extends State<PostComments> {
 
         String refKey = commentRef.key;
 
-        var commenttime = await getCurrentTime();
+        var commenttime = DateTime.now().millisecondsSinceEpoch;;
 
         if (selectedUser != null) {
           tagid = selectedUser!.user_id!;

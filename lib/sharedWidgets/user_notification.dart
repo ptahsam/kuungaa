@@ -93,7 +93,7 @@ class _UserNotificationState extends State<UserNotification> {
                                 ),
                                 child: Row(
                                   children: [
-                                    ProfileAvatar(imageUrl: notif.userCreator!.user_profileimage!,),
+                                    ProfileAvatar(imageUrl: notif.userCreator!.user_profileimage!, radius: 35.0,),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                       child: Column(
@@ -118,7 +118,7 @@ class _UserNotificationState extends State<UserNotification> {
                                                 color: notif.notification_status == ""? Colors.white : Colors.grey[200]!
                                             ),
                                             child: Text(
-                                              convertToDate(notif.notification_time!),
+                                              convertToWhen(notif.notification_time!),
                                               style: TextStyle(),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,

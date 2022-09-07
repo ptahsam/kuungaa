@@ -297,7 +297,7 @@ declineFriend(String friendid, BuildContext context, Function stateSetter) async
 
 saveGeneralNotification(String notifMessage, String notifRecip, String notifType, String actionid) async {
 
-  int curTime = await getCurrentTime();
+  var curTime = DateTime.now().millisecondsSinceEpoch;
   DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Notifications").push();
   String notifKey = dbRef.key;
   String notificationstatus = "";
@@ -376,17 +376,6 @@ getFieldValue(String postid, String field) {
 
 getPageFieldValue(String postid, String field) {
   return AssistantMethods.getFieldname("Pages", postid, field);
-}
-
-Future<int> getCurrentTime() async {
-  /*int currentTime = 0;
-  var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
-  await offsetRef.once().then((event){
-    int offset = event.value;
-    currentTime = ((DateTime.now().millisecondsSinceEpoch) + offset);
-  });*/
-  int currentTime = DateTime.now().microsecondsSinceEpoch;
-  return currentTime;
 }
 
 Future<String> getGroupUserPostData(String uid, String field) async {
@@ -630,7 +619,7 @@ startMessegeUser(BuildContext context, String uid){
     if(snapshot.exists){
       selectChat(context, commonid);
     }else{
-      int chattime = await getCurrentTime();
+      var chattime = DateTime.now().millisecondsSinceEpoch;;
       Map membersMap = {};
 
       membersMap[userCurrentInfo!.user_id!] = {
@@ -653,7 +642,7 @@ startMessegeUser(BuildContext context, String uid){
         DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(commonid).child("messages").push();
 
         String msgkey = msgRef.key;
-        int time = await getCurrentTime();
+        var time = DateTime.now().millisecondsSinceEpoch;
         String status = "0";
 
         Map msgMap = {

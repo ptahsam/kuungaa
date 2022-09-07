@@ -9,6 +9,7 @@ import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
@@ -32,6 +33,7 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
   List<Posts> listPosts = [];
   Query? itemRefPosts;
   bool _anchorToBottom = false;
+  bool groupHasPosts = false;
 
   @override
   void initState() {
@@ -42,6 +44,21 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
         .orderByChild('post_id').equalTo(widget.groupid);
     itemRefPosts!.onChildAdded.listen(_onEntryAddedPosts);
     itemRefPosts!.onChildRemoved.listen(_onEntryRemovedPosts);
+    itemRefPosts!.once().then(_onPosts);
+  }
+
+  _onPosts(DataSnapshot snapshot){
+    if(snapshot.exists){
+      if(snapshot.value != "" || snapshot.value != null){
+        setState(() {
+          groupHasPosts = true;
+        });
+      }
+    }else{
+      setState(() {
+        groupHasPosts = false;
+      });
+    }
   }
 
   _onEntryAddedPosts(Event event) async {
@@ -105,7 +122,7 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return groupHasPosts?Container(
       padding: const EdgeInsets.only(top: 5.0),
       child: listPosts.isNotEmpty?FirebaseAnimatedList(
           physics: const NeverScrollableScrollPhysics(),
@@ -334,6 +351,32 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
             }
           }
       ),*/
+    ):Container(
+      padding: EdgeInsets.only(top: 20.0),
+      child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.13,
+          width: MediaQuery.of(context).size.width * 0.65,
+          decoration: BoxDecoration(
+            color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[100]!,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  MdiIcons.newspaper,
+                  color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                ),
+                SizedBox(height: 6.0,),
+                Text("No posts in this group", textAlign: TextAlign.center,),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
