@@ -9,6 +9,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_editor/image_editor.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -260,26 +261,41 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.only(right: 5.0),
                           child: Stack(
                             children: [
-                              SizedBox(
-                                height: attachmentHeight - 10,
-                                width: attachmentHeight - 10,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  child: Image.file(file, fit: BoxFit.cover,),
+                              InkWell(
+                                onTap: () async {
+                                  var res = await Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTopPop, child: ImageViewEditor(imgFile: file,), childCurrent: this.widget));
+                                },
+                                child: SizedBox(
+                                  height: attachmentHeight - 10,
+                                  width: attachmentHeight - 10,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    child: Image.file(file, fit: BoxFit.cover,),
+                                  ),
                                 ),
                               ),
                               isAttatchmentDefault?Positioned(
                                 top: 10.0,
                                 right: 10.0,
-                                child: Container(
-                                  padding: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
+                                child: InkWell(
+                                  onTap: (){
+                                    setState(() {
+                                      bool exists = userSelectedFileList!.any((File oldfile) => oldfile.path == file.path);
+                                      if(exists){
+                                        userSelectedFileList!.removeWhere((File oldfile) => oldfile.path== file.path);
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(6.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ):SizedBox.shrink(),
@@ -1055,5 +1071,47 @@ class _ShareLocationState extends State<ShareLocation> {
     );
   }
 }
+
+class ImageViewEditor extends StatefulWidget {
+  final File imgFile;
+  const ImageViewEditor({
+    Key? key,
+    required this.imgFile
+  }) : super(key: key);
+
+  @override
+  State<ImageViewEditor> createState() => _ImageViewEditorState();
+}
+
+class _ImageViewEditorState extends State<ImageViewEditor> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.close,
+          ),
+        ),
+        title: Text("Edit Image"),
+        centerTitle: false,
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Align(
+          alignment: Alignment.center,
+          child: Center(
+            child: Image.file(widget.imgFile),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 
