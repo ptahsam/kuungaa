@@ -45,6 +45,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Chat currentChat = Chat();
 
+  double attachmentHeight = 100.0;
+  bool isAttatchmentDefault = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -220,8 +223,32 @@ class _ChatScreenState extends State<ChatScreen> {
               color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
               child: Column(
                 children: [
+                  userSelectedFileList!.isNotEmpty ? InkWell(
+                    onTap: (){
+                      setState(() {
+                        if(isAttatchmentDefault){
+                          attachmentHeight = 100;
+                          isAttatchmentDefault = false;
+                        }else{
+                          attachmentHeight = 200;
+                          isAttatchmentDefault = true;
+                        }
+                      });
+                    },
+                    child: Container(
+                      child: Center(
+                        child: isAttatchmentDefault?Icon(
+                          Icons.keyboard_arrow_down_outlined,
+                          size: 22,
+                        ):Icon(
+                          Icons.keyboard_arrow_up_outlined,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ):SizedBox.shrink(),
                   userSelectedFileList!.isNotEmpty ? Container(
-                    height: 100.0,
+                    height: attachmentHeight,
                     color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200]!,
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
@@ -231,13 +258,32 @@ class _ChatScreenState extends State<ChatScreen> {
                         File file = userSelectedFileList![index];
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0),
-                          child: SizedBox(
-                            height: 90.0,
-                            width: 90.0,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Image.file(file, fit: BoxFit.cover,),
-                            ),
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: attachmentHeight - 10,
+                                width: attachmentHeight - 10,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  child: Image.file(file, fit: BoxFit.cover,),
+                                ),
+                              ),
+                              isAttatchmentDefault?Positioned(
+                                top: 10.0,
+                                right: 10.0,
+                                child: Container(
+                                  padding: EdgeInsets.all(6.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ):SizedBox.shrink(),
+                            ],
                           ),
                         );
                       },
