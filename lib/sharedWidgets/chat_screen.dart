@@ -605,6 +605,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       FilePickerResult? result = await FilePicker.platform.pickFiles(
                         type: FileType.custom,
                         allowedExtensions: ['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'],
+                        allowMultiple: true,
+                        allowCompression: true
                       );
                       if(result != null){
                         setState(() {
