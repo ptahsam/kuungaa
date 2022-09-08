@@ -258,11 +258,14 @@ class _ChatScreenState extends State<ChatScreen> {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (BuildContext context, int index){
                         File file = userSelectedFileList![index];
+                        String? mimeType = lookupMimeType(file.path);
+                        String basename = path.basename(file.path);
+                        print("file mimetype :: " + mimeType!);
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0),
                           child: Stack(
                             children: [
-                              InkWell(
+                              mimeType.contains("image/")?InkWell(
                                 onTap: () async {
                                   var res = await Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTopPop, child: ImageViewEditor(imgFile: file,), childCurrent: this.widget));
                                 },
@@ -274,7 +277,44 @@ class _ChatScreenState extends State<ChatScreen> {
                                     child: Image.file(file, fit: BoxFit.cover,),
                                   ),
                                 ),
-                              ),
+                              ):mimeType.contains("application/")?SizedBox(
+                                height: attachmentHeight -10,
+                                width: attachmentHeight - 10,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.white
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned.fill(
+                                        child: mimeType.contains("application/pdf")?Icon(
+                                          MdiIcons.filePdfBox,
+                                          color: Colors.blue,
+                                          size: 30,
+                                        ):
+                                        mimeType.contains("application/vnd.openxmlformats-officedocument.wordprocessingml.document")?Icon(
+                                          MdiIcons.microsoftWord,
+                                          color: Colors.blue,
+                                          size: 30,
+                                        ):SizedBox.shrink(),
+                                      ),
+                                      Positioned(
+                                        bottom: 20,
+                                        right: 10,
+                                        left: 10,
+                                        child: isAttatchmentDefault?Center(
+                                          child: Text(
+                                            basename,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ):SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ):SizedBox.shrink(),
                               isAttatchmentDefault?Positioned(
                                 top: 10.0,
                                 right: 10.0,
@@ -541,9 +581,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       Navigator.of(context).pop();
                       var res = await Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const FileSelector(allowMultiple: true, isUserPhoto: false,)));
                       setState(() {
-                        userSelectedFileList = res;
-                        if(userSelectedFileList!.isNotEmpty){
-
+                        if(res != null || res != ""){
+                          userSelectedFileList = res;
                         }
                       });
                     },
@@ -562,9 +601,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     color: Colors.white,
                     hoverColor: Colors.grey[100]!,
                     onPressed: () async {
+                      Navigator.of(context).pop();
                       FilePickerResult? result = await FilePicker.platform.pickFiles(
                         type: FileType.custom,
-                        allowedExtensions: ['txt', 'pdf', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'],
+                        allowedExtensions: ['txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'],
                       );
                       if(result != null){
                         setState(() {

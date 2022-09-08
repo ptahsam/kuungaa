@@ -417,7 +417,7 @@ class _CreatePostState extends State<CreatePost> {
       for(var i = 0; i < userSelectedFileList!.length; i++){
         String? mimeType = lookupMimeType(userSelectedFileList![i].path);
         String basename = path.basename(userSelectedFileList![i].path);
-        print("User selected file" + mimeType! + " :: "+basename);
+        //print("User selected file" + mimeType! + " :: "+basename);
         File file = File(userSelectedFileList![i].path);
         firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(refKey).child(basename);
         //await ref.putFile(file).whenComplete((snapshot) => {});
