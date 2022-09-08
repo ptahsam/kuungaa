@@ -277,6 +277,38 @@ class _ChatScreenState extends State<ChatScreen> {
                                     child: Image.file(file, fit: BoxFit.cover,),
                                   ),
                                 ),
+                              ):mimeType.contains("audio/")?SizedBox(
+                                height: attachmentHeight -10,
+                                width: attachmentHeight - 10,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.white,
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Positioned.fill(
+                                        child: Icon(
+                                          MdiIcons.music,
+                                          color: Colors.red,
+                                          size: 30,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 20,
+                                        right: 10,
+                                        left: 10,
+                                        child: isAttatchmentDefault?Center(
+                                          child: Text(
+                                            basename,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ):SizedBox.shrink(),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ):mimeType.contains("application/")?SizedBox(
                                 height: attachmentHeight -10,
                                 width: attachmentHeight - 10,
@@ -295,7 +327,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         ):
                                         mimeType.contains("application/vnd.openxmlformats-officedocument.wordprocessingml.document")?Icon(
                                           MdiIcons.microsoftWord,
-                                          color: Colors.blue,
+                                          color: Colors.greenAccent,
                                           size: 30,
                                         ):SizedBox.shrink(),
                                       ),
@@ -560,8 +592,19 @@ class _ChatScreenState extends State<ChatScreen> {
                     icon: const Icon(MdiIcons.music),
                     color: Colors.white,
                     hoverColor: Colors.grey[100]!,
-                    onPressed: (){
-
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['mp3', 'aac', 'flac', 'alac', 'wav', 'aiff', 'dsd'],
+                          allowMultiple: true,
+                          allowCompression: true
+                      );
+                      if(result != null){
+                        setState(() {
+                          userSelectedFileList = result.paths.map((path) => File(path!)).toList();
+                        });
+                      }
                     },
                   ),
                 ),
