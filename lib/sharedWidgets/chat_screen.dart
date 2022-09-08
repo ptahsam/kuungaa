@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
@@ -20,6 +21,7 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
@@ -560,7 +562,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     color: Colors.white,
                     hoverColor: Colors.grey[100]!,
                     onPressed: () async {
-                      /*FilePickerResult? result = await FilePicker.platform.pickFiles(
+                      FilePickerResult? result = await FilePicker.platform.pickFiles(
                         type: FileType.custom,
                         allowedExtensions: ['txt', 'pdf', 'doc', 'xls', 'xlsx', 'ppt', 'pptx'],
                       );
@@ -568,7 +570,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         setState(() {
                           userSelectedFileList = result.paths.map((path) => File(path!)).toList();
                         });
-                      }*/
+                      }
                     },
                   ),
                 ),

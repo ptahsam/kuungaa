@@ -93,6 +93,7 @@ dependencies:
   styled_text: ^5.1.0
   flutter_linkify: ^5.0.2
   url_launcher: ^6.1.5
+  file_picker: ^5.0.1
 
 dev_dependencies:
   flutter_test:
