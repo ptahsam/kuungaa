@@ -10,7 +10,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -279,8 +278,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                 ),
                               ):mimeType.contains("audio/")?InkWell(
-                                onTap: (){
-                                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: AudioView(audioFile: file,),));
+                                onTap: () async {
+                                  final String filePath = file.absolute.path;
+                                  final Uri uri = Uri.file(filePath);
+
+                                  if (!File(uri.toFilePath()).existsSync()) {
+                                    throw '$uri does not exist!';
+                                  }
+                                  if (!await launchUrl(uri)) {
+                                  throw 'Could not launch $uri';
+                                  }
                                 },
                                 child: SizedBox(
                                   height: attachmentHeight -10,
@@ -470,7 +477,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
         Map messagemediamap = {
           "url" : imageUrl,
-          "type" : mimeType
+          "type" : mimeType,
+          "name" : basename
         };
 
         messagemedia.add(messagemediamap);
@@ -1202,82 +1210,6 @@ class _ImageViewEditorState extends State<ImageViewEditor> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AudioView extends StatefulWidget {
-  final File audioFile;
-  const AudioView({
-    Key? key,
-    required this.audioFile
-  }) : super(key: key);
-
-  @override
-  State<AudioView> createState() => _AudioViewState();
-}
-
-class _AudioViewState extends State<AudioView> {
-
-  final _player = AudioPlayer();
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    // Listen to errors during playback.
-    _player.playbackEventStream.listen((event) {},
-        onError: (Object e, StackTrace stackTrace) {
-          print('A stream error occurred: $e');
-        });
-    // Try to load audio from a source and catch any errors.
-    try {
-      // AAC example: https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.aac
-      await _player.setAudioSource(AudioSource.uri(
-          widget.audioFile.uri));
-    } catch (e) {
-      print("Error loading audio source: $e");
-    }
-  }
-
-  @override
-  void dispose() {
-    // Release decoders and buffers back to the operating system making them
-    // available for other apps to use.
-    _player.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // Release the player's resources when not in use. We use "stop" so that
-      // if the app resumes later, it will still remember what position to
-      // resume from.
-      _player.stop();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Palette.kuungaaDefault,
-        leading: InkWell(
-          onTap: (){
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.close,
-          ),
-        ),
-        title: Text("Play song"),
-        centerTitle: false,
-      ),
-      body: Container(),
     );
   }
 }

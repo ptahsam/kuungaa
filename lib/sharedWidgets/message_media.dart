@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/MultiManager/flick_multimanager.dart';
 import 'package:kuungaa/MultiManager/flick_multiplayer.dart';
-import 'package:kuungaa/config/palette.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 class MessageMedia extends StatefulWidget {
@@ -19,6 +19,14 @@ class MessageMedia extends StatefulWidget {
 
 class _MessageMediaState extends State<MessageMedia> {
   late FlickMultiManager flickMultiManager;
+  AudioPlayer player = AudioPlayer();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    player.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -26,6 +34,7 @@ class _MessageMediaState extends State<MessageMedia> {
     super.initState();
     flickMultiManager = FlickMultiManager();
   }
+
   @override
   Widget build(BuildContext context) {
     Media media = widget.messageMedia[0];
@@ -65,6 +74,26 @@ class _MessageMediaState extends State<MessageMedia> {
                 child: Text("+"+(widget.messageMedia.length - 1).toString(), style: TextStyle(color: Colors.white),),
               ):SizedBox.shrink(),
             )
+          ],
+        ),
+      );
+    }else if(media.type!.contains("audio/")){
+      return Container(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                InkWell(
+                  onTap: ()async{
+                    Source source = UrlSource(media.url!);
+                    player.play(source);
+                  },
+                  child: Icon(
+                    Icons.play_arrow
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       );
