@@ -1,9 +1,11 @@
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/MultiManager/flick_multimanager.dart';
 import 'package:kuungaa/MultiManager/flick_multiplayer.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:kuungaa/config/palette.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 class MessageMedia extends StatefulWidget {
@@ -20,10 +22,14 @@ class MessageMedia extends StatefulWidget {
 class _MessageMediaState extends State<MessageMedia> {
   late FlickMultiManager flickMultiManager;
   AudioPlayer player = AudioPlayer();
+  bool isPlaying = false;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
 
   @override
   void dispose() {
     // TODO: implement dispose
+    player.pause();
     player.dispose();
     super.dispose();
   }
@@ -33,6 +39,43 @@ class _MessageMediaState extends State<MessageMedia> {
     // TODO: implement initState
     super.initState();
     flickMultiManager = FlickMultiManager();
+    player.onPlayerStateChanged.listen((state) {
+      setState(() {
+        isPlaying = state == PlayerState.playing;
+      });
+    });
+
+    player.onDurationChanged.listen((newDuration) {
+      setState(() {
+        duration = newDuration;
+      });
+    });
+
+    player.onPositionChanged.listen((newPosition) {
+      setState(() {
+        position = newPosition;
+      });
+    });
+
+    player.onPlayerComplete.listen((event) {
+      setState(() {
+        isPlaying = false;
+      });
+    });
+  }
+
+  String formatTime(Duration duration){
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return [
+      if (duration.inHours > 0) hours,
+      minutes,
+      seconds,
+    ].join(':');
+
   }
 
   @override
@@ -79,6 +122,12 @@ class _MessageMediaState extends State<MessageMedia> {
       );
     }else if(media.type!.contains("audio/")){
       return Container(
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+        margin: EdgeInsets.only(bottom: 10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: Colors.white70,
+        ),
         child: Column(
           children: [
             Row(
@@ -86,10 +135,45 @@ class _MessageMediaState extends State<MessageMedia> {
                 InkWell(
                   onTap: ()async{
                     Source source = UrlSource(media.url!);
-                    player.play(source);
+                    final audioPlayer = AudioCache(prefix: "sounds/");
+                    final url = await audioPlayer.load("song.mp3");
+                    if(isPlaying){
+                      player.pause();
+                    }else{
+                      //player.play(source);
+                      player.setSourceUrl(url.toString());
+                      player.resume();
+                    }
                   },
-                  child: Icon(
-                    Icons.play_arrow
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Palette.kuungaaDefault,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isPlaying ? Icons.pause: Icons.play_arrow,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Slider(
+                  min: 0,
+                  max: duration.inSeconds.toDouble(),
+                  value: position.inSeconds.toDouble(),
+                  onChanged: (value) async {
+                    final position = Duration(seconds: value.toInt());
+                    player.seek(position);
+                    player.resume();
+                  },
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Text(
+                          formatTime(duration - position),
+                      ),
+                    ],
                   ),
                 ),
               ],
