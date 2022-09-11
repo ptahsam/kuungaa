@@ -61,13 +61,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
     super.initState();
    // postScrollController = ScrollController();
     //postScrollController!.addListener(_scrollListener);
-      setState(() {
+      //setState(() {
         AssistantMethods.getCurrentOnlineUserInfo();
         AssistantMethods.getUserNotification(context);
         AssistantMethods.updateUserNotification(context);
         AssistantMethods.getUserChats(context);
         AssistantMethods.userOnline();
-      });
+      //});
     //logo = Image.asset(AppImages.logo);
     //getCurrentUserInfo();
   }

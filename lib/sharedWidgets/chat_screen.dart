@@ -7,6 +7,7 @@ import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,6 +23,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mime/mime.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
@@ -49,10 +51,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   double attachmentHeight = 100.0;
   bool isAttatchmentDefault = false;
+  final recorder = FlutterSoundRecorder();
+  PermissionStatus? status;
+  bool isSending = false;
 
   @override
   void initState() {
     // TODO: implement initState
+    initRecorder();
     super.initState();
     AssistantMethods.getChatMessages(context, widget.chat.chat_id!);
     AssistantMethods.updateOnlineStatus(context, widget.chat.chat_opponentid!);
@@ -61,6 +67,32 @@ class _ChatScreenState extends State<ChatScreen> {
     currentChat = widget.chat;
     currentChat.chatIsOpen = true;
     Provider.of<AppData>(context, listen: false).updateCurrentChat(currentChat);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    recorder.closeRecorder();
+    super.dispose();
+  }
+
+  Future initRecorder() async {
+    status = await Permission.microphone.request();
+    if(status != PermissionStatus.granted){
+      throw "Microphone access permission not granted";
+    }
+    await recorder.openRecorder();
+  }
+
+  record(){
+    recorder.startRecorder(
+      toFile: "audio",
+      codec: Codec.mp3,
+    );
+  }
+
+  stop(){
+    recorder.stopRecorder();
   }
 
   @override
@@ -200,6 +232,21 @@ class _ChatScreenState extends State<ChatScreen> {
                       return Column(
                           children: [
                             checkIsWhen(nextMessage.time_created!) != checkIsWhen(message.time_created!)?Container(
+                              margin: EdgeInsets.only(top: 20, bottom: 10),
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                  decoration: BoxDecoration(
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    convertToWhen(message.time_created!),
+                                  ),
+                                ),
+                              ),
+                            ):message == nextMessage?Container(
+                              margin: EdgeInsets.only(top: 20, bottom: 10),
                               child: Center(
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
@@ -435,11 +482,20 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                         ),
-                        IconButton(
+                        isSending?Container(
+                          height: 20.0,
+                          width: 20.0,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ):IconButton(
                           icon: const Icon(Icons.send_sharp),
                           //iconSize: 36.0,
                           color: Colors.white,
                           onPressed: (){
+                            setState(() {
+                              isSending = true;
+                            });
                             saveMessage();
                           },
                         ),
@@ -497,6 +553,7 @@ class _ChatScreenState extends State<ChatScreen> {
       msgRef.set(msgMap).then((onValue) {
         messageTextEditingController.text = "";
         userSelectedFileList!.clear();
+        isSending = false;
         Map typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
@@ -507,7 +564,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         //displayToastMessage("Your post was uploaded successfully", context);
       }).catchError((onError) {
-
+        isSending = false;
         Navigator.pop(context);
         displayToastMessage("An error occurred. Please try again later", context);
       });
@@ -529,7 +586,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       msgRef.set(msgMap).then((onValue) {
         messageTextEditingController.text = "";
-
+        isSending = false;
         Map typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
@@ -540,10 +597,89 @@ class _ChatScreenState extends State<ChatScreen> {
 
         //displayToastMessage("Your post was uploaded successfully", context);
       }).catchError((onError) {
+        isSending = false;
         Navigator.pop(context);
         displayToastMessage("An error occurred. Please try again later", context);
       });
     }
+  }
+
+  Widget buildRecordSoundSheet() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Record", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200]!,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    size: 25.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.0,),
+          Center(
+            child: Container(
+              padding: EdgeInsets.all(6.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey[200]!,
+              ),
+              child: Icon(
+                MdiIcons.microphone,
+                color: recorder.isRecording?Palette.kuungaaDefault:Colors.black,
+                size: 40.0,
+              ),
+            ),
+          ),
+          SizedBox(height: 10.0,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  if(status != PermissionStatus.granted){
+                    initRecorder();
+                  }else {
+                    if (recorder.isRecording) {
+                      stop();
+                    } else {
+                      record();
+                    }
+                    setState(() {
+
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      recorder.isRecording?Icons.pause:Icons.play_arrow,
+                    ),
+                    Text(recorder.isRecording?"Stop":"Start"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildSelectMediaSheet() {
@@ -586,11 +722,19 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 child: Center(
                   child: IconButton(
-                    icon: const Icon(MdiIcons.camera),
+                    icon: const Icon(MdiIcons.microphone),
                     color: Colors.white,
                     hoverColor: Colors.grey[100]!,
-                    onPressed: (){
-
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                        ),
+                        context: context,
+                        builder: (context) => buildRecordSoundSheet(),
+                      );
                     },
                   ),
                 ),

@@ -135,14 +135,14 @@ class _MessageMediaState extends State<MessageMedia> {
                 InkWell(
                   onTap: ()async{
                     Source source = UrlSource(media.url!);
-                    final audioPlayer = AudioCache(prefix: "sounds/");
-                    final url = await audioPlayer.load("song.mp3");
+                    //final audioPlayer = AudioCache(prefix: "sounds/");
+                    //final url = await audioPlayer.load("song.mp3");
                     if(isPlaying){
                       player.pause();
                     }else{
-                      //player.play(source);
-                      player.setSourceUrl(url.toString());
-                      player.resume();
+                      player.play(source);
+                      //player.setSourceUrl(url.toString());
+                      //player.resume();
                     }
                   },
                   child: Container(
@@ -178,6 +178,7 @@ class _MessageMediaState extends State<MessageMedia> {
                 ),
               ],
             ),
+            Text(media.name!),
           ],
         ),
       );

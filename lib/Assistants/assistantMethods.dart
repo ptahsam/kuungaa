@@ -232,6 +232,9 @@ class AssistantMethods
           List<Media> listMedia = [];
           for(var i in event.snapshot.value["message_media"]){
             Media media = Media.fromJson(Map<String, dynamic>.from(i));
+            if(media.type!.contains("audio/")){
+              media.name = Map<String, dynamic>.from(i)["name"];
+            }
             listMedia.add(media);
           }
           message.messageMedia = listMedia.toSet().toList();

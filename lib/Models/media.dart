@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 class Media {
   String? type;
   String? url;
+  String? name;
 
   Media({this.type, this.url});
 

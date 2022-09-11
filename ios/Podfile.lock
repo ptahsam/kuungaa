@@ -151,6 +151,10 @@ PODS:
     - FBSDKLoginKit (~> 12.3.2)
     - FBSDKShareKit (~> 12.3.2)
     - Flutter
+  - flutter_sound (9.2.13):
+    - Flutter
+    - flutter_sound_core (= 9.2.13)
+  - flutter_sound_core (9.2.13)
   - flutter_video_info (1.1.0):
     - Flutter
   - fluttertoast (0.0.2):
@@ -259,6 +263,7 @@ DEPENDENCIES:
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_share_me (from `.symlinks/plugins/flutter_share_me/ios`)
+  - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - flutter_video_info (from `.symlinks/plugins/flutter_video_info/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -299,6 +304,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseStorage
     - FirebaseStorageInternal
+    - flutter_sound_core
     - GoogleDataTransport
     - GoogleMaps
     - GoogleUtilities
@@ -343,6 +349,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_share_me:
     :path: ".symlinks/plugins/flutter_share_me/ios"
+  flutter_sound:
+    :path: ".symlinks/plugins/flutter_sound/ios"
   flutter_video_info:
     :path: ".symlinks/plugins/flutter_video_info/ios"
   fluttertoast:
@@ -412,6 +420,8 @@ SPEC CHECKSUMS:
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_share_me: 771a4916dcadac008d43428838a5b898d97e1568
+  flutter_sound: c60effa2a350fb977885f0db2fbc4c1ad5160900
+  flutter_sound_core: 26c10e5832e76aaacfae252d8925232281c486ae
   flutter_video_info: a932e1b0da369bba95c3a14b7f61d5f8b0d03280
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5

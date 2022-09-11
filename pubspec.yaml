@@ -95,6 +95,7 @@ dependencies:
   url_launcher: ^6.1.5
   file_picker: ^5.0.1
   audioplayers: ^1.0.1
+  flutter_sound: ^9.2.13
 
 dev_dependencies:
   flutter_test:
