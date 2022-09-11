@@ -52,14 +52,15 @@ class _ChatScreenState extends State<ChatScreen> {
   double attachmentHeight = 100.0;
   bool isAttatchmentDefault = false;
   final recorder = FlutterSoundRecorder();
+  bool isRecorderReady = false;
   PermissionStatus? status;
   bool isSending = false;
 
   @override
   void initState() {
     // TODO: implement initState
-    initRecorder();
     super.initState();
+    initRecorder();
     AssistantMethods.getChatMessages(context, widget.chat.chat_id!);
     AssistantMethods.updateOnlineStatus(context, widget.chat.chat_opponentid!);
     AssistantMethods.userIsTyping(context, widget.chat.chat_id!, widget.chat.chat_opponentid!);
@@ -82,17 +83,25 @@ class _ChatScreenState extends State<ChatScreen> {
       throw "Microphone access permission not granted";
     }
     await recorder.openRecorder();
-  }
-
-  record(){
-    recorder.startRecorder(
-      toFile: "audio",
-      codec: Codec.mp3,
+    setState((){
+      isRecorderReady = true;
+    });
+    recorder.setSubscriptionDuration(
+      const Duration(microseconds: 500),
     );
   }
 
-  stop(){
-    recorder.stopRecorder();
+  Future record() async{
+    if(!isRecorderReady) return;
+    await recorder.startRecorder(
+      toFile: "audio",
+    );
+  }
+
+  Future stop() async{
+    if(!isRecorderReady) return;
+    final path = await recorder.stopRecorder();
+    final audioFile = File(path!);
   }
 
   @override
@@ -648,23 +657,29 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           SizedBox(height: 10.0,),
+          StreamBuilder<RecordingDisposition>(
+            stream: recorder.onProgress,
+            builder: (ctx, snapshot){
+              final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+              String twoDigits(int n) => n.toString().padLeft(0);
+              final twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+              final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+              return Text('$twoDigitMinutes:$twoDigitSeconds');
+            },
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  if(status != PermissionStatus.granted){
-                    initRecorder();
-                  }else {
                     if (recorder.isRecording) {
-                      stop();
+                      await stop();
                     } else {
-                      record();
+                      await record();
                     }
                     setState(() {
 
                     });
-                  }
                 },
                 child: Row(
                   children: [
