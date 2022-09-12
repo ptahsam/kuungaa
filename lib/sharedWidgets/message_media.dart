@@ -6,6 +6,7 @@ import 'package:kuungaa/MultiManager/flick_multimanager.dart';
 import 'package:kuungaa/MultiManager/flick_multiplayer.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 class MessageMedia extends StatefulWidget {
@@ -122,6 +123,7 @@ class _MessageMediaState extends State<MessageMedia> {
       );
     }else if(media.type!.contains("audio/")){
       return Container(
+        width: MediaQuery.of(context).size.width * 0.75,
         padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
         margin: EdgeInsets.only(bottom: 10.0),
         decoration: BoxDecoration(
@@ -132,6 +134,28 @@ class _MessageMediaState extends State<MessageMedia> {
           children: [
             Row(
               children: [
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Palette.kuungaaDefault,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        MdiIcons.headset,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        formatTime(duration - position),
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
                 InkWell(
                   onTap: ()async{
                     Source source = UrlSource(media.url!);
@@ -145,35 +169,21 @@ class _MessageMediaState extends State<MessageMedia> {
                       //player.resume();
                     }
                   },
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Palette.kuungaaDefault,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      isPlaying ? Icons.pause: Icons.play_arrow,
-                      color: Colors.white,
-                    ),
+                  child: Icon(
+                    isPlaying ? Icons.pause: Icons.play_arrow,
+                    size: 30.0,
                   ),
                 ),
-                Slider(
-                  min: 0,
-                  max: duration.inSeconds.toDouble(),
-                  value: position.inSeconds.toDouble(),
-                  onChanged: (value) async {
-                    final position = Duration(seconds: value.toInt());
-                    player.seek(position);
-                    player.resume();
-                  },
-                ),
-                Container(
-                  child: Column(
-                    children: [
-                      Text(
-                          formatTime(duration - position),
-                      ),
-                    ],
+                Expanded(
+                  child: Slider(
+                    min: 0,
+                    max: duration.inSeconds.toDouble(),
+                    value: position.inSeconds.toDouble(),
+                    onChanged: (value) async {
+                      final position = Duration(seconds: value.toInt());
+                      player.seek(position);
+                      player.resume();
+                    },
                   ),
                 ),
               ],

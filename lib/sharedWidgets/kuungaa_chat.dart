@@ -91,25 +91,27 @@ class _KuungaaChatState extends State<KuungaaChat> {
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.8,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?SizedBox(width: 5.0,):SizedBox.shrink(),
-                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Text(
-                            Provider.of<AppData>(context).messageCount!.message_count!.toString(),
-                            style: TextStyle(
-                              color: Palette.kuungaaDefault,
+                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: Text(
+                              Provider.of<AppData>(context).messageCount!.message_count!.toString(),
+                              style: TextStyle(
+                                color: Palette.kuungaaDefault,
+                              ),
                             ),
                           ),
                         ):SizedBox.shrink(),
                       ],
                     ),
-
                   ),
                   Tab(
                     child: Text(
@@ -119,6 +121,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
@@ -130,6 +133,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
@@ -204,6 +208,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                 fontWeight: FontWeight.bold,
                                                 color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black54,
                                                 fontSize: 15.0,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                             subtitle: Row(
@@ -228,7 +233,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
-                                                    SizedBox(width: 8.0,),
+                                                    chat.message!.message_status == "1"?SizedBox(width: 8.0,):SizedBox.shrink(),
                                                     chat.message!.message_status == "1"?Icon(
                                                       MdiIcons.checkAll,
                                                       color:Palette.kuungaaDefault,
