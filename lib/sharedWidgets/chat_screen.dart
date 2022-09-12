@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -17,7 +19,9 @@ import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/chat.dart';
+import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/message.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:marquee/marquee.dart';
@@ -46,6 +50,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
 
   List<File>? userSelectedFileList = [];
+  List<Message> selectedMessages = [];
 
   TextEditingController messageTextEditingController = TextEditingController();
 
@@ -57,6 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isRecorderReady = false;
   PermissionStatus? status;
   bool isSending = false;
+  bool messageSelectMode = false;
 
   @override
   void initState() {
@@ -110,9 +116,61 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.kuungaaDefault,
-      appBar: AppBar(
+      appBar: selectedMessages.isNotEmpty?AppBar(
         backgroundColor: Palette.kuungaaDefault,
-        leadingWidth: 30.0,
+        leadingWidth: 40.0,
+        leading: InkWell(
+          onTap: (){
+            setState(() {
+              selectedMessages.clear();
+            });
+          },
+          child: Icon(
+            Icons.close,
+            color: Colors.white,
+          ),
+        ),
+        title: Text(
+          selectedMessages.length.toString(),
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(MdiIcons.reply),
+            //iconSize: 36.0,
+            color: Colors.white,
+            onPressed: (){
+            },
+          ),
+          IconButton(
+            icon: const Icon(MdiIcons.delete),
+            //iconSize: 36.0,
+            color: Colors.white,
+            onPressed: (){
+            },
+          ),
+          IconButton(
+            icon: const Icon(MdiIcons.forward),
+            //iconSize: 36.0,
+            color: Colors.white,
+            onPressed: (){
+              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ForwardContainer(forwardMessageList: selectedMessages,)));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            //iconSize: 36.0,
+            color: Colors.white,
+            onPressed: (){
+
+            },
+          ),
+        ],
+      ):AppBar(
+        backgroundColor: Palette.kuungaaDefault,
+        leadingWidth: 40.0,
         title:InkWell(
           onTap: (){
             Navigator.pop(context);
@@ -283,7 +341,27 @@ class _ChatScreenState extends State<ChatScreen> {
                                   print("widget ${message.message_id} is in view status :: ${isInView}");
                                 }
                                 updateMessageStatus(message, isInView);
-                                return MessageContainer(message: message, chat: widget.chat, isMe: isMe);
+                                return InkWell(
+                                  onLongPress: (){
+                                    setState(() {
+                                      selectedMessages.add(message);
+                                    });
+                                  },
+                                  onTap: (){
+                                    if(selectedMessages.isNotEmpty){
+                                      if(selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!)){
+                                        setState(() {
+                                          selectedMessages.removeWhere((Message oldMessage) => oldMessage.message_id == message.message_id!);
+                                        });
+                                      }else{
+                                        setState(() {
+                                          selectedMessages.add(message);
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
+                                );
                               }
                             ),
                           ],
@@ -951,11 +1029,13 @@ class MessageContainer extends StatefulWidget {
   final Message message;
   final Chat chat;
   final bool isMe;
+  final bool isSelected;
   const MessageContainer({
     Key? key,
     required this.message,
     required this.chat,
-    required this.isMe
+    required this.isMe,
+    required this.isSelected
   }) : super(key: key);
 
   @override
@@ -1000,17 +1080,10 @@ class _MessageContainerState extends State<MessageContainer> {
     return widget.isMe ? Wrap(
       alignment: WrapAlignment.end,
       children: [
-        InkWell(
-          onLongPress: (){
-            showModalBottomSheet(
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-              ),
-              context: context,
-              builder: (context) => buildMessageSheet(widget.message),
-            );
-          },
+        Container(
+          width: MediaQuery.of(context).size.width,
+          color: widget.isSelected?Colors.grey[200]!:Colors.transparent,
+          margin: widget.isSelected?EdgeInsets.symmetric(vertical: 8.0,):EdgeInsets.zero,
           child: Container(
             margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
             child: ChatBubble(
@@ -1022,6 +1095,27 @@ class _MessageContainerState extends State<MessageContainer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  widget.message.origin != null?Container(
+                    padding: EdgeInsets.all(2.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.forward,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(width: 4.0,),
+                        Text(
+                          "Forwarded",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey
+                          ),
+                        ),
+                      ],
+                    ),
+                  ):SizedBox.shrink(),
                   widget.message.messageMedia != null?
                   Padding(
                     padding: const EdgeInsets.only(top: 5.0),
@@ -1095,6 +1189,27 @@ class _MessageContainerState extends State<MessageContainer> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                widget.message.origin != null?Container(
+                  padding: EdgeInsets.all(2.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.forward,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(width: 4.0,),
+                      Text(
+                        "Forwarded",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey
+                        ),
+                      ),
+                    ],
+                  ),
+                ):SizedBox.shrink(),
                 widget.message.messageMedia != null?
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -1400,6 +1515,371 @@ class _ImageViewEditorState extends State<ImageViewEditor> {
     );
   }
 }
+
+class ForwardContainer extends StatefulWidget {
+  final List<Message> forwardMessageList;
+  const ForwardContainer({
+    Key? key,
+    required this.forwardMessageList
+  }) : super(key: key);
+
+  @override
+  State<ForwardContainer> createState() => _ForwardContainerState();
+}
+
+class _ForwardContainerState extends State<ForwardContainer> {
+
+  List<Users> listUsers = [];
+  List<Users> searchedList = [];
+  List<Users> selectedUsers = [];
+  TextEditingController textEditingController = TextEditingController();
+  Query? itemRefUsers;
+  bool _anchorToBottom = false;
+  bool isForwarding = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    itemRefUsers = database.reference().child("KUUNGAA").child("Users");
+    itemRefUsers!.onChildAdded.listen(_onEntryAddedUsers);
+    textEditingController.addListener(handleTextchange);
+  }
+
+  _onEntryAddedUsers(Event event) async {
+    if(event.snapshot.exists){
+      if(event.snapshot.value["user_id"] != userCurrentInfo!.user_id!){
+        Users users = Users();
+        users.user_id = event.snapshot.value["user_id"];
+        users.user_firstname = event.snapshot.value["user_firstname"];
+        users.user_lastname = event.snapshot.value["user_lastname"];
+        users.user_profileimage = event.snapshot.value["user_profileimage"];
+
+        setState(() {
+          listUsers.add(users);
+        });
+      }
+    }
+  }
+
+  void handleTextchange() {
+    if(textEditingController.text != "" || textEditingController != null){
+      List<Users> result = listUsers.where((Users user)
+      => user.user_firstname!.toLowerCase().contains(textEditingController.text.toLowerCase())
+          || user.user_lastname!.toLowerCase().contains(textEditingController.text.toLowerCase())
+      ).toSet().toList();
+      setState(() {
+        searchedList = result.toSet().toList();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: Palette.kuungaaDefault,
+              leadingWidth: 30.0,
+              pinned: true,
+              leading: InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: false,
+              title: Text(
+                "Forward to...",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              actions: [
+                selectedUsers.isNotEmpty?Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      selectedUsers.length.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700
+                      ),
+                    ),
+                  ),
+                ):SizedBox.shrink(),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                width: double.infinity,
+                color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("SELECT"),
+                    AnimSearchBar(
+                      width: MediaQuery.of(context).size.width * 0.65,
+                      textController: textEditingController,
+                      color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                      style: TextStyle(
+                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
+                      ),
+                      rtl: true,
+                      onSuffixTap: () {
+                        setState(() {
+                          textEditingController.clear();
+                          searchedList.clear();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: searchedList.isNotEmpty?Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0,),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: searchedList.length,
+                  itemBuilder: (ctx, int index){
+                    return UsersList(user: searchedList[index],);
+                  },
+                ),
+              ): Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0,),
+                child: listUsers.isNotEmpty?FirebaseAnimatedList(
+                    physics: const NeverScrollableScrollPhysics(),
+                    query: itemRefUsers!,
+                    reverse: _anchorToBottom,
+                    key: ValueKey<bool>(_anchorToBottom),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
+                      if(snapshot.exists){
+                        if(index + 1 <= listUsers.length){
+                          Users user = listUsers[index];
+                          return InkWell(
+                            onTap: (){
+                              setState(() {
+                                if(selectedUsers.any((Users oldUser) => oldUser.user_id == user.user_id!)){
+                                  selectedUsers.removeWhere((Users oldUser) => oldUser.user_id == user.user_id);
+                                }else{
+                                  selectedUsers.add(user);
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                              margin: const EdgeInsets.only(bottom: 4.0,),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.1,
+                                  color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey
+                                  ,
+                                ),
+                                color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      ProfileAvatar(imageUrl: user.user_profileimage != null? user.user_profileimage! : uProfile),
+                                      const SizedBox(width: 6.0,),
+                                      Text(user.user_firstname != null? user.user_firstname! : ""),
+                                      const SizedBox(width: 4.0,),
+                                      Text(user.user_lastname != null? user.user_lastname! : ""),
+                                    ],
+                                  ),
+                                  selectedUsers.any((Users oldUser) => oldUser.user_id == user.user_id!) ? const Icon(
+                                    MdiIcons.checkboxMarked,
+                                    color: Palette.kuungaaDefault,
+                                    size: 24.0,
+                                  ) : const Icon(
+                                    MdiIcons.checkboxBlankOutline,
+                                    size: 24.0,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }else{
+                          return SizedBox.shrink();
+                        }
+                      }else{
+                        return SizedBox.shrink();
+                      }
+                    }
+                ):Align(
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: selectedUsers.isNotEmpty?FloatingActionButton(
+          backgroundColor: Palette.kuungaaDefault,
+          onPressed: (){
+            setState(() {
+              isForwarding = true;
+              sendMessages();
+            });
+          },
+          child: isForwarding?SizedBox(
+            width: 30.0,
+            height: 30.0,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          ):Icon(
+            Icons.send,
+            color: Colors.white,
+            size: 32.0,
+          ),
+        ):null,
+      );
+  }
+
+  void sendMessages() {
+    for(var i = 0; i < widget.forwardMessageList.length; i++){
+      Message forwardMessage = widget.forwardMessageList[i];
+
+      var time = DateTime.now().millisecondsSinceEpoch;
+      String status = "0";
+
+      for(var j = 0; j < selectedUsers.length; j++){
+        String selectedUserId = selectedUsers[j].user_id!;
+
+        String commonid = "";
+        String userid = userCurrentInfo!.user_id!;
+
+        if(selectedUserId.compareTo(userid) == -1 ){
+          commonid = selectedUserId + userid;
+        }else{
+          commonid = userid + selectedUserId;
+        }
+
+        var ref = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(commonid);
+
+        ref.once().then((DataSnapshot snapshot) async {
+          if(snapshot.exists){
+            DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(commonid).child("messages").push();
+
+            List messageMedia = [];
+
+            bool hasMedia = false;
+
+            if(forwardMessage.messageMedia != null){
+              hasMedia = true;
+              for(var m = 0; m < forwardMessage.messageMedia!.length; m++){
+                Media media = forwardMessage.messageMedia![m];
+
+                Map messagemediamap = {
+                  "url" : media.url!,
+                  "type" : media.type!,
+                  "name" : media.name != null?media.name!:""
+                };
+
+                messageMedia.add(messagemediamap);
+              }
+            }
+
+            Map msgMap = {
+              "message_id" : msgRef.key,
+              "message" : forwardMessage.message!,
+              "time_created" : time,
+              "message_status" : status,
+              "message_media" : hasMedia?messageMedia:"",
+              "sender_id" : userCurrentInfo!.user_id!,
+              "origin": "forwarded"
+            };
+
+            msgRef.set(msgMap);
+          }else{
+            var chattime = DateTime.now().millisecondsSinceEpoch;;
+            Map membersMap = {};
+
+            membersMap[userCurrentInfo!.user_id!] = {
+              "member_id" : userCurrentInfo!.user_id!
+            };
+            membersMap[selectedUserId] = {
+              "member_id" : selectedUserId
+            };
+
+            Map chatMap = {
+              "chat_id" : commonid,
+              "chat_creatorid" : userid,
+              "chat_partnerid" : selectedUserId,
+              "members" : membersMap,
+              "chat_createdAt" : chattime
+            };
+
+            ref.set(chatMap).then((onValue) async {
+
+              DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(commonid).child("messages").push();
+
+              List messageMedia = [];
+
+              bool hasMedia = false;
+
+              if(forwardMessage.messageMedia != null){
+                hasMedia = true;
+                for(var m = 0; m < forwardMessage.messageMedia!.length; m++){
+                  Media media = forwardMessage.messageMedia![m];
+
+                  Map messagemediamap = {
+                    "url" : media.url!,
+                    "type" : media.type!,
+                    "name" : media.name != null?media.name!:""
+                  };
+
+                  messageMedia.add(messagemediamap);
+                }
+              }
+
+              Map msgMap = {
+                "message_id" : msgRef.key,
+                "message" : forwardMessage.message!,
+                "time_created" : time,
+                "message_status" : status,
+                "message_media" : hasMedia?messageMedia:"",
+                "sender_id" : userCurrentInfo!.user_id!,
+                "origin": "forwarded"
+              };
+
+              msgRef.set(msgMap);
+            }).catchError((onError) {
+              displayToastMessage("An error occurred. Please try again later", context);
+            });
+          }
+        });
+      }
+      if(i == widget.forwardMessageList.length){
+        setState(() {
+          isForwarding = false;
+        });
+      }
+    }
+  }
+}
+
 
 
 

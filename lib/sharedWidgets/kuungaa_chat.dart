@@ -178,8 +178,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
 
                                 child: Provider.of<AppData>(context).userChats != null ?
                                 Provider.of<AppData>(context).userChats!.isNotEmpty?ListView.builder(
-                                    //scrollDirection: Axis.vertical,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
                                     itemCount: Provider.of<AppData>(context).userChats!.length,
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
@@ -188,7 +187,6 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                         String num = intInStr.allMatches(message).map((m) => m.group(0)).toString();
                                         String fNum = num.replaceAll("(", "");
                                                fNum = num.replaceAll(")", "");
-                                        print("number string found :: " + fNum);
                                       }
                                       return InkWell(
                                         onTap: (){

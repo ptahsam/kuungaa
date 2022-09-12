@@ -238,7 +238,10 @@ class AssistantMethods
             listMedia.add(media);
           }
           message.messageMedia = listMedia.toSet().toList();
-          message.group_date = convertToChattime(message.time_created!);
+        }
+
+        if(event.snapshot.value["origin"] != null){
+          message.origin = event.snapshot.value["origin"];
         }
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").
