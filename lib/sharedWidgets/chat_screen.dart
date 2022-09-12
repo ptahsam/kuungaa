@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -229,11 +231,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
                   ),
-                  child: ListView.builder(
+                  child: InViewNotifierList(
+                    isInViewPortCondition:
+                        (double deltaTop, double deltaBottom, double vpHeight) {
+                      return deltaTop < (0.5 * vpHeight) && deltaBottom > (0.5 * vpHeight);
+                    },
                     itemCount: Provider.of<AppData>(context).chatMessages!.length,
                     reverse: true,
                     padding: const EdgeInsets.only(top: 15.0),
-                    itemBuilder: (context, int index){
+                    builder: (context, int index){
                       Message message = Provider.of<AppData>(context).chatMessages![index];
                       Message nextMessage =  Provider.of<AppData>(context).chatMessages!.length - 1 > index?Provider.of<AppData>(context).chatMessages![index + 1]:Provider.of<AppData>(context).chatMessages![index];
                       //Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
@@ -269,7 +275,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ),
                             ):SizedBox.shrink(),
-                            MessageContainer(message: message, chat: widget.chat, isMe: isMe),
+                            InViewNotifierWidget(
+                              id: message.message_id!,
+                              builder: (BuildContext context, bool isInView, Widget? child) {
+                                //print("widget ${message.message_id} is in view status :: ${isInView}");
+                                if(message.message_status != "1" && !isInView && message.sender_id != FirebaseAuth.instance.currentUser!.uid){
+                                  print("widget ${message.message_id} is in view status :: ${isInView}");
+                                }
+                                updateMessageStatus(message, isInView);
+                                return MessageContainer(message: message, chat: widget.chat, isMe: isMe);
+                              }
+                            ),
                           ],
                       );
                     },
@@ -906,15 +922,27 @@ class _ChatScreenState extends State<ChatScreen> {
         var keys = snapshot.value.keys;
         var value = snapshot.value;
         for(var key in keys){
-          Map<String, dynamic> messageMap = {
-            "message_status" : "1",
-          };
-          FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chat_id).child("messages").child(key)
-          .update(messageMap);
+          if(value[key]["sender_id"] != FirebaseAuth.instance.currentUser!.uid){
+            Map<String, dynamic> messageMap = {
+              "message_status" : "1",
+            };
+            FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chat_id).child("messages").child(key)
+                .update(messageMap);
+          }
         }
       }
     });
     //displayToastMessage("Messages updated successfully", context);
+  }
+
+  void updateMessageStatus(Message message, bool isInView) {
+    if(message.sender_id != FirebaseAuth.instance.currentUser!.uid && message.message_status != "1"){
+      Map<String, dynamic> messageMap = {
+        "message_status" : "1",
+      };
+      FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").child(message.message_id!)
+          .update(messageMap);
+    }
   }
 
 }

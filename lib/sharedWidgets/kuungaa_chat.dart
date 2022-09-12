@@ -96,16 +96,21 @@ class _KuungaaChatState extends State<KuungaaChat> {
                         ),
                         Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?SizedBox(width: 5.0,):SizedBox.shrink(),
                         Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Expanded(
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Text(
-                              Provider.of<AppData>(context).messageCount!.message_count!.toString(),
-                              style: TextStyle(
-                                color: Palette.kuungaaDefault,
+                          child: SizedBox.expand(
+                            child: Container(
+                              height: 28,
+                              width: 28,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  Provider.of<AppData>(context).messageCount!.message_count!.toString(),
+                                  style: TextStyle(
+                                    color: Palette.kuungaaDefault,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -173,7 +178,8 @@ class _KuungaaChatState extends State<KuungaaChat> {
 
                                 child: Provider.of<AppData>(context).userChats != null ?
                                 Provider.of<AppData>(context).userChats!.isNotEmpty?ListView.builder(
-                                    scrollDirection: Axis.vertical,
+                                    //scrollDirection: Axis.vertical,
+                                    physics: NeverScrollableScrollPhysics(),
                                     itemCount: Provider.of<AppData>(context).userChats!.length,
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
