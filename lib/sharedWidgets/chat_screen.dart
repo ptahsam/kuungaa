@@ -63,6 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
   PermissionStatus? status;
   bool isSending = false;
   bool messageSelectMode = false;
+  bool isDeleting = false;
 
   @override
   void initState() {
@@ -144,11 +145,14 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: (){
             },
           ),
-          IconButton(
+          isDeleting?Spinner(
+          icon: FontAwesomeIcons.circleNotch)
+          :IconButton(
             icon: const Icon(MdiIcons.delete),
             //iconSize: 36.0,
             color: Colors.white,
             onPressed: (){
+              deleteMessages();
             },
           ),
           IconButton(
@@ -518,7 +522,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     setState(() {
                                       bool exists = userSelectedFileList!.any((File oldfile) => oldfile.path == file.path);
                                       if(exists){
-                                        userSelectedFileList!.removeWhere((File oldfile) => oldfile.path== file.path);
+                                        userSelectedFileList!.removeWhere((File oldfile) => oldfile.path == file.path);
                                       }
                                     });
                                   },
@@ -1020,6 +1024,37 @@ class _ChatScreenState extends State<ChatScreen> {
       };
       FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").child(message.message_id!)
           .update(messageMap);
+    }
+  }
+
+  Future<void> deleteMessages() async {
+    setState(() {
+      isDeleting = true;
+    });
+    var count = 0;
+    for(var i = 0; i < selectedMessages.length; i++){
+      Message message = selectedMessages[i];
+      if(message.messageMedia != null){
+        firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Messages").child(message.message_id!);
+        await ref.listAll().then((result) async{
+          for (var file in result.items) {
+            file.delete();
+          }
+        });
+      }
+
+      DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").child(message.message_id!);
+        await msgRef.remove().then((onValue) {
+          count = count + 1;
+      }).catchError((onError) {
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+      if(count == selectedMessages.length){
+        setState(() {
+          isDeleting = false;
+          selectedMessages.clear();
+        });
+      }
     }
   }
 
@@ -1758,6 +1793,7 @@ class _ForwardContainerState extends State<ForwardContainer> {
   }
 
   void sendMessages() {
+    var count = 0;
     for(var i = 0; i < widget.forwardMessageList.length; i++){
       Message forwardMessage = widget.forwardMessageList[i];
 
@@ -1811,7 +1847,9 @@ class _ForwardContainerState extends State<ForwardContainer> {
               "origin": "forwarded"
             };
 
-            msgRef.set(msgMap);
+            msgRef.set(msgMap).then((value){
+              count = count + 1;
+            });
           }else{
             var chattime = DateTime.now().millisecondsSinceEpoch;;
             Map membersMap = {};
@@ -1864,14 +1902,16 @@ class _ForwardContainerState extends State<ForwardContainer> {
                 "origin": "forwarded"
               };
 
-              msgRef.set(msgMap);
+              msgRef.set(msgMap).then((value){
+                count = count + 1;
+              });
             }).catchError((onError) {
               displayToastMessage("An error occurred. Please try again later", context);
             });
           }
         });
       }
-      if(i == widget.forwardMessageList.length){
+      if(count == widget.forwardMessageList.length){
         setState(() {
           isForwarding = false;
         });

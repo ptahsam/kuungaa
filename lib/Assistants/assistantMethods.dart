@@ -225,7 +225,7 @@ class AssistantMethods
   static getChatMessages(BuildContext context, String chatid) async {
     List<Message> chatMessage = [];
     Query chatQuery = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("messages");
-    await chatQuery.orderByKey().onChildAdded.forEach((event) {
+    chatQuery.orderByKey().onChildAdded.forEach((event) {
       if(event.snapshot.exists){
         Message message = Message.fromSnapshot(event.snapshot);
         if(event.snapshot.value["message_media"] != ""){
@@ -259,6 +259,16 @@ class AssistantMethods
         Provider.of<AppData>(context, listen: false).updateChatMessages(chatMessage.reversed.toList());
       }
     });
+
+    chatQuery.onChildRemoved.forEach((event) {
+      if(event.snapshot.exists){
+        print("message removed :: ${event.snapshot.value.toString()}");
+        Message message = Message.fromSnapshot(event.snapshot);
+        chatMessage.removeWhere((Message remMessage) => remMessage.message_id == message.message_id!);
+        Provider.of<AppData>(context, listen: false).updateChatMessages(chatMessage.reversed.toList());
+      }
+    });
+
   }
 
   static getlatestMessage(BuildContext context, String chatid) async {

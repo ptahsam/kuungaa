@@ -535,7 +535,8 @@ String convertToWhen(int timestamp) {
       if((int.parse(cd) - int.parse(d)) == 1){
         return "Yesterday";
       }
-      return e + " " + d;
+      return convertToFullMonth(timestamp);
+      //return e + " " + d;
     }
     return convertToFullMonth(timestamp);
   }
