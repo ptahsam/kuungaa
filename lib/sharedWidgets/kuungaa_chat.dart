@@ -219,11 +219,19 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                               children: [
                                                 chat.message!.messageMedia != null? Padding(
                                                   padding: EdgeInsets.only(right: 5.0),
-                                                  child: Icon(
+                                                  child: chat.message!.messageMedia![0].type!.contains("image/")?Icon(
                                                     Icons.perm_media_outlined,
                                                     size: 18.0,
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                  ),
+                                                  ):chat.message!.messageMedia![0].type!.contains("audio/")?Icon(
+                                                    MdiIcons.headset,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/")?Icon(
+                                                    MdiIcons.filePdfBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):SizedBox.shrink(),
                                                 ):const SizedBox.shrink(),
                                                 chat.message != null? chat.message!.sender_id == userCurrentInfo!.user_id?Row(
                                                   children: [
@@ -354,29 +362,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                 CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
-                      child: Container(
-                        color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-                        padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 0.0),
-                        height: MediaQuery.of(context).size.height,
-                        child: Provider.of<AppData>(context).chatUsersList != null?
-                        ListView.builder(
-                          itemCount: Provider.of<AppData>(context).chatUsersList!.length,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (BuildContext context, int index){
-                            Users user = Provider.of<AppData>(context).chatUsersList![index];
-                            return InkWell(
-                              onTap: (){
-                                startMessegeUser(context, user.user_id!);
-                              },
-                              child: ListTile(
-                                leading: ProfileAvatar(imageUrl: user.user_profileimage!,),
-                                title: Text(user.user_firstname! + " " + user.user_lastname!),
-                                subtitle: Text(user.user_bio!),
-                              ),
-                            );
-                          },
-                        ):const SizedBox.shrink(),
-                      ),
+                      child: UserContacts(),
                     ),
                   ],
                 ),

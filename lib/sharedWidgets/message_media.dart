@@ -121,6 +121,40 @@ class _MessageMediaState extends State<MessageMedia> {
           ],
         ),
       );
+    }else if(media.type!.contains("application/")){
+      return Container(
+        padding: EdgeInsets.all(6.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(3.0),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 28.0,
+              width: 28.0,
+              decoration: BoxDecoration(
+                color: Palette.kuungaaDefault,
+                borderRadius: BorderRadius.circular(3.0),
+              ),
+              child: media.type!.contains("application/pdf")?Icon(
+                MdiIcons.filePdfBox,
+                color: Colors.white,
+              ):SizedBox.shrink(),
+            ),
+            SizedBox(width: 8.0,),
+            Expanded(
+              child: Text(
+                media.name!,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: Colors.blue
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     }else if(media.type!.contains("audio/")){
       return Container(
         width: MediaQuery.of(context).size.width * 0.75,

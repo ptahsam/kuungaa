@@ -1911,7 +1911,7 @@ class _ForwardContainerState extends State<ForwardContainer> {
           }
         });
       }
-      if(count == widget.forwardMessageList.length){
+      if(count == ((widget.forwardMessageList.length)*selectedUsers.length)){
         setState(() {
           isForwarding = false;
         });

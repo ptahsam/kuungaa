@@ -97,6 +97,7 @@ dependencies:
   audioplayers: ^1.0.1
   flutter_sound: ^9.2.13
   inview_notifier_list: ^3.0.0
+  flutter_contacts: ^1.1.5
 
 dev_dependencies:
   flutter_test:

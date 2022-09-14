@@ -16,6 +16,8 @@
 	<string>In order to access your camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>In order to access your microphone</string>
+	<key>NSContactsUsageDescription</key>
+	<string>In order to access your contacts</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>

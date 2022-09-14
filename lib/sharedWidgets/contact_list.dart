@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:kuungaa/Assistants/assistantMethods.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
@@ -23,6 +23,7 @@ class _ContactListState extends State<ContactList> {
     super.initState();
     AssistantMethods.getUserFavoriteContacts(context);
   }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
