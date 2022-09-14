@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
@@ -54,7 +57,18 @@ class _UserContactsState extends State<UserContacts> {
               //startMessegeUser(context, user.user_id!);
             },
             child: ListTile(
-              //leading: ProfileAvatar(imageUrl: contact.photo),
+              leading: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: ExtendedFileImageProvider(
+                      File.fromRawPath(contact.photoOrThumbnail!),
+                    ),
+                  )
+                ),
+              ),
               title: Text(contact.displayName),
               subtitle: Text(contact.phones[0].number),
             ),
