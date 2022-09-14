@@ -88,7 +88,7 @@ class _ContactListState extends State<ContactList> {
     );
   }
 
-  Future<List> getContactList() async{
+  Future<List> getContactList() async {
     List<Users> contactList = [];
     DatabaseReference dbReference = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users");
     await dbReference.once().then((DataSnapshot dataSnapshot){

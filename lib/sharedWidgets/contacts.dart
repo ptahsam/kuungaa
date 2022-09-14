@@ -24,15 +24,17 @@ class _UserContactsState extends State<UserContacts> {
   }
 
   Future getContactPermission() async {
-    if(await FlutterContacts.requestPermission()){
-      List<Contact> userContacts = await FlutterContacts.getContacts(
-          withProperties: true, withPhoto: true);
-      if(userContacts.isNotEmpty){
-        setState(() {
-          listContacts = userContacts;
-        });
-      }
-    }
+    Future.delayed(Duration.zero,() async{
+      if(await FlutterContacts.requestPermission()){
+          List<Contact> userContacts = await FlutterContacts.getContacts(
+            withProperties: true, withPhoto: true);
+          if(userContacts.isNotEmpty){
+            setState(() {
+              listContacts = userContacts;
+            });
+          }
+        }
+    });
   }
 
   @override
