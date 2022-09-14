@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/profile_avatar.dart';
 import 'package:provider/provider.dart';
@@ -57,18 +58,18 @@ class _UserContactsState extends State<UserContacts> {
               //startMessegeUser(context, user.user_id!);
             },
             child: ListTile(
-              leading: Container(
+              leading: contact.photo != null?Container(
                 height: 30,
                 width: 30,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: ExtendedFileImageProvider(
-                      File.fromRawPath(contact.photoOrThumbnail!),
+                      File.fromRawPath(contact.photo!),
                     ),
                   )
                 ),
-              ),
+              ):ProfileAvatar(imageUrl: uProfile),
               title: Text(contact.displayName),
               subtitle: Text(contact.phones[0].number),
             ),
