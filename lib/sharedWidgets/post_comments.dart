@@ -117,10 +117,11 @@ class _PostCommentsState extends State<PostComments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Palette.kuungaaDefault,
+      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:HexColor("#e9ecef"),
       appBar: AppBar(
         title: Text("Comments"),
         centerTitle: false,
+        backgroundColor: Palette.kuungaaDefault,
       ),
       body: Stack(
         children: [

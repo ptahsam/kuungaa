@@ -33,6 +33,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
+import 'package:snippet_coder_utils/hex_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets.dart';
@@ -281,10 +282,14 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                  //color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage("images/chat_bg.png"),
+                    fit: BoxFit.cover,
                   ),
                 ),
                 child: Provider.of<AppData>(context).chatMessages != null?
@@ -1124,7 +1129,7 @@ class _MessageContainerState extends State<MessageContainer> {
             child: ChatBubble(
               alignment: Alignment.centerRight,
               clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
-              backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Palette.kuungaaAccent,
+              backGroundColor: HexColor("#F0F9ED"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1218,7 +1223,7 @@ class _MessageContainerState extends State<MessageContainer> {
           child: ChatBubble(
             alignment: Alignment.centerLeft,
             clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
-            backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Color(0xFFFFEFEE),
+            backGroundColor: HexColor("#ffffff"),
             padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
