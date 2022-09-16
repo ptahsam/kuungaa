@@ -286,7 +286,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   getToken() async {
     token = await FirebaseMessaging.instance.getToken();
     //print("token ::" + token!);
-    usersRef.child(FirebaseAuth.instance.currentUser!.uid).child("user_tokenid").set(token!);
+    if(token != null || token != ""){
+      usersRef.child(FirebaseAuth.instance.currentUser!.uid).child("user_tokenid").set(token!);
+    }
   }
 
   void getCurrentAppTheme() async {

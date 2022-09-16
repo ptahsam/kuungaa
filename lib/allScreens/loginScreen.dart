@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/allScreens/nav_screen.dart';
+import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/main.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
@@ -320,52 +321,52 @@ class _LoginPageState extends State<LoginPage> {
         }
     );
 
-    final User? firebaseUser = (await _firebaseAuth
-        .signInWithEmailAndPassword(
-        email: userEmail!,
-        password: userPassword!).catchError((errMsg){
-          Navigator.pop(context);
-          var errorCode = errMsg.code;
-         // var errorMessage = errMsg.message;
+    try{
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: userEmail!,
+          password: userPassword!
+      );
 
-          if (errorCode == "user-not-found")
-          {
-            //errorNotif = "No account found for this email!. Create a new account";
-            displayToastMessage("No account found for this email!. Create a new account: ", context);
-          }
-
-          if (errorCode == "wrong-password")
-          {
-            //errorNotif = "The password you entered is wrong. Enter correct password and try again";
-            displayToastMessage("The password you entered is wrong. Enter correct password and try again", context);
-          }
-      //displayToastMessage("Error: " + errorCode, context);
-    })).user;
-
-    if(firebaseUser != null)
-    {
-      //print("Current userid: "+firebaseUser.uid);
-      Navigator.pop(context);
+      User? firebaseUser = _firebaseAuth.currentUser!;
+      if(firebaseUser != null)
+      {
+        Navigator.pop(context);
         usersRef.child(firebaseUser.uid).once().then((DataSnapshot snap){
-        if(snap.value != null)
-        {
+          if(snap.value != null)
+          {
+            displayToastMessage("You are logged in. Welcome to Kuungaa... ", context);
+            Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
 
-          //print("Userid : " + snap.value.toString());
-          displayToastMessage("You are logged in. Welcome to Kuungaa... ", context);
-          Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
-
-        }
-        else{
-          Navigator.pop(context);
-          _firebaseAuth.signOut();
-          displayToastMessage("Create an account first then try to log in ", context);
-        }
-      },);
-    }else
+          }
+          else{
+            Navigator.pop(context);
+            _firebaseAuth.signOut();
+            displayToastMessage("Create an account first then try to log in ", context);
+          }
+        },);
+      }else
       {
         Navigator.pop(context);
         displayToastMessage("An error occured! Try again later. ", context);
       }
+    }catch(exp){
+      Navigator.pop(context);
+      print("error :: " + exp.toString());
+      var errorCode = exp;
+      // var errorMessage = errMsg.message;
+
+      if (errorCode == "user-not-found")
+      {
+        //errorNotif = "No account found for this email!. Create a new account";
+        displayToastMessage("No account found for this email!. Create a new account: ", context);
+      }
+
+      if (errorCode == "wrong-password")
+      {
+        //errorNotif = "The password you entered is wrong. Enter correct password and try again";
+        displayToastMessage("The password you entered is wrong. Enter correct password and try again", context);
+      }
+    }
   }
 
   displayToastMessage(String message, BuildContext context) {
