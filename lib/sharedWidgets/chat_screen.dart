@@ -288,7 +288,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     topRight: Radius.circular(30.0),
                   ),
                   image: DecorationImage(
-                    image: AssetImage("images/chat_bg.png"),
+                    image: Provider.of<AppData>(context).darkTheme?AssetImage("images/chat_bg_dark.png"):AssetImage("images/chat_bg.png"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -319,7 +319,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   decoration: BoxDecoration(
-                                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[100]!,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -333,7 +333,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                                   decoration: BoxDecoration(
-                                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[100]!,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[100]!,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -419,12 +419,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         File file = userSelectedFileList![index];
                         String? mimeType = lookupMimeType(file.path);
                         String basename = path.basename(file.path);
-                        print("file mimetype :: " + mimeType!);
                         return Padding(
                           padding: const EdgeInsets.only(right: 5.0),
                           child: Stack(
                             children: [
-                              mimeType.contains("image/")?InkWell(
+                              mimeType!.contains("image/")?InkWell(
                                 onTap: () async {
                                   var res = await Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ImageViewEditor(imgFile: file,),));
                                 },
@@ -1122,14 +1121,18 @@ class _MessageContainerState extends State<MessageContainer> {
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
-          color: widget.isSelected?Colors.grey[200]!:Colors.transparent,
+          decoration: Provider.of<AppData>(context).darkTheme?BoxDecoration(
+            color: widget.isSelected?Colors.black26.withOpacity(0.5):Colors.transparent,
+          ):BoxDecoration(
+            color: widget.isSelected?Colors.grey[300]!.withOpacity(0.5):Colors.transparent,
+          ),
           margin: widget.isSelected?EdgeInsets.symmetric(vertical: 8.0,):EdgeInsets.zero,
           child: Container(
             margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerRight,
               clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
-              backGroundColor: HexColor("#F0F9ED"),
+              backGroundColor: Provider.of<AppData>(context).darkTheme?HexColor("#b7e3a8"):HexColor("#F0F9ED"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1190,7 +1193,7 @@ class _MessageContainerState extends State<MessageContainer> {
                       Text(
                         convertToPMAM(widget.message.time_created!),
                         style: TextStyle(
-                          color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                          color: Provider.of<AppData>(context).darkTheme?Colors.black54:Colors.grey,
                           fontSize: 12.0,
                           fontWeight: FontWeight.w100,
                         ),
@@ -1219,79 +1222,88 @@ class _MessageContainerState extends State<MessageContainer> {
       alignment: WrapAlignment.start,
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
-          child: ChatBubble(
-            alignment: Alignment.centerLeft,
-            clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
-            backGroundColor: HexColor("#ffffff"),
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                widget.message.origin != null?Container(
-                  padding: EdgeInsets.all(2.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+          width: MediaQuery.of(context).size.width,
+          decoration: Provider.of<AppData>(context).darkTheme?BoxDecoration(
+            color: widget.isSelected?Colors.black26.withOpacity(0.5):Colors.transparent,
+          ):BoxDecoration(
+            color: widget.isSelected?Colors.grey[300]!.withOpacity(0.5):Colors.transparent,
+          ),
+          margin: widget.isSelected?EdgeInsets.symmetric(vertical: 8.0,):EdgeInsets.zero,
+          child: Container(
+            margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
+            child: ChatBubble(
+              alignment: Alignment.centerLeft,
+              clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
+              backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#ffffff"),
+              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  widget.message.origin != null?Container(
+                    padding: EdgeInsets.all(2.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.forward,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(width: 4.0,),
+                        Text(
+                          "Forwarded",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey
+                          ),
+                        ),
+                      ],
+                    ),
+                  ):SizedBox.shrink(),
+                  widget.message.messageMedia != null?
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: MessageMedia(messageMedia: widget.message.messageMedia!,),
+                  ):const SizedBox.shrink(),
+                  const SizedBox(height: 3.0,),
+                  Linkify(
+                    onOpen: (link) async {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        throw 'Could not launch $link';
+                      }
+                    },
+                    text: widget.message.message!,
+                    style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
+                    linkStyle: TextStyle(color: Colors.blue),
+                  ),
+                  /*Text(
+                    widget.message.message!,
+                    style: TextStyle(
+                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),*/
+                  SizedBox(height: 10.0,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.forward,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 4.0,),
                       Text(
-                        "Forwarded",
+                        convertToPMAM(widget.message.time_created!),
                         style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.grey
+                          color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
                         ),
                       ),
                     ],
                   ),
-                ):SizedBox.shrink(),
-                widget.message.messageMedia != null?
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: MessageMedia(messageMedia: widget.message.messageMedia!,),
-                ):const SizedBox.shrink(),
-                const SizedBox(height: 3.0,),
-                Linkify(
-                  onOpen: (link) async {
-                    if (await canLaunch(link.url)) {
-                      await launch(link.url);
-                    } else {
-                      throw 'Could not launch $link';
-                    }
-                  },
-                  text: widget.message.message!,
-                  style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
-                  linkStyle: TextStyle(color: Colors.blue),
-                ),
-                /*Text(
-                  widget.message.message!,
-                  style: TextStyle(
-                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),*/
-                SizedBox(height: 10.0,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      convertToPMAM(widget.message.time_created!),
-                      style: TextStyle(
-                        color: Provider.of<AppData>(context).darkTheme?Colors.white70:Colors.grey,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w100,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -183,6 +183,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
                                       String message = chat.message!.message!;
+                                      //print("message media type :: ${chat.message!.messageMedia != null?chat.message!.messageMedia![0].type:""}");
                                       if(intInStr.allMatches(message).map((m) => m.group(0)) != "" || intInStr.allMatches(message).map((m) => m.group(0)) != null){
                                         String num = intInStr.allMatches(message).map((m) => m.group(0)).toString();
                                         String fNum = num.replaceAll("(", "");
@@ -220,15 +221,41 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                 chat.message!.messageMedia != null? Padding(
                                                   padding: EdgeInsets.only(right: 5.0),
                                                   child: chat.message!.messageMedia![0].type!.contains("image/")?Icon(
-                                                    Icons.perm_media_outlined,
+                                                    MdiIcons.image,
                                                     size: 18.0,
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                   ):chat.message!.messageMedia![0].type!.contains("audio/")?Icon(
                                                     MdiIcons.headset,
                                                     size: 18.0,
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                                                  ):chat.message!.messageMedia![0].type!.contains("application/")?Icon(
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/pdf")?Icon(
                                                     MdiIcons.filePdfBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+                                                    chat.message!.messageMedia![0].type!.contains("application/msword")?Icon(
+                                                    MdiIcons.fileWordBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/vnd.ms-excel") ||
+                                                    chat.message!.messageMedia![0].type!.contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")?Icon(
+                                                    MdiIcons.fileExcelBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/vnd.ms-powerpoint")?Icon(
+                                                    MdiIcons.filePowerpointBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("application/vnd.openxmlformats-officedocument.presentationml.presentation")?Icon(
+                                                    MdiIcons.filePresentationBox,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("text/plain")?Icon(
+                                                    MdiIcons.fileDocument,
+                                                    size: 18.0,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                                                  ):chat.message!.messageMedia![0].type!.contains("video/")?Icon(
+                                                    MdiIcons.videoBox,
                                                     size: 18.0,
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                   ):SizedBox.shrink(),

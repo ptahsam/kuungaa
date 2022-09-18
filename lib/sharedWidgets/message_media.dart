@@ -1,6 +1,7 @@
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/MultiManager/flick_multimanager.dart';
 import 'package:kuungaa/MultiManager/flick_multiplayer.dart';
@@ -8,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 class MessageMedia extends StatefulWidget {
   final List<Media> messageMedia;
@@ -121,11 +123,31 @@ class _MessageMediaState extends State<MessageMedia> {
           ],
         ),
       );
-    }else if(media.type!.contains("application/")){
+    }else if(media.type!.contains("text/plain")){
       return Container(
         padding: EdgeInsets.all(6.0),
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.circular(3.0),
+        ),
+        child: Container(
+          height: 28.0,
+          width: 28.0,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(3.0),
+          ),
+          child: Icon(
+            MdiIcons.fileDocument,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }else if(media.type!.contains("application/")){
+      return Container(
+        padding: EdgeInsets.all(6.0),
+        decoration: BoxDecoration(
+          color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker.withOpacity(0.5):Colors.white,
           borderRadius: BorderRadius.circular(3.0),
         ),
         child: Row(
@@ -139,6 +161,20 @@ class _MessageMediaState extends State<MessageMedia> {
               ),
               child: media.type!.contains("application/pdf")?Icon(
                 MdiIcons.filePdfBox,
+                color: Colors.white,
+              ):media.type!.contains("application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+                media.type!.contains("application/msword")?Icon(
+                MdiIcons.fileWordBox,
+                color: Colors.white,
+              ):media.type!.contains("application/vnd.ms-excel") ||
+                media.type!.contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")?Icon(
+                MdiIcons.fileExcelBox,
+                color: Colors.white,
+              ):media.type!.contains("application/vnd.ms-powerpoint")?Icon(
+                MdiIcons.filePowerpointBox,
+                color: Colors.white,
+              ):media.type!.contains("application/vnd.openxmlformats-officedocument.presentationml.presentation")?Icon(
+                MdiIcons.filePresentationBox,
                 color: Colors.white,
               ):SizedBox.shrink(),
             ),
@@ -162,7 +198,7 @@ class _MessageMediaState extends State<MessageMedia> {
         margin: EdgeInsets.only(bottom: 10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: Colors.white70,
+          color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:Colors.white70,
         ),
         child: Column(
           children: [
