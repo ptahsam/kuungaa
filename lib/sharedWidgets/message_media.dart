@@ -145,7 +145,7 @@ class _MessageMediaState extends State<MessageMedia> {
       );
     }else if(media.type!.contains("application/")){
       return Container(
-        padding: EdgeInsets.all(6.0),
+        padding: const EdgeInsets.all(6.0),
         decoration: BoxDecoration(
           color: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker.withOpacity(0.5):Colors.white,
           borderRadius: BorderRadius.circular(3.0),
@@ -222,7 +222,7 @@ class _MessageMediaState extends State<MessageMedia> {
                           fontSize: 10.0,
                           color: Colors.white,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -1096,10 +1096,8 @@ void saveStory(String text, File? imageFile, String storyType, BuildContext cont
 
     //storyMedia.add(storymediadetails);
 
-    var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
-    offsetRef.onValue.listen((event){
-      int offset = event.snapshot.value;
-      var storytime = ((DateTime.now().millisecondsSinceEpoch) + offset);
+
+      var storytime = DateTime.now().millisecondsSinceEpoch;
 
       Map storymediadetails = {
         "story_description" : text,
@@ -1117,7 +1115,6 @@ void saveStory(String text, File? imageFile, String storyType, BuildContext cont
         Navigator.pop(context);
         displayToastMessage("An error occurred. Please try again later", context);
       });
-    });
   }
 }
 

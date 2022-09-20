@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -28,7 +27,7 @@ class _UserContactsState extends State<UserContacts> {
   }
 
   Future getContactPermission() async {
-    Future.delayed(Duration.zero,() async{
+    Future.delayed(Duration.zero,() async {
       if(await FlutterContacts.requestPermission()){
           List<Contact> userContacts = await FlutterContacts.getContacts(
             withProperties: true, withPhoto: true);

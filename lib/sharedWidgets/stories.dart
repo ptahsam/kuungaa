@@ -19,6 +19,7 @@ import 'package:kuungaa/sharedWidgets/widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:preload_page_view/preload_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
@@ -61,6 +62,13 @@ class _StoriesState extends State<Stories> {
           if(snapshot.connectionState == ConnectionState.done){
             if(snapshot.hasData){
               if(snapshot.data!.length > 0){
+                List<Users> usersList = [];
+                for(var i = 0; i < snapshot.data!.length; i++){
+                  Story story = snapshot.data![i];
+                  Users users = Users();
+                  users.user_id = story.story_poster!;
+                  usersList.add(users);
+                }
                 return Column(
                   children: [
                     Expanded(
@@ -91,7 +99,7 @@ class _StoriesState extends State<Stories> {
                           Story story = snapshot.data![index - 1];
                           return InkWell(
                             onTap: (){
-                              Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ViewStory(userid: story.story_poster!,)));
+                              Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ViewStory(userid: story.story_poster!, usersList: usersList,)));
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 2.0),
@@ -554,9 +562,11 @@ class _StoryCard extends StatelessWidget{
 }
 
 class ViewStory extends StatefulWidget {
+  final List<Users> usersList;
   final String userid;
   const ViewStory({
     Key? key,
+    required this.usersList,
     required this.userid
   }) : super(key: key);
 
@@ -577,7 +587,7 @@ class _ViewStoryState extends State<ViewStory> {
             Story story = snapshot.data![i];
             stories.add(story);
           }
-          return StoryScreen(stories: stories);
+          return StoryScreen(stories: stories, users: widget.usersList,);
         }else{
           return Scaffold(
             backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
@@ -615,8 +625,9 @@ class _ViewStoryState extends State<ViewStory> {
 
 class StoryScreen extends StatefulWidget {
 
+  final List<Users> users;
   final List<Story> stories;
-  const StoryScreen({required this.stories});
+  const StoryScreen({required this.users, required this.stories});
 
   @override
   _StoryScreenState createState() => _StoryScreenState();
@@ -627,12 +638,15 @@ class _StoryScreenState extends State<StoryScreen>
     with SingleTickerProviderStateMixin {
   PageController? _pageController;
   AnimationController? _animController;
+  TextEditingController storyMainCommentContoller = TextEditingController();
+
   //VideoPlayerController? _videoController;
 
   final videoInfo = FlutterVideoInfo();
   final FlutterShareMe flutterShareMe = FlutterShareMe();
   late FlickMultiManager flickMultiManager;
   int _currentIndex = 0;
+  bool imageHasLoaded = false;
 
   @override
   void initState() {
@@ -655,16 +669,25 @@ class _StoryScreenState extends State<StoryScreen>
             _loadStory(story: widget.stories[_currentIndex]);
 
           } else {
+            //int pos = widget.users.indexOf(widget.stories.first.storyUser! );
+            widget.users.removeWhere((Users users) => users.user_id == widget.stories.first.story_poster!);
+            if(widget.users.isNotEmpty){
+              Users nextUser = widget.users.first;
+              Navigator.pop(context);
+              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ViewStory(userid: nextUser.user_id!, usersList: widget.users,)));
+            }else{
+              Navigator.pop(context);
+            }
             // Out of bounds - loop story
             // You can also Navigator.of(context).pop() here
             //_currentIndex = 0;
-            Navigator.of(context).pop();
+            //Navigator.of(context).pop();
             //_loadStory(story: widget.stories[_currentIndex]);
           }
         });
       }
     });
-    _animController!.stop();
+    //_animController!.stop();
   }
 
   @override
@@ -689,21 +712,27 @@ class _StoryScreenState extends State<StoryScreen>
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.stories.length,
+              pageSnapping: true,
               itemBuilder: (context, i) {
                 final Story story = widget.stories[i];
                 addStoryViewers(story);
                 if(story.story_type == "image_story"){
+                  return ExtendedImage.network(
+                    story.story_media!,
+                    fit: BoxFit.cover,
+                    enableMemoryCache: true,
+                    cache: true,
+                  );
                   //_animController!.stop();
-                  return Image.network(
+                  /*return Image.network(
                     story.story_media!,
                     loadingBuilder: (BuildContext context, Widget child,
                         ImageChunkEvent? loadingProgress) {
                       if (loadingProgress == null) {
-                          _animController!.forward();
                         return child;
                       }
 
-                      //_animController!.reset();
+                      _animController!.stop();
                       return Center(
                         child: CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null
@@ -713,7 +742,7 @@ class _StoryScreenState extends State<StoryScreen>
                         ),
                       );
                     },
-                  );
+                  );*/
                 }else if(story.story_type == "video_story"){
                   return Container(
                     width: double.infinity,
@@ -912,40 +941,65 @@ class _StoryScreenState extends State<StoryScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40.0,),
-                  TextField(
-                    onChanged: (value) {
-                      //Do something with the user input.
-                    },
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.newline,
-                    minLines: 1,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                    decoration: const InputDecoration(
-                      hintText: 'Write your comment',
-                      hintStyle: TextStyle(
-                        color: Colors.white,
+                  story.story_poster != userCurrentInfo!.user_id!?const SizedBox(height: 40.0,):SizedBox.shrink(),
+                  story.story_poster != userCurrentInfo!.user_id!?Row(
+                    children: [
+                      Expanded(
+                        child: FocusScope(
+                          onFocusChange: (focus){
+                            if(focus){
+                              _animController!.stop();
+                            }
+                          },
+                          child: TextField(
+                            onChanged: (value) {
+                              //Do something with the user input.
+                            },
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.newline,
+                            controller: storyMainCommentContoller,
+                            minLines: 1,
+                            maxLines: 1,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                            decoration: const InputDecoration(
+                              hintText: 'Write your comment',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              contentPadding:
+                              EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Colors.white, width: 0.8),
+                                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Palette.kuungaaDefault, width: 0.8),
+                                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      SizedBox(width: 10.0,),
+                      InkWell(
+                        onTap: (){
+                          saveStoryComment(story, storyMainCommentContoller.text);
+                        },
+                        child: const Icon(
+                          Icons.send,
+                          color: Palette.kuungaaDefault,
+                          size: 30.0,
+                        ),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Colors.white, width: 0.8),
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                        BorderSide(color: Palette.kuungaaDefault, width: 0.8),
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                      ),
-                    ),
-                  ),
+                    ],
+                  ):SizedBox.shrink(),
                 ],
               ),
             ),
@@ -1019,8 +1073,7 @@ class _StoryScreenState extends State<StoryScreen>
     if(story.story_type == "image_story"){
         //print("story_duration ::" + story.story_duration!.toString());
       _animController!.duration = const Duration(seconds: 10);
-      _animController!.stop();
-      //_animController!.forward();
+      _animController!.forward();
       //print("story_duration ::" + story.story_duration!.toString());
     }else if(story.story_type == "video_story"){
       //var a = await videoInfo.getVideoInfo(story.story_media!);
@@ -1382,18 +1435,48 @@ class _StoryScreenState extends State<StoryScreen>
               future: getStoryViewers(story),
               builder: (BuildContext context, AsyncSnapshot<List> snapshot){
                 if(snapshot.hasData){
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index){
-                      Users users = snapshot.data![index];
-                      return ListTile(
-                        leading: ProfileAvatar(imageUrl: users.user_profileimage!, radius: 20.0,),
-                        title: Text(users.user_firstname! + " " + users.user_lastname!),
-                        trailing: Text(convertToTimeAgo(users.story_viewtime!)),
-                      );
-                    },
-                  );
+                  if(snapshot.data!.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        Users users = snapshot.data![index];
+                        return ListTile(
+                          leading: ProfileAvatar(
+                            imageUrl: users.user_profileimage!, radius: 20.0,),
+                          title: Text(users.user_firstname! + " " +
+                              users.user_lastname!),
+                          trailing: Text(
+                              convertToTimeAgo(users.story_viewtime!)),
+                        );
+                      },
+                    );
+                  }else{
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.13,
+                        width: MediaQuery.of(context).size.width * 0.65,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100]!,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.remove_red_eye_sharp,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 6.0,),
+                              Text("No viewers yet", textAlign: TextAlign.center,),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
                 }else{
                   return const Center(child: CircularProgressIndicator(),);
                 }

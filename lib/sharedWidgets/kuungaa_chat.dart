@@ -182,7 +182,17 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                     itemCount: Provider.of<AppData>(context).userChats!.length,
                                     itemBuilder: (BuildContext context, int index)  {
                                       Chat chat = Provider.of<AppData>(context).userChats![index];
+                                      AssistantMethods.userIsTyping(context, chat.chat_id!, chat.chat_opponentid!);
                                       String message = chat.message!.message!;
+                                      int cutLength = 0;
+
+                                      if(MediaQuery.of(context).size.width.toInt() > 375){
+                                        cutLength = 17;
+                                      }else if(MediaQuery.of(context).size.width.toInt() < 375 && MediaQuery.of(context).size.width.toInt() > 360){
+                                        cutLength = 10;
+                                      }else if(MediaQuery.of(context).size.width.toInt() < 360){
+                                        cutLength = 7;
+                                      }
                                       //print("message media type :: ${chat.message!.messageMedia != null?chat.message!.messageMedia![0].type:""}");
                                       if(intInStr.allMatches(message).map((m) => m.group(0)) != "" || intInStr.allMatches(message).map((m) => m.group(0)) != null){
                                         String num = intInStr.allMatches(message).map((m) => m.group(0)).toString();
@@ -206,7 +216,27 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                           ),
                                           child: ListTile(
                                             minVerticalPadding: 0,
-                                            leading: ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
+                                            leading: Container(
+                                              height: 50,
+                                              width: 50,
+                                              child: Stack(
+                                                children: [
+                                                  ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
+                                                  Positioned(
+                                                    right: 0,
+                                                    bottom: 0,
+                                                    child: Provider.of<AppData>(context).isTyping?Container(
+                                                      height: 15.0,
+                                                      width: 15.0,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Palette.kuungaaDefault
+                                                      ),
+                                                    ):SizedBox.shrink(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                             title: Text(
                                               chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
                                               style: TextStyle(
@@ -260,31 +290,33 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                   ):SizedBox.shrink(),
                                                 ):const SizedBox.shrink(),
-                                                chat.message != null? chat.message!.sender_id == userCurrentInfo!.user_id?Row(
-                                                  children: [
-                                                    Text(
-                                                      message.length > 20?message.substring(0, 17) + " ...":message,
-                                                      style: TextStyle(
-                                                        color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                                                        fontSize: 14.0,
-                                                        fontWeight: FontWeight.w100,
+                                                chat.message != null? chat.message!.sender_id == userCurrentInfo!.user_id?Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        message.length > 20?message.substring(0, 17) + " ...":message,
+                                                        style: TextStyle(
+                                                          color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
+                                                          fontSize: 14.0,
+                                                          fontWeight: FontWeight.w100,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
-                                                    chat.message!.message_status == "1"?SizedBox(width: 8.0,):SizedBox.shrink(),
-                                                    chat.message!.message_status == "1"?Icon(
-                                                      MdiIcons.checkAll,
-                                                      color:Palette.kuungaaDefault,
-                                                      size: 16.0,
-                                                    ):Icon(
-                                                      MdiIcons.check,
-                                                      color:Colors.grey,
-                                                      size: 16.0,
-                                                    ),
-                                                  ],
+                                                      chat.message!.message_status == "1"?SizedBox(width: 8.0,):SizedBox.shrink(),
+                                                      chat.message!.message_status == "1"?Icon(
+                                                        MdiIcons.checkAll,
+                                                        color:Palette.kuungaaDefault,
+                                                        size: 16.0,
+                                                      ):Icon(
+                                                        MdiIcons.check,
+                                                        color:Colors.grey,
+                                                        size: 16.0,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ):chat.chatCount != null && chat.chatCount != 0?Text(
-                                                  message.length > 20?message.substring(0, 17) + " ...":message,
+                                                  message.length > 20?message.substring(0, cutLength) + " ...":message,
                                                   style: TextStyle(
                                                     color: Palette.kuungaaDefault,
                                                     fontSize: 14.0,
@@ -293,7 +325,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                 ):Text(
-                                                  message.length > 20?message.substring(0, 17) + " ...":message,
+                                                  message.length > 20?message.substring(0, cutLength) + " ...":message,
                                                   style: TextStyle(
                                                     color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
                                                     fontSize: 14.0,

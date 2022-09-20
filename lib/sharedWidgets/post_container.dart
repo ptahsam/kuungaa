@@ -99,12 +99,15 @@ class _PostContainerState extends State<PostContainer> {
           post.post_category = event.snapshot.value["post_category"];
           post.post_countrycode = event.snapshot.value["post_countrycode"];
           post.post_expression = event.snapshot.value["post_expression"];
+
           if(event.snapshot.value["post_category"] == "pagesfeed"){
             post.kpage = await getPageFromId(event.snapshot.value["post_id"]);
           }
+
           if(event.snapshot.value["post_category"] == "groupsfeed"){
             post.group = await getGroupFromId(event.snapshot.value["post_id"]);
           }
+
           DatabaseReference tagRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Posts").child(event.snapshot.key!).child("post_tagged");
           await tagRef.once().then((DataSnapshot tagSnapshot) async {
             if(tagSnapshot.exists){
@@ -126,6 +129,7 @@ class _PostContainerState extends State<PostContainer> {
               }
             }
           });
+
           Users postUser = await AssistantMethods.getCurrentOnlineUser(post.poster_id!);
           post.postUser = postUser;
           setState(() {
@@ -138,6 +142,7 @@ class _PostContainerState extends State<PostContainer> {
           if(listPosts.length >= itemCount){
             Provider.of<AppData>(context, listen: false).updateGettingHomeFeed(false);
           }
+
         }
       });
     }
