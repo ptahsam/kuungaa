@@ -793,7 +793,78 @@ class _StoryScreenState extends State<StoryScreen>
                       //horizontal: 1.5,
                       //vertical: 10.0,
                     ),
-                    child: UserInfo(story: story,animController: _animController!,),
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 12.0, right: 12.0),
+                        color: Colors.transparent,
+                        child: Row(
+                          children: <Widget>[
+                            CircleAvatar(
+                              radius: 20.0,
+                              backgroundColor: Colors.grey[300],
+                              backgroundImage: NetworkImage(
+                                story.storyUser!.user_profileimage!,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    story.storyUser!.user_firstname! + " " + story.storyUser!.user_lastname!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    convertToTimeAgo(story.story_time!),
+                                    //'${post!.post_time!}',
+
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: (){
+                                    _animController!.stop();
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      isDismissible: false,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                                      ),
+                                      context: context,
+                                      builder: (context) => buildSingleStorySheet(story),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -838,9 +909,7 @@ class _StoryScreenState extends State<StoryScreen>
                         story.story_poster == userCurrentInfo!.user_id!?
                         InkWell(
                           onTap: (){
-                            setState(() {
-                              _animController!.stop();
-                            });
+                            _animController!.stop();
                             showModalBottomSheet(
                               isScrollControlled: true,
                               isDismissible: false,
@@ -874,9 +943,7 @@ class _StoryScreenState extends State<StoryScreen>
                         story.story_poster == userCurrentInfo!.user_id!?
                         InkWell(
                           onTap: (){
-                            setState(() {
-                              _animController!.stop();
-                            });
+                            _animController!.stop();
                             showModalBottomSheet(
                               isScrollControlled: true,
                               isDismissible: false,
@@ -906,7 +973,7 @@ class _StoryScreenState extends State<StoryScreen>
                             ],
                           ),
                         ):const SizedBox.shrink(),
-                        InkWell(
+                        /*InkWell(
                           onTap: () {
                             setState(() {
                               _animController!.stop();
@@ -937,7 +1004,7 @@ class _StoryScreenState extends State<StoryScreen>
                               //Text("0", style: TextStyle(color: Colors.white),),
                             ],
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
@@ -1044,6 +1111,7 @@ class _StoryScreenState extends State<StoryScreen>
       }
     }
   }
+
 
   void onShare(BuildContext context, List<String> mediaPath, String text, String subject) async {
     // A builder is used to retrieve the context immediately
@@ -1190,9 +1258,7 @@ class _StoryScreenState extends State<StoryScreen>
               InkWell(
                 onTap: (){
                   Navigator.of(context).pop();
-                  setState(() {
-                    _animController!.forward();
-                  });
+                  _animController!.forward();
                 },
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
@@ -1411,9 +1477,7 @@ class _StoryScreenState extends State<StoryScreen>
               InkWell(
                 onTap: (){
                   Navigator.of(context).pop();
-                  setState(() {
-                    _animController!.forward();
-                  });
+                  _animController!.forward();
                 },
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
@@ -1487,6 +1551,124 @@ class _StoryScreenState extends State<StoryScreen>
       ),
     );
   }
+
+  Widget buildSingleStorySheet(Story story) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),),
+              InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  _animController!.forward();
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200]!,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    size: 25.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(6.0),
+                decoration: BoxDecoration(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    MdiIcons.share,
+                    color: Palette.kuungaaDefault,
+                  ),
+                  iconSize: 22.0,
+                  onPressed: (){
+
+                  },
+                ),
+              ),
+              const SizedBox(width: 14.0,),
+              const Text(
+                "Share this story",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                  color: Palette.kuungaaDefault,
+                ),
+              ),
+            ],
+          ),
+          story.story_poster == userCurrentInfo!.user_id!?InkWell(
+            onTap: () async {
+              DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Stories").child(userCurrentInfo!.user_id!).child(story.story_id!);
+              await dbRef.once().then((DataSnapshot snapshot) async {
+                if(snapshot.exists){
+                  firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Stories").child(story.story_id!);
+                  await ref.listAll().then((result) async {
+                    for (var file in result.items) {
+                      file.delete();
+                    }
+                    dbRef.remove().then((value){
+                      displayToastMessage("Your story was deleted successfully", context);
+                      Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
+                    }).catchError((onError) {
+                      Navigator.pop(context);
+                      displayToastMessage("An error occurred. Please try again later", context);
+                    });
+                  });
+                }
+              });
+            },
+            child: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(6.0),
+                  decoration: BoxDecoration(
+                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      MdiIcons.delete,
+                      color: Colors.red,
+                    ),
+                    iconSize: 22.0,
+                    onPressed: (){
+
+                    },
+                  ),
+                ),
+                const SizedBox(width: 14.0,),
+                const Text(
+                  "Delete this story",
+                  style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.red
+                  ),
+                ),
+              ],
+            ),
+          ):SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
 }
 
 class AnimatedBar extends StatelessWidget {
@@ -1546,163 +1728,6 @@ class AnimatedBar extends StatelessWidget {
           width: 0.8,
         ),
         borderRadius: BorderRadius.circular(3.0),
-      ),
-    );
-  }
-}
-
-class UserInfo extends StatefulWidget {
-  final Story story;
-  final AnimationController animController;
-
-  const UserInfo({
-    Key? key,
-    required this.story,
-    required this.animController
-  }) : super(key: key);
-
-  @override
-  State<UserInfo> createState() => _UserInfoState();
-}
-
-class _UserInfoState extends State<UserInfo> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.only(bottom: 10.0, top: 10.0, left: 12.0, right: 12.0),
-        color: Colors.black38,
-        child: Row(
-          children: <Widget>[
-
-            CircleAvatar(
-              radius: 20.0,
-              backgroundColor: Colors.grey[300],
-              backgroundImage: NetworkImage(
-                widget.story.storyUser!.user_profileimage!,
-              ),
-            ),
-            const SizedBox(width: 10.0),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.story.storyUser!.user_firstname! + " " + widget.story.storyUser!.user_lastname!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                  convertToTimeAgo(widget.story.story_time!),
-                    //'${post!.post_time!}',
-
-                    style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                widget.story.story_poster == userCurrentInfo!.user_id!?IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                  onPressed: (){
-                    setState(() {
-                      widget.animController.stop();
-                    });
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                      ),
-                      context: context,
-                      builder: (context) => buildSingleStorySheet(),
-                    );
-                  },
-                ):SizedBox.shrink(),
-                IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildSingleStorySheet() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: () async {
-              DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Stories").child(userCurrentInfo!.user_id!).child(widget.story.story_id!);
-              await dbRef.once().then((DataSnapshot snapshot) async {
-                if(snapshot.exists){
-                  firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Stories").child(widget.story.story_id!);
-                  await ref.listAll().then((result) async {
-                    for (var file in result.items) {
-                      file.delete();
-                    }
-                    dbRef.remove().then((value){
-                      displayToastMessage("Your story was deleted successfully", context);
-                      Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
-                    }).catchError((onError) {
-                      Navigator.pop(context);
-                      displayToastMessage("An error occurred. Please try again later", context);
-                    });
-                  });
-                }
-              });
-            },
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(6.0),
-                  decoration: BoxDecoration(
-                    color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      MdiIcons.delete,
-                      color: Colors.red,
-                    ),
-                    iconSize: 22.0,
-                    onPressed: (){
-
-                    },
-                  ),
-                ),
-                const SizedBox(width: 14.0,),
-                const Text(
-                  "Delete this story",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.red
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
