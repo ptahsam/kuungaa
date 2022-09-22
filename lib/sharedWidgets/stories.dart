@@ -717,11 +717,26 @@ class _StoryScreenState extends State<StoryScreen>
                 final Story story = widget.stories[i];
                 addStoryViewers(story);
                 if(story.story_type == "image_story"){
-                  return ExtendedImage.network(
-                    story.story_media!,
-                    fit: BoxFit.cover,
-                    enableMemoryCache: true,
-                    cache: true,
+                  return Stack(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: ExtendedImage.network(
+                          story.story_media!,
+                          fit: BoxFit.cover,
+                          enableMemoryCache: true,
+                          cache: true,
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          gradient: Palette.storyViewDarkGradient,
+                        ),
+                      ),
+                    ],
                   );
                   //_animController!.stop();
                   /*return Image.network(
@@ -762,6 +777,8 @@ class _StoryScreenState extends State<StoryScreen>
               },
             ),
             Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
                   gradient: Palette.storyGradient
               ),
@@ -877,7 +894,7 @@ class _StoryScreenState extends State<StoryScreen>
                 padding: const EdgeInsets.all(8.0),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker.withOpacity(0.5):Colors.white.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(3.0),
                 ),
                 child: Center(
@@ -1181,17 +1198,13 @@ class _StoryScreenState extends State<StoryScreen>
     if(story.story_poster != userCurrentInfo!.user_id!){
       storyRef.child(userCurrentInfo!.user_id!).once().then((DataSnapshot snapshot){
         if(!snapshot.exists){
-          var offsetRef = FirebaseDatabase.instance.reference().child(".info/serverTimeOffset");
-          offsetRef.onValue.listen((event){
-            int offset = event.snapshot.value;
-            var viewtime = ((DateTime.now().millisecondsSinceEpoch) + offset);
-            Map storyViewer = {
-              "viewer_id" : userCurrentInfo!.user_id!,
-              "view_time" : viewtime
-            };
+          var viewtime = DateTime.now().millisecondsSinceEpoch;
+          Map storyViewer = {
+            "viewer_id" : userCurrentInfo!.user_id!,
+            "view_time" : viewtime
+          };
 
-            storyRef.child(userCurrentInfo!.user_id!).set(storyViewer);
-          });
+          storyRef.child(userCurrentInfo!.user_id!).set(storyViewer);
         }
       });
     }

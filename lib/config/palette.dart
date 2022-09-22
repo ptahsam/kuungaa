@@ -49,6 +49,11 @@ class Palette {
       end: Alignment.bottomCenter,
       colors: [Colors.transparent, Colors.black54]
   );
+  static const LinearGradient storyViewDarkGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [Color(0xFF343434),Colors.transparent,Colors.transparent,Colors.transparent,Colors.transparent,Color(0xFF343434)]
+  );
   static const LinearGradient storyDarkGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
