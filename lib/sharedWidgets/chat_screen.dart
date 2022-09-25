@@ -8,6 +8,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -307,10 +308,14 @@ class _ChatScreenState extends State<ChatScreen> {
                     reverse: true,
                     padding: const EdgeInsets.only(top: 15.0),
                     builder: (context, int index){
+
                       Message message = Provider.of<AppData>(context).chatMessages![index];
                       Message nextMessage =  Provider.of<AppData>(context).chatMessages!.length - 1 > index?Provider.of<AppData>(context).chatMessages![index + 1]:Provider.of<AppData>(context).chatMessages![index];
-                      //Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
+                      Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
+
                       final bool isMe = message.sender_id == userCurrentInfo!.user_id!;
+                      final bool prevMsgIsMine = prevMessage.sender_id == message.sender_id!;
+
                       return Column(
                           children: [
                             checkIsWhen(nextMessage.time_created!) != checkIsWhen(message.time_created!)?Container(
@@ -347,7 +352,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               builder: (BuildContext context, bool isInView, Widget? child) {
                                 //print("widget ${message.message_id} is in view status :: ${isInView}");
                                 if(message.message_status != "1" && !isInView && message.sender_id != FirebaseAuth.instance.currentUser!.uid){
-                                  print("widget ${message.message_id} is in view status :: ${isInView}");
+                                  //print("widget ${message.message_id} is in view status :: ${isInView}");
                                 }
                                 updateMessageStatus(message, isInView);
                                 return InkWell(
@@ -369,7 +374,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       }
                                     }
                                   },
-                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
+                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, prevMsgIsMine:prevMsgIsMine, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
                                 );
                               }
                             ),
@@ -1068,12 +1073,14 @@ class MessageContainer extends StatefulWidget {
   final Message message;
   final Chat chat;
   final bool isMe;
+  final bool prevMsgIsMine;
   final bool isSelected;
   const MessageContainer({
     Key? key,
     required this.message,
     required this.chat,
     required this.isMe,
+    required this.prevMsgIsMine,
     required this.isSelected
   }) : super(key: key);
 
@@ -1131,7 +1138,7 @@ class _MessageContainerState extends State<MessageContainer> {
             margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerRight,
-              clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
+              clipper: widget.prevMsgIsMine?ChatBubbleClipper7(type: BubbleType.sendBubble):ChatBubbleClipper8(type: BubbleType.sendBubble),
               backGroundColor: Provider.of<AppData>(context).darkTheme?HexColor("#b7e3a8"):HexColor("#F0F9ED"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
               child: Column(
@@ -1233,7 +1240,7 @@ class _MessageContainerState extends State<MessageContainer> {
             margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerLeft,
-              clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
+              clipper: widget.prevMsgIsMine?ChatBubbleClipper7(type: BubbleType.receiverBubble):ChatBubbleClipper8(type: BubbleType.receiverBubble),
               backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#ffffff"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
               child: Column(
