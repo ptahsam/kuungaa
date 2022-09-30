@@ -1392,7 +1392,7 @@ class _StoryScreenState extends State<StoryScreen>
                   }
                 },
               ),
-              Positioned(
+              /*Positioned(
                 bottom: 0.0,
                 left: 0.0,
                 right: 0.0,
@@ -1451,7 +1451,7 @@ class _StoryScreenState extends State<StoryScreen>
                     ],
                   ),
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
@@ -1474,6 +1474,9 @@ class _StoryScreenState extends State<StoryScreen>
           };
 
           commentRef.set(commentDataMap).then((onValue) {
+            storyMainCommentContoller.clear();
+            FocusManager.instance.primaryFocus?.unfocus();
+            _animController!.forward();
             displayToastMessage("You have commented on this story", context);
           }).catchError((onError) {
             displayToastMessage("An error occurred. Please try again later", context);
