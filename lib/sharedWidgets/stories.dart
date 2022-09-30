@@ -674,7 +674,7 @@ class _StoryScreenState extends State<StoryScreen>
             if(widget.users.isNotEmpty){
               Users nextUser = widget.users.first;
               Navigator.pop(context);
-              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ViewStory(userid: nextUser.user_id!, usersList: widget.users,)));
+              Navigator.push(context, PageTransition(type: PageTransitionType.bottomToTop, child: ViewStory(userid: nextUser.user_id!, usersList: widget.users,)));
             }else{
               Navigator.pop(context);
             }
@@ -706,6 +706,10 @@ class _StoryScreenState extends State<StoryScreen>
       backgroundColor: Colors.black,
       body: GestureDetector(
         onTapDown: (details) => _onTapDown(details, story),
+        onTap: (){
+          _animController!.forward();
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         child: Stack(
           children: <Widget>[
             PageView.builder(
