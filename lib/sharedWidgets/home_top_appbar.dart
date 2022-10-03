@@ -18,6 +18,25 @@ class HomeTopAppBar extends StatefulWidget {
 }
 
 class _HomeTopAppBarState extends State<HomeTopAppBar> {
+
+  Image? myImage;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myImage= Image.asset(
+      "images/klogo.png",
+      fit: BoxFit.contain,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(myImage!.image, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -32,10 +51,7 @@ class _HomeTopAppBarState extends State<HomeTopAppBar> {
             if(snapshot.connectionState == ConnectionState.done){
               return SizedBox(
                 height: 35.0,
-                child: Image.asset(
-                  "images/klogo.png",
-                  fit: BoxFit.contain,
-                ),
+                child: myImage,
               );
             }else{
               return Shimmer.fromColors(

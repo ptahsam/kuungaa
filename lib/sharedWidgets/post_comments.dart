@@ -129,7 +129,7 @@ class _PostCommentsState extends State<PostComments> {
           listComments.isNotEmpty?Container(
             color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
             height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0, bottom: 90.0),
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 20.0, bottom: 90.0),
             child: FirebaseAnimatedList(
               query: itemRefComment!,
               itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){

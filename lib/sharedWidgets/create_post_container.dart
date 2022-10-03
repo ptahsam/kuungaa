@@ -1,4 +1,5 @@
 
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
@@ -51,7 +52,12 @@ class _CreatePostContainerState extends State<CreatePostContainer> {
                       child: CircleAvatar(
                         radius: 20.0,
                         backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[200],
-                        backgroundImage: NetworkImage(user.user_profileimage!),
+                        backgroundImage: ExtendedNetworkImageProvider(
+                          user.user_profileimage!,
+                          cache: true,
+                          cacheRawData: true,
+                          cacheKey: user.user_id!
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8.0,),
