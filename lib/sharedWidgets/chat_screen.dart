@@ -8,7 +8,6 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -29,7 +28,6 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -140,13 +138,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(MdiIcons.reply),
-            //iconSize: 36.0,
-            color: Colors.white,
-            onPressed: (){
-            },
-          ),
           isDeleting?Spinner(
           icon: FontAwesomeIcons.circleNotch)
           :IconButton(
@@ -158,7 +149,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(MdiIcons.forward),
+            icon: const Icon(MdiIcons.shareOutline),
             //iconSize: 36.0,
             color: Colors.white,
             onPressed: (){
@@ -314,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
 
                       final bool isMe = message.sender_id == userCurrentInfo!.user_id!;
-                      final bool prevMsgIsMine = prevMessage.sender_id == message.sender_id!;
+                      //final bool prevMsgIsMine = prevMessage.sender_id == message.sender_id!;
 
                       return Column(
                           children: [
@@ -374,7 +365,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       }
                                     }
                                   },
-                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, prevMsgIsMine:prevMsgIsMine, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
+                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
                                 );
                               }
                             ),
@@ -1073,14 +1064,12 @@ class MessageContainer extends StatefulWidget {
   final Message message;
   final Chat chat;
   final bool isMe;
-  final bool prevMsgIsMine;
   final bool isSelected;
   const MessageContainer({
     Key? key,
     required this.message,
     required this.chat,
     required this.isMe,
-    required this.prevMsgIsMine,
     required this.isSelected
   }) : super(key: key);
 
@@ -1138,7 +1127,7 @@ class _MessageContainerState extends State<MessageContainer> {
             margin:  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0, left: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerRight,
-              clipper: widget.prevMsgIsMine?ChatBubbleClipper7(type: BubbleType.sendBubble):ChatBubbleClipper8(type: BubbleType.sendBubble),
+              clipper: ChatBubbleClipper8(type: BubbleType.sendBubble),
               backGroundColor: Provider.of<AppData>(context).darkTheme?HexColor("#b7e3a8"):HexColor("#F0F9ED"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
               child: Column(
@@ -1148,10 +1137,10 @@ class _MessageContainerState extends State<MessageContainer> {
                   widget.message.origin != null?Container(
                     padding: EdgeInsets.all(2.0),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.forward,
+                          MdiIcons.shareOutline,
                           color: Colors.grey,
                         ),
                         SizedBox(width: 4.0,),
@@ -1223,8 +1212,7 @@ class _MessageContainerState extends State<MessageContainer> {
           ),
         ),
       ],
-    )
-        :
+    ):
     Wrap(
       alignment: WrapAlignment.start,
       children: [
@@ -1240,7 +1228,7 @@ class _MessageContainerState extends State<MessageContainer> {
             margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
             child: ChatBubble(
               alignment: Alignment.centerLeft,
-              clipper: widget.prevMsgIsMine?ChatBubbleClipper7(type: BubbleType.receiverBubble):ChatBubbleClipper8(type: BubbleType.receiverBubble),
+              clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
               backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#ffffff"),
               padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
               child: Column(
@@ -1250,10 +1238,10 @@ class _MessageContainerState extends State<MessageContainer> {
                   widget.message.origin != null?Container(
                     padding: EdgeInsets.all(2.0),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.forward,
+                          MdiIcons.shareOutline,
                           color: Colors.grey,
                         ),
                         SizedBox(width: 4.0,),
@@ -1284,7 +1272,7 @@ class _MessageContainerState extends State<MessageContainer> {
                     },
                     text: widget.message.message!,
                     style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
-                    linkStyle: TextStyle(color: Colors.blue),
+                    linkStyle: const TextStyle(color: Colors.blue),
                   ),
                   /*Text(
                     widget.message.message!,

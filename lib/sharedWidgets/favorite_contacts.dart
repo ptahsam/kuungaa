@@ -13,7 +13,7 @@ class FavoriteContacts extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Contact",
+            "Currently Online",
             style: TextStyle(
               color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
               fontWeight: FontWeight.bold,

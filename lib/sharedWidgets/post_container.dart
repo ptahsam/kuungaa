@@ -90,7 +90,7 @@ class _PostContainerState extends State<PostContainer> {
         if(!snapshot.exists){
           Provider.of<AppData>(context, listen: false).updateGettingHomeFeed(true);
           Posts post = Posts();
-          post.post_id = event.snapshot.key!;
+          post.post_id = event.snapshot.key;
           post.pid = event.snapshot.value["post_id"];
           post.post_description = event.snapshot.value["post_description"];
           post.post_time = event.snapshot.value["post_time"];
@@ -1229,8 +1229,8 @@ class _PostMainContainerState extends State<PostMainContainer> {
                                     children: [
                                       ExtendedImage.asset(
                                         'icons/flags/png/' + widget.post!.post_countrycode!.toLowerCase() + '.png', package: 'country_icons',
-                                        height: 20.0,
-                                        width: 20.0,
+                                        height: 15.0,
+                                        width: 15.0,
                                         fit: BoxFit.cover,
                                         shape: BoxShape.circle,
                                       ),

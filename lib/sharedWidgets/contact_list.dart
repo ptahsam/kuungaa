@@ -35,7 +35,7 @@ class _ContactListState extends State<ContactList> {
         itemBuilder: (BuildContext context, int index)
         {
           Users user = Provider.of<AppData>(context).favoriteContacts![index];
-          return InkWell(
+          return user.isOnline?InkWell(
             onTap: (){
               startMessegeUser(context, user.user_id!);
             },
@@ -81,7 +81,7 @@ class _ContactListState extends State<ContactList> {
                 ],
               ),
             ),
-          );
+          ):SizedBox.shrink();
 
         },
       ):SizedBox.shrink(),

@@ -3,9 +3,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/profile_avatar.dart';
+import 'package:kuungaa/sharedWidgets/widgets.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class UserContacts extends StatefulWidget {
@@ -48,29 +51,50 @@ class _UserContactsState extends State<UserContacts> {
       height: MediaQuery.of(context).size.height,
       child: listContacts.isNotEmpty?
       ListView.builder(
-        itemCount: Provider.of<AppData>(context).chatUsersList!.length,
+        itemCount: Provider.of<AppData>(context).favoriteContacts!.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index){
-          Contact contact = listContacts[index];
-          return InkWell(
-            onTap: (){
-              //startMessegeUser(context, user.user_id!);
-            },
-            child: ListTile(
-              leading: contact.photo != null?Container(
-                height: 30,
-                width: 30,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: ExtendedFileImageProvider(
-                      File.fromRawPath(contact.photo!),
+          Users users = Provider.of<AppData>(context).favoriteContacts![index];
+          return ListTile(
+            leading: ProfileAvatar(imageUrl: users.user_profileimage!,),
+            title: Text("${users.user_firstname!+" "+users.user_lastname!}"),
+            subtitle: Text(users.user_bio!),
+            trailing: Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      startMessegeUser(context, users.user_id!);
+                    },
+                    child: Icon(
+                      Icons.message,
+                      color: Palette.kuungaaDefault,
                     ),
-                  )
-                ),
-              ):ProfileAvatar(imageUrl: uProfile),
-              title: Text(contact.displayName),
-              subtitle: Text(contact.phones[0].number),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: (){
+                      displayToastMessage("This feature is currently under development.", context);
+                    },
+                    child: Icon(
+                      Icons.call,
+                      color: Palette.kuungaaDefault,
+                    ),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: users.user_id!,)));
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Palette.kuungaaDefault,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

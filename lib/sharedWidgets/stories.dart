@@ -1474,10 +1474,10 @@ class _StoryScreenState extends State<StoryScreen>
           };
 
           commentRef.set(commentDataMap).then((onValue) {
+            _animController!.forward();
             storyMainCommentContoller.clear();
             FocusManager.instance.primaryFocus?.unfocus();
-            _animController!.forward();
-            displayToastMessage("You have commented on this story", context);
+            displayToastMessage("Comment sent", context);
           }).catchError((onError) {
             displayToastMessage("An error occurred. Please try again later", context);
           });
