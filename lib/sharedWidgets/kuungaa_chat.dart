@@ -216,27 +216,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                           ),
                                           child: ListTile(
                                             minVerticalPadding: 0,
-                                            leading: Container(
-                                              height: 50,
-                                              width: 50,
-                                              child: Stack(
-                                                children: [
-                                                  ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
-                                                  Positioned(
-                                                    right: 0,
-                                                    bottom: 0,
-                                                    child: Provider.of<AppData>(context).isTyping?Container(
-                                                      height: 15.0,
-                                                      width: 15.0,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Palette.kuungaaDefault
-                                                      ),
-                                                    ):SizedBox.shrink(),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                                            leading: ProfileAvatar(imageUrl: chat.opponentUser!.user_profileimage!, radius: 24.0,),
                                             title: Text(
                                               chat.opponentUser!.user_firstname! + " " + chat.opponentUser!.user_lastname!,
                                               style: TextStyle(
@@ -246,7 +226,14 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            subtitle: Row(
+                                            subtitle: chat.opponentUser!.isTyping?Text(
+                                              "typing...",
+                                              style: TextStyle(
+                                                color: Palette.kuungaaDefault,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ):Row(
                                               children: [
                                                 chat.message!.messageMedia != null? Padding(
                                                   padding: EdgeInsets.only(right: 5.0),

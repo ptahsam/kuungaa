@@ -77,12 +77,25 @@ class _ChatScreenState extends State<ChatScreen> {
     currentChat = widget.chat;
     currentChat.chatIsOpen = true;
     Provider.of<AppData>(context, listen: false).updateCurrentChat(currentChat);
+    messageTextEditingController.addListener(handleTextchange);
+  }
+
+  void handleTextchange() {
+    if(messageTextEditingController.text != "" || messageTextEditingController != null){
+      Map typingMap = {
+        "isTyping" : true,
+        "member_id" : userCurrentInfo!.user_id!
+      };
+      FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
+      print("is typing :::");
+    }
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     recorder.closeRecorder();
+    messageTextEditingController.removeListener(() { });
     super.dispose();
   }
 
@@ -571,13 +584,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: TextField(
                             textCapitalization: TextCapitalization.sentences,
                             controller: messageTextEditingController,
-                            onChanged: (text) {
-                              Map typingMap = {
-                                "isTyping" : true,
-                                "member_id" : userCurrentInfo!.user_id!
-                              };
-                              FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
-                            },
                             decoration: const InputDecoration.collapsed(
                               hintText: "Type a message ...",
                               hintStyle: TextStyle(

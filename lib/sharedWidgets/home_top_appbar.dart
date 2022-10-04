@@ -51,7 +51,7 @@ class _HomeTopAppBarState extends State<HomeTopAppBar> {
             if(snapshot.connectionState == ConnectionState.done){
               return SizedBox(
                 height: 35.0,
-                child: myImage,
+                child: myImage!,
               );
             }else{
               return Shimmer.fromColors(

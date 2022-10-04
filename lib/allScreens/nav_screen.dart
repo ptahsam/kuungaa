@@ -38,6 +38,8 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> with RestorationMixin {
 
+  Image? myImage;
+
   final List<Widget> _screens = [
     MainPage(),
     TravelPage(),
@@ -80,9 +82,19 @@ class _NavScreenState extends State<NavScreen> with RestorationMixin {
       });
     }
     if(widget.postid != null && widget.postid != ""){
-      print("d-link in nav:: " + widget.postid!);
+      //print("d-link in nav:: " + widget.postid!);
       navigateToPost();
     }
+    myImage= Image.asset(
+      "images/klogo.png",
+      fit: BoxFit.contain,
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(myImage!.image, context);
   }
 
   navigateToPost(){
@@ -122,10 +134,7 @@ class _NavScreenState extends State<NavScreen> with RestorationMixin {
                     children: [
                       SizedBox(
                         height: 35.0,
-                        child: Image.asset(
-                          "images/klogo.png",
-                          fit: BoxFit.contain,
-                        ),
+                        child: myImage!,
                       ),
                       Row(
                         children: [

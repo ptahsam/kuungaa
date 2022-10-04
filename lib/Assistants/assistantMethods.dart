@@ -76,10 +76,10 @@ class AssistantMethods
   }
 
   static userIsTyping(BuildContext context, String chatid, String userid) async {
-    DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("members").child(userid).child("isTyping");
-    await dbRef.onValue.forEach((data) {
+    DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("members").child(userid);
+    dbRef.child("isTyping").onValue.forEach((data) {
       if(data.snapshot.exists){
-        if(data.snapshot.value == true){
+        if(data.snapshot.value){
           Provider.of<AppData>(context, listen: false).updateUserTypingStatus(true);
         }else{
           Provider.of<AppData>(context, listen: false).updateUserTypingStatus(false);
@@ -391,6 +391,20 @@ class AssistantMethods
                       }
                       chat.message!.messageMedia = listMedia.toSet().toList();
                     }
+
+                    FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatEvent.snapshot.value["chat_id"]).
+                    child("members").child(memberEvent.snapshot.value["member_id"]).child("isTyping")
+                     .onValue.listen((data) {
+                      if(data.snapshot.exists){
+                        if(data.snapshot.value == true){
+                          chat.opponentUser!.isTyping = true;
+                          Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                        }else{
+                          chat.opponentUser!.isTyping = false;
+                          Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                        }
+                      }
+                    });
 
                     FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").
                     child(chatEvent.snapshot.value["chat_id"]).child("messages").child(event.snapshot.value["message_id"])
