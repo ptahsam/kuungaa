@@ -80,14 +80,13 @@ class _ChatScreenState extends State<ChatScreen> {
     messageTextEditingController.addListener(handleTextchange);
   }
 
-  void handleTextchange() {
+   void handleTextchange() {
     if(messageTextEditingController.text != "" || messageTextEditingController != null){
       Map typingMap = {
         "isTyping" : true,
         "member_id" : userCurrentInfo!.user_id!
       };
       FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
-      print("is typing :::");
     }
   }
 
@@ -584,6 +583,20 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: TextField(
                             textCapitalization: TextCapitalization.sentences,
                             controller: messageTextEditingController,
+                            onEditingComplete: (){
+                                Map typingMap = {
+                                  "isTyping" : false,
+                                  "member_id" : userCurrentInfo!.user_id!
+                                };
+                                FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
+                            },
+                            onSubmitted: (String){
+                                Map typingMap = {
+                                  "isTyping" : false,
+                                  "member_id" : userCurrentInfo!.user_id!
+                                };
+                                FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
+                            },
                             decoration: const InputDecoration.collapsed(
                               hintText: "Type a message ...",
                               hintStyle: TextStyle(
@@ -664,9 +677,11 @@ class _ChatScreenState extends State<ChatScreen> {
       };
 
       msgRef.set(msgMap).then((onValue) {
+
         messageTextEditingController.text = "";
         userSelectedFileList!.clear();
         isSending = false;
+
         Map typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
@@ -674,14 +689,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
 
-
         //displayToastMessage("Your post was uploaded successfully", context);
+
       }).catchError((onError) {
         isSending = false;
         Navigator.pop(context);
         displayToastMessage("An error occurred. Please try again later", context);
       });
     }else{
+
       DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("messages").push();
 
       String msgkey = msgRef.key;
@@ -700,13 +716,13 @@ class _ChatScreenState extends State<ChatScreen> {
       msgRef.set(msgMap).then((onValue) {
         messageTextEditingController.text = "";
         isSending = false;
+
         Map typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
         };
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
-
 
         //displayToastMessage("Your post was uploaded successfully", context);
       }).catchError((onError) {
@@ -1179,14 +1195,6 @@ class _MessageContainerState extends State<MessageContainer> {
                     style: TextStyle(color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,),
                     linkStyle: TextStyle(color: Colors.blue)
                   ),
-                  /*Text(
-                    widget.message.message!,
-                    style: TextStyle(
-                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.blueGrey,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w100,
-                    ),
-                  ),*/
                   SizedBox(height: 10.0,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

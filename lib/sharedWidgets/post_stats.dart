@@ -1,16 +1,19 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reaction_button/flutter_reaction_button.dart';
+import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/comment.dart';
 import 'package:kuungaa/Models/like.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
 
 import 'widgets.dart';
 class PostStats extends StatefulWidget {
@@ -48,7 +51,6 @@ class PostStatsState extends State<PostStats> {
               ReactionsStatsContainer(post: widget.post!,),
               SizedBox(width: 4.0,),
               PostReactionsContainer(post: widget.post!,),
-
               PostCommentsContainer(post: widget.post!,),
             ],
           ),
@@ -510,6 +512,9 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
   List<Likes> listLikes = [];
   DatabaseReference? itemRefLikes;
 
+  int selectedIndex = 0;
+  final List<String> reactionsMenu = ["All", "Like", "Haha", "Angry", "Love", "Sad", "Wow"];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -527,6 +532,8 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
     likes.liker_id = event.snapshot.value["liker_id"];
     likes.like_type = event.snapshot.value["like_type"];
 
+    likes.liker = await AssistantMethods.getCurrentOnlineUser(likes.liker_id!);
+
     setState(() {
       listLikes.add(likes);
     });
@@ -540,6 +547,7 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
     likes.like_id = event.snapshot.key;
     likes.liker_id = event.snapshot.value["liker_id"];
     likes.like_type = event.snapshot.value["like_type"];
+    likes.liker = await AssistantMethods.getCurrentOnlineUser(likes.liker_id!);
 
     setState(() {
       listLikes[listLikes.indexOf(old)] = likes;
@@ -639,8 +647,133 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
         ));
       }
 
-      return Row(
-        children: reactionWidgets,
+      return InkWell(
+        onTap: (){
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                contentPadding: EdgeInsets.zero,
+                contentTextStyle: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                ),
+                content: FittedBox(
+                  child: Container(
+                    padding: EdgeInsets.zero,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.65,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        /*Container(
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 2.0,
+                                color: Colors.black
+                              )
+                            )
+                          ),
+                          child: ListView.builder(
+                            itemCount: reactionsMenu.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (ctx, int index){
+                              return InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    selectedIndex == index;
+                                  });
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 8),
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: selectedIndex == index?HexColor("#2dce89"):Colors.transparent,
+                                          width: 2.0,
+                                        ),
+                                      )
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      reactionsMenu[index],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 22.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),*/
+                        Expanded(
+                          child: listLikes.isNotEmpty?ListView.builder(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            itemCount: listLikes.length,
+                            itemBuilder: (ctx, int index){
+                              Likes like = listLikes[index];
+                              return InkWell(
+                                onTap: (){
+                                  Navigator.pop(context);
+                                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserProfile(userid: like.liker!.user_id!,)));
+                                },
+                                child: ListTile(
+                                  leading: Container(
+                                    margin: EdgeInsets.only(bottom: 10.0),
+                                    height: 80,
+                                    width: 80,
+                                    child: Stack(
+                                      children: [
+                                        ProfileAvatar(imageUrl: like.liker!.user_profileimage!, radius: 75,),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 5.0,
+                                          child: like.like_type == "Like"?Image.asset('images/reactions_like.png'):
+                                                 like.like_type == "Haha"?Image.asset('images/reactions_haha.png'):
+                                                 like.like_type == "Angry"?Image.asset('images/reactions_angry.png'):
+                                                 like.like_type == "Love"?Image.asset('images/reactions_love.png'):
+                                                 like.like_type == "Sad"?Image.asset('images/reactions_sad.png'):
+                                                 like.like_type == "Wow"?Image.asset('images/reactions_wow.png'):
+                                                 SizedBox.shrink(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  title: Text(
+                                    like.liker!.user_firstname! + " " + like.liker!.user_lastname!,
+                                    style: TextStyle(
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.w700
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ): Center(
+                            child: LoadingAnimationWidget.flickr(
+                                leftDotColor: Palette.kuungaaDefault,
+                                rightDotColor: Colors.black,
+                                size: 40
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+          );
+        },
+        child: Row(
+          children: reactionWidgets,
+        ),
       );
     }else{
       return Container(
