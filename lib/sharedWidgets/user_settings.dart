@@ -3,7 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:kuungaa/sharedWidgets/terms_and_condition.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 class UserSettings extends StatefulWidget {
   const UserSettings({Key? key}) : super(key: key);
@@ -224,6 +226,32 @@ class _UserSettingsState extends State<UserSettings> {
                       }
                     ),
                   ],
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: InkWell(
+              onTap: (){
+                Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const TermsAndCondition()));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                decoration: BoxDecoration(
+                  //color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    children: const [
+                      Icon(
+                          MdiIcons.more
+                      ),
+                      SizedBox(width: 4.0,),
+                      Text("Terms & Conditions", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -86,7 +86,11 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin{
     return Platform.isIOS?
     Scaffold(
       backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-      body: _HomeScreenIos(),
+      body: Responsive(
+        mobile: _HomeScreenIos(),
+        desktop: _HomeScreenDesktop(),
+        tablet: _HomeScreenDesktop(),
+      ),
     ):
     Scaffold(
       backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
@@ -341,7 +345,7 @@ class _HomeScreenDesktop extends StatelessWidget {
         Flexible(
           flex: 2,
           child: Container(
-            color: Colors.orange,
+            color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[300]!,
           ),
         ),
         Spacer(),
@@ -383,7 +387,7 @@ class _HomeScreenDesktop extends StatelessWidget {
         Flexible(
           flex: 2,
           child: Container(
-            color: Colors.green,
+            color: Provider.of<AppData>(context).darkTheme?Palette.darker:Colors.grey[300]!,
           ),
         ),
       ],

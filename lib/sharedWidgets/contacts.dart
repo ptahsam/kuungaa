@@ -26,7 +26,7 @@ class _UserContactsState extends State<UserContacts> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getContactPermission();
+    //getContactPermission();
   }
 
   Future getContactPermission() async {
@@ -49,7 +49,7 @@ class _UserContactsState extends State<UserContacts> {
       color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 0.0),
       height: MediaQuery.of(context).size.height,
-      child: listContacts.isNotEmpty?
+      child:
       ListView.builder(
         itemCount: Provider.of<AppData>(context).favoriteContacts!.length,
         scrollDirection: Axis.vertical,
@@ -57,7 +57,7 @@ class _UserContactsState extends State<UserContacts> {
           Users users = Provider.of<AppData>(context).favoriteContacts![index];
           return ListTile(
             leading: ProfileAvatar(imageUrl: users.user_profileimage!,),
-            title: Text("${users.user_firstname!+" "+users.user_lastname!}"),
+            title: Text("${users.user_firstname! +" "+ users.user_lastname!}"),
             subtitle: Text(users.user_bio!),
             trailing: Container(
               width: MediaQuery.of(context).size.width * 0.25,
@@ -98,7 +98,7 @@ class _UserContactsState extends State<UserContacts> {
             ),
           );
         },
-      ):const SizedBox.shrink(),
+      ),
     );
   }
 }

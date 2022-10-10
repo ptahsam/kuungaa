@@ -38,6 +38,7 @@ class _TravelPageState extends State<TravelPage> with AutomaticKeepAliveClientMi
         body: Responsive(
           mobile: _TravelScreenMobile(),
           desktop: _TravelScreenDesktop(),
+          tablet: _TravelScreenDesktop(),
         ),
       ),
     );

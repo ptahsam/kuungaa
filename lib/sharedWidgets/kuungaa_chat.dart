@@ -84,33 +84,31 @@ class _KuungaaChatState extends State<KuungaaChat> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          "Chats",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
-                            overflow: TextOverflow.ellipsis,
+                        Expanded(
+                          child: Text(
+                            "Chats",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.8,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                         Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?SizedBox(width: 5.0,):SizedBox.shrink(),
-                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Expanded(
-                          child: SizedBox.expand(
-                            child: Container(
-                              height: 28,
-                              width: 28,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  Provider.of<AppData>(context).messageCount!.message_count!.toString(),
-                                  style: TextStyle(
-                                    color: Palette.kuungaaDefault,
-                                  ),
-                                ),
+                        Provider.of<AppData>(context).messageCount != null && userMessageCount > 0?Container(
+                          height: 28,
+                          width: 28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                            child: Text(
+                              Provider.of<AppData>(context).messageCount!.message_count!.toString(),
+                              style: TextStyle(
+                                color: Palette.kuungaaDefault,
                               ),
                             ),
                           ),
