@@ -56,20 +56,21 @@ class _UserNotificationState extends State<UserNotification> {
           SliverToBoxAdapter(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-              child: FutureBuilder(
+              child: FutureBuilder<List<Notifications>>(
                 future: getUserNotifications(),
-                builder: (BuildContext context, AsyncSnapshot<List> snap){
+                builder: (BuildContext context, AsyncSnapshot<List<Notifications>> snap) {
                   if(snap.connectionState == ConnectionState.done){
                     if(snap.hasData){
                       if(snap.data!.isNotEmpty){
+                        List<Notifications> arrangedNotifications =  arrangeNotifications(snap.data!);
                         return ListView.builder(
                           padding: EdgeInsets.only(bottom: 30.0),
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: snap.data!.length,
+                          itemCount: arrangedNotifications.length,
                           itemBuilder: (BuildContext context, int index){
-                            Notifications notif = snap.data![index];
+                            Notifications notif = arrangedNotifications[index];
                             return InkWell(
                               onTap: () async {
                                 if (notif.notification_type == "tagged" || notif.notification_type == "comments" || notif.notification_type == "likes") {
@@ -118,7 +119,7 @@ class _UserNotificationState extends State<UserNotification> {
                                                 color: notif.notification_status == ""? Colors.white : Colors.grey[200]!
                                             ),
                                             child: Text(
-                                              convertToWhen(notif.notification_time!),
+                                              convertToTimeAgo(notif.notification_time!),
                                               style: TextStyle(),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -189,7 +190,7 @@ class _UserNotificationState extends State<UserNotification> {
     );
   }
 
-  Future<List> getUserNotifications() async {
+  Future<List<Notifications>> getUserNotifications() async {
     List<Notifications> notificationsList = [];
     Query notifRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Notifications").
     orderByChild("notification_recipient").equalTo(userCurrentInfo!.user_id!);

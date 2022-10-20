@@ -17,6 +17,7 @@ import 'package:kuungaa/Models/address.dart';
 import 'package:kuungaa/Models/chat.dart';
 import 'package:kuungaa/Models/group.dart';
 import 'package:kuungaa/Models/media.dart';
+import 'package:kuungaa/Models/notification.dart';
 import 'package:kuungaa/Models/page.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
@@ -79,6 +80,15 @@ List<Chat> arrangeChats(List<Chat> chat){
     return b.message!.time_created!.compareTo(a.message!.time_created!);
   });
   return chat;
+}
+
+List<Notifications> arrangeNotifications(List<Notifications> notifications){
+  notifications.sort((a, b){
+    a.notification_time = a.notification_time! > 10?a.notification_time!:a.notification_time!*1000;
+    b.notification_time = b.notification_time! > 10?b.notification_time!:b.notification_time!*1000;
+    return b.notification_time!.compareTo(a.notification_time!);
+  });
+  return notifications;
 }
 
 List<Posts> arrangePosts(List<Posts> posts){
@@ -661,7 +671,7 @@ startMessegeUser(BuildContext context, String uid){
 
         Map msgMap = {
           "message_id" : msgkey,
-          "message" : "Hello, welcome to our chat",
+          "message" : "${userCurrentInfo!.user_firstname! + " " + userCurrentInfo!.user_lastname!} created this chat",
           "time_created" : time,
           "message_status" : status,
           "message_media" : "",
@@ -964,7 +974,9 @@ Container reactionIcon(String path) {
   );
 }
 
-String convertToTimeAgo(int posttime){
+String convertToTimeAgo(int time){
+
+  var posttime = time > 10?time:time*1000;
 
   var date = DateTime.fromMillisecondsSinceEpoch(posttime);
   Duration def = DateTime.now().difference(date);
