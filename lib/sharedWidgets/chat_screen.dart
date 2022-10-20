@@ -317,6 +317,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
 
                       final bool isMe = message.sender_id == userCurrentInfo!.user_id!;
+                      final bool isFirst = index == Provider.of<AppData>(context).chatMessages!.length - 1;
                       //final bool prevMsgIsMine = prevMessage.sender_id == message.sender_id!;
 
                       return Column(
@@ -377,7 +378,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       }
                                     }
                                   },
-                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!),),
+                                  child: MessageContainer(message: message, chat: widget.chat, isMe: isMe, isSelected: selectedMessages.any((Message oldMessage) => oldMessage.message_id == message.message_id!), isFirst:isFirst),
                                 );
                               }
                             ),
@@ -1087,12 +1088,14 @@ class MessageContainer extends StatefulWidget {
   final Chat chat;
   final bool isMe;
   final bool isSelected;
+  final bool isFirst;
   const MessageContainer({
     Key? key,
     required this.message,
     required this.chat,
     required this.isMe,
-    required this.isSelected
+    required this.isSelected,
+    required this.isFirst,
   }) : super(key: key);
 
   @override
@@ -1134,6 +1137,28 @@ class _MessageContainerState extends State<MessageContainer> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.isFirst){
+      return Container(
+        margin: EdgeInsets.only(bottom: 30.0, top: 5.0),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Palette.kuungaaAccent,
+            ),
+            child: Text(
+              "${widget.isMe?"You":widget.chat.opponentUser!.user_firstname! + " " + widget.chat.opponentUser!.user_lastname!} created this chat",
+              style: TextStyle(
+                color: Colors.blueGrey,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return widget.isMe ? Wrap(
       alignment: WrapAlignment.end,
       children: [

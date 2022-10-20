@@ -249,8 +249,6 @@ PODS:
   - websocket_manager (0.0.1):
     - Flutter
     - Starscream (~> 3.1.1)
-  - webview_flutter_wkwebview (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
@@ -285,7 +283,6 @@ DEPENDENCIES:
   - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - websocket_manager (from `.symlinks/plugins/websocket_manager/ios`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -391,8 +388,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock/ios"
   websocket_manager:
     :path: ".symlinks/plugins/websocket_manager/ios"
-  webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   audioplayers_darwin: 387322cb364026a1782298c982693b1b6aa9fa1b
@@ -463,7 +458,6 @@ SPEC CHECKSUMS:
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   websocket_manager: cadb93f3b88cf3f5d60fca8629824c1b50f30e1b
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: e37ea79048fa94d4930181b57e9989d22f447d47
 
