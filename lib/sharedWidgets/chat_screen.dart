@@ -65,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool messageSelectMode = false;
   bool isDeleting = false;
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -95,8 +96,17 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: implement dispose
     recorder.closeRecorder();
     messageTextEditingController.removeListener(() { });
+    messageTextEditingController.dispose();
+    Map typingMap = {
+      "isTyping" : false,
+      "member_id" : userCurrentInfo!.user_id!
+    };
+    FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
+
     super.dispose();
   }
+
+
 
   Future initRecorder() async {
     status = await Permission.microphone.request();
