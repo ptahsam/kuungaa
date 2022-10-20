@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import 'widgets.dart';
 
@@ -21,13 +20,13 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (Platform.isAndroid) WebView.platform = AndroidWebView();
+    //if (Platform.isAndroid) WebView.platform = AndroidWebView();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+      /*backgroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
       body: SafeArea(
         child: WebView(
           onPageStarted: (String){
@@ -39,7 +38,7 @@ class _TermsAndConditionState extends State<TermsAndCondition> {
           initialUrl: 'https://kuungaa.com/termsandconditions/',
           javascriptMode: JavascriptMode.unrestricted,
         ),
-      ),
+      ),*/
     );
   }
 }
