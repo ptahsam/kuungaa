@@ -134,6 +134,7 @@ class _PostContainerState extends State<PostContainer> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
+            arrangePosts(listPosts);
             itemAddedCount = itemAddedCount + 1;
           });
           //print("posts totalcount :: " + itemCount.toString());

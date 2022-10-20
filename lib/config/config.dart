@@ -74,6 +74,20 @@ class Configurations {
   String get appId => _appId;
 }
 
+List<Chat> arrangeChats(List<Chat> chat){
+  chat.sort((a, b){ //sorting in descending order
+    return b.message!.time_created!.compareTo(a.message!.time_created!);
+  });
+  return chat;
+}
+
+List<Posts> arrangePosts(List<Posts> posts){
+  posts.sort((a, b){
+    return a.post_time!.compareTo(b.post_time!);
+  });
+  return posts;
+}
+
 Future<File> testCompressAndGetFile(File file, String targetPath) async {
 
   var result = await FlutterImageCompress.compressAndGetFile(
@@ -464,7 +478,6 @@ String convertToFullDate(int timestamp){
   var month = m.length == 1? '0' + m:m;
 
   return day + '/' + month + '/' + y;
-
 }
 
 String convertToFullMonth(int timestamp){

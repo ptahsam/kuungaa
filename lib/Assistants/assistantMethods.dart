@@ -398,10 +398,10 @@ class AssistantMethods
                       if(data.snapshot.exists){
                         if(data.snapshot.value == true){
                           chat.opponentUser!.isTyping = true;
-                          Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                          Provider.of<AppData>(context, listen: false).updateUserChats(arrangeChats(userChatList.toSet().toList()));
                         }else{
                           chat.opponentUser!.isTyping = false;
-                          Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                          Provider.of<AppData>(context, listen: false).updateUserChats(arrangeChats(userChatList.toSet().toList()));
                         }
                       }
                     });
@@ -424,7 +424,7 @@ class AssistantMethods
                         //print("message status :: " + old.message!.message!);
 
                         //userChatList[userChatList.indexOf(old)] = chat;
-                        Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                        Provider.of<AppData>(context, listen: false).updateUserChats(arrangeChats(userChatList.toSet().toList()));
                       }
                     });
                   }
@@ -432,7 +432,7 @@ class AssistantMethods
                   chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(memberEvent.snapshot.value["member_id"]);
                   chat.chatCount = await AssistantMethods.getChatCount(chatEvent.snapshot.value["chat_id"]);
                   userChatList.add(chat);
-                  Provider.of<AppData>(context, listen: false).updateUserChats(userChatList.toSet().toList());
+                  Provider.of<AppData>(context, listen: false).updateUserChats(arrangeChats(userChatList.toSet().toList()));
                 });
               }
             });
