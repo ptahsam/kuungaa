@@ -66,11 +66,120 @@ class _UserNotificationState extends State<UserNotification> {
                         return ListView.builder(
                           padding: EdgeInsets.only(bottom: 30.0),
                           scrollDirection: Axis.vertical,
+                          reverse: true,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: arrangedNotifications.length,
                           itemBuilder: (BuildContext context, int index){
                             Notifications notif = arrangedNotifications[index];
+
+                            Notifications nextNotif =  arrangedNotifications.length - 1 > index?arrangedNotifications[index + 1]:arrangedNotifications[index];
+                            Notifications prevNotif = index != 0?arrangedNotifications[index - 1]:arrangedNotifications[index];
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                checkIsWhen(nextNotif.notification_time!) != checkIsWhen(notif.notification_time!)?Container(
+                                  margin: EdgeInsets.only(top: 20, bottom: 10,),
+                                  child: Text(
+                                    convertToWhenNotif(notif.notification_time!),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ):notif == nextNotif?Container(
+                                  margin: EdgeInsets.only(top: 20, bottom: 10, left: 20.0),
+                                  child: Text(
+                                    convertToWhenNotif(notif.notification_time!),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ):SizedBox.shrink(),
+                                Container(
+                                  padding: EdgeInsets.only(bottom: 12.0),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: ProfileAvatar(imageUrl: notif.userCreator!.user_profileimage!, radius: 35.0,),
+                                    title: RichText(
+                                      text: TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: notif.userCreator!.user_firstname! + " " + notif.userCreator!.user_lastname!,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:  ' ${notif.notification_message!}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Palette.text4,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '. ${convertToTimeAgo(notif.notification_time!)}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16.0,
+                                              color: Palette.text1,
+                                            ),
+                                          ),
+                                        ],
+                                        style: TextStyle(
+
+                                        ),
+                                      ),
+                                    ),
+                                    trailing: notif.notification_type == "tagged" || notif.notification_type == "comments" || notif.notification_type == "likes"?InkWell(
+                                      onTap: () async {
+                                        Posts post = await getPostFromID(notif.notification_actionid!);
+                                        List<Media> mediaList = await getPostMediaImages(notif.notification_actionid!);
+                                        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ViewPostImage(post: post, media: mediaList,)));
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 9.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4.0),
+                                          color: Palette.kuungaaDefault,
+                                        ),
+                                        child: Text(
+                                          "View",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ):notif.notification_type == "friendsrequest"?Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 9.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4.0),
+                                        color: Palette.kuungaaDefault,
+                                      ),
+                                      child: Text(
+                                        "Accept",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ):SizedBox.shrink(),
+                                  ),
+                                ),
+                              ],
+                            );
                             return InkWell(
                               onTap: () async {
                                 if (notif.notification_type == "tagged" || notif.notification_type == "comments" || notif.notification_type == "likes") {

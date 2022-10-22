@@ -28,6 +28,7 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as ui;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:week_of_year/date_week_extensions.dart';
 
 String mapKey = "AIzaSyC0f4vakJg3x1YrnrOZcFvOZibLPgXHfOk";
 
@@ -84,9 +85,9 @@ List<Chat> arrangeChats(List<Chat> chat){
 
 List<Notifications> arrangeNotifications(List<Notifications> notifications){
   notifications.sort((a, b){
-    a.notification_time = a.notification_time! > 10?a.notification_time!:a.notification_time!*1000;
-    b.notification_time = b.notification_time! > 10?b.notification_time!:b.notification_time!*1000;
-    return b.notification_time!.compareTo(a.notification_time!);
+    //a.notification_time = a.notification_time! > 10?a.notification_time!:a.notification_time!*1000;
+   // b.notification_time = b.notification_time! > 10?b.notification_time!:b.notification_time!*1000;
+    return a.notification_time!.compareTo(b.notification_time!);
   });
   return notifications;
 }
@@ -493,6 +494,35 @@ String convertToFullDate(int timestamp){
 String convertToFullMonth(int timestamp){
   return DateFormat.yMMMMd().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
 
+}
+
+String convertToWhenNotif(int timestamp) {
+  var t = DateFormat('EEEE').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var d = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var e = DateFormat.E().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var m = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var y = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  var cy = DateFormat('y').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cd = DateFormat.d().format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  var cm = DateFormat('MMMM').format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch));
+  if(y == cy){
+    if(cm == m){
+      if(cd == d){
+        return "Today";
+      }
+      if((int.parse(cd) - int.parse(d)) == 1){
+        return "Yesterday";
+      }else if((int.parse(cd) - int.parse(d)) < 7){
+        return '${(int.parse(cd) - int.parse(d)).toString()} days';
+      }else if(DateTime.now().weekOfYear == DateTime.fromMicrosecondsSinceEpoch(timestamp).weekOfYear){
+        return "This week";
+      }else{
+        return "This month";
+      }//return e + " " + d;
+    }
+    return "Earlier";
+  }
+  return "Earlier";
 }
 
 String convertToLastSeen(int timestamp){

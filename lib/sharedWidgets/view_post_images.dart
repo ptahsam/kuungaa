@@ -49,7 +49,7 @@ class _ViewPostImageState extends State<ViewPostImage> {
   final List<Widget> _taggedUserList = [];
 
   void _getTaggedList(){
-    if(widget.post.taggedUsers != null){
+    if(widget.post.taggedUsers != null && widget.post.taggedUsers!.isNotEmpty){
       for(var i = 0; i < widget.post.taggedUsers!.length; i ++){
         Widget tagContainer = Container(
           padding: const EdgeInsets.all(2.0),
@@ -75,7 +75,7 @@ class _ViewPostImageState extends State<ViewPostImage> {
     // TODO: implement initState
     super.initState();
     _pageController = PageController();
-    Media media = widget.media[0];
+    Media media = widget.media.isNotEmpty?widget.media[0]:null;
     urlImg = media.url!;
     _getTaggedList();
   }
