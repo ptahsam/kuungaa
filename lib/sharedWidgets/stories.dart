@@ -1161,7 +1161,7 @@ class _StoryScreenState extends State<StoryScreen>
     _animController!.reset();
     if(story.story_type == "image_story"){
         //print("story_duration ::" + story.story_duration!.toString());
-      _animController!.duration = const Duration(seconds: 10);
+      _animController!.duration = const Duration(seconds: 5);
       _animController!.forward();
       //print("story_duration ::" + story.story_duration!.toString());
     }else if(story.story_type == "video_story"){
