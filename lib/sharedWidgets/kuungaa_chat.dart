@@ -325,17 +325,10 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                               crossAxisAlignment: CrossAxisAlignment.end,
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                chat.chatCount != null && chat.chatCount != 0?Text(
+                                                Text(
                                                   convertToChattime(chat.message!.time_created!),
                                                   style: TextStyle(
                                                     color: Palette.kuungaaDefault,
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.w100,
-                                                  ),
-                                                ):Text(
-                                                  convertToChattime(chat.message!.time_created!),
-                                                  style: TextStyle(
-                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                     fontSize: 12.0,
                                                     fontWeight: FontWeight.w100,
                                                   ),
