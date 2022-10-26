@@ -513,14 +513,14 @@ String convertToWhenNotif(int timestamp) {
       if((int.parse(cd) - int.parse(d)) == 1){
         return "Yesterday";
       }else if((int.parse(cd) - int.parse(d)) < 7){
-        return '${(int.parse(cd) - int.parse(d)).toString()} days';
+        return '${(int.parse(cd) - int.parse(d)).toString()} days ago';
       }else if(DateTime.now().weekOfYear == DateTime.fromMicrosecondsSinceEpoch(timestamp).weekOfYear){
         return "This week";
       }else{
         return "This month";
       }//return e + " " + d;
     }
-    return "Earlier";
+    return "This year";
   }
   return "Earlier";
 }
@@ -1045,10 +1045,10 @@ String convertToTimeAgo(int time){
   // Check for minutes
   else if(min <= 60) {
     if(min==1) {
-      msgtime = "1 min";
+      msgtime = "1 m";
     }
     else {
-      msgtime =  min.toString() + " min";
+      msgtime =  min.toString() + " m";
       //msgtime = new Date(time).toLocaleTimeString();
     }
   }
@@ -1056,10 +1056,10 @@ String convertToTimeAgo(int time){
   // Check for hours
   else if(hrs <= 24) {
     if(hrs == 1) {
-      msgtime = "1 hr";
+      msgtime = "1 h";
     }
     else {
-      msgtime = hrs.toString() + " hrs";
+      msgtime = hrs.toString() + " h";
       //msgtime = new Date(time).toLocaleTimeString() + "last seen, Today";
     }
   }
@@ -1067,11 +1067,11 @@ String convertToTimeAgo(int time){
   // Check for days
   else if(days <= 7) {
     if(days == 1) {
-      msgtime = "1 day";
+      msgtime = "1 d";
       //msgtime = new Date(time).toLocaleTimeString() + "last seen, Yesterday";
     }
     else {
-      msgtime = days.toString() + " days";
+      msgtime = days.toString() + " d";
       //msgtime = new Date(time).toLocaleTimeString() + "last seen, " + days + " days ago";
     }
   }
@@ -1079,10 +1079,10 @@ String convertToTimeAgo(int time){
   // Check for weeks
   else if(weeks <= 4.3) {
     if(weeks == 1) {
-      msgtime = "1 week";
+      msgtime = "1 w";
     }
     else {
-      msgtime = weeks.toString() + " weeks";
+      msgtime = weeks.toString() + " w";
     }
   }
 
@@ -1099,10 +1099,10 @@ String convertToTimeAgo(int time){
   // Check for years
   else {
     if(yrs == 1) {
-      msgtime = "1 year";
+      msgtime = "1 y";
     }
     else {
-      msgtime = yrs.toString() + " years";
+      msgtime = yrs.toString() + " y";
     }
   }
   return msgtime;

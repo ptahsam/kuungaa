@@ -86,18 +86,18 @@ class _UserNotificationState extends State<UserNotification> {
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18.0,
+                                      fontSize: 16.0,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ):notif == nextNotif?Container(
-                                  margin: EdgeInsets.only(top: 20, bottom: 10, left: 20.0),
+                                  margin: EdgeInsets.only(top: 20, bottom: 10),
                                   child: Text(
                                     convertToWhenNotif(notif.notification_time!),
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18.0,
+                                      fontSize: 16.0,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
