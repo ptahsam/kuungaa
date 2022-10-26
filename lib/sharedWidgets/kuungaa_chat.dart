@@ -50,14 +50,14 @@ class _KuungaaChatState extends State<KuungaaChat> {
                   Navigator.of(context).pop();
                 },
               ),
-              title: const Text(
+              /*title: const Text(
                 "Chat",
                 style: TextStyle(
                   color: Colors.white,
                   //fontSize: 22.0,
                   //fontWeight: FontWeight.bold,
                 ),
-              ),
+              ),*/
               centerTitle: false,
               elevation: 0.0,
               actions: [
@@ -328,7 +328,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
                                                 Text(
                                                   convertToChattime(chat.message!.time_created!),
                                                   style: TextStyle(
-                                                    color: Palette.kuungaaDefault,
+                                                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
                                                     fontSize: 12.0,
                                                     fontWeight: FontWeight.w100,
                                                   ),
