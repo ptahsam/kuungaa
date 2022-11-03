@@ -512,7 +512,7 @@ String convertToWhenNotif(int timestamp) {
       }
       if((int.parse(cd) - int.parse(d)) == 1){
         return "Yesterday";
-      }else if((int.parse(cd) - int.parse(d)) < 7){
+      }else if((int.parse(cd) - int.parse(d)) < 3){
         return '${(int.parse(cd) - int.parse(d)).toString()} days ago';
       }else if(DateTime.now().weekOfYear == DateTime.fromMicrosecondsSinceEpoch(timestamp).weekOfYear){
         return "This week";

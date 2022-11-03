@@ -24,6 +24,7 @@ import 'package:kuungaa/Models/message.dart';
 import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
@@ -317,7 +318,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         (double deltaTop, double deltaBottom, double vpHeight) {
                       return deltaTop < (0.5 * vpHeight) && deltaBottom > (0.5 * vpHeight);
                     },
-                    itemCount: Provider.of<AppData>(context).chatMessages!.length,
+                    itemCount: Provider.of<AppData>(context).isTyping?Provider.of<AppData>(context).chatMessages!.length + 1:Provider.of<AppData>(context).chatMessages!.length,
                     reverse: true,
                     padding: const EdgeInsets.only(top: 15.0),
                     builder: (context, int index){
@@ -369,6 +370,35 @@ class _ChatScreenState extends State<ChatScreen> {
                                   //print("widget ${message.message_id} is in view status :: ${isInView}");
                                 }
                                 updateMessageStatus(message, isInView);
+                                if(Provider.of<AppData>(context).isTyping && index == 0){
+                                  return Wrap(
+                                    alignment: WrapAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        decoration: Provider.of<AppData>(context).darkTheme?BoxDecoration(
+                                          color: Colors.transparent,
+                                        ):BoxDecoration(
+                                          color: Colors.transparent,
+                                        ),
+                                        margin: EdgeInsets.zero,
+                                        child: Container(
+                                          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0, right: 35.0),
+                                          child: ChatBubble(
+                                            alignment: Alignment.centerLeft,
+                                            clipper: ChatBubbleClipper8(type: BubbleType.receiverBubble),
+                                            backGroundColor: Provider.of<AppData>(context).darkTheme?Palette.lessMediumDarker:HexColor("#ffffff"),
+                                            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+                                            child: LoadingAnimationWidget.waveDots(
+                                              color: Palette.kuungaaDefault.withOpacity(0.5),
+                                              size: 40,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );;
+                                }
                                 return InkWell(
                                   onLongPress: (){
                                     setState(() {
