@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/allScreens/screens.dart';
@@ -75,7 +76,13 @@ class _CreatePostState extends State<CreatePost> {
         dropdownvalue = "Only Me";
       }
       userSelectedTagged = widget.post!.taggedUsers!;
+      getEditPostMedia();
     }
+  }
+
+  getEditPostMedia() async {
+    List<Media> mediaList = await getPostMediaImages(widget.post!.post_id!);
+    print(mediaList.length);
   }
 
   @override
@@ -102,7 +109,8 @@ class _CreatePostState extends State<CreatePost> {
               Container(
                 padding: const EdgeInsets.only(right: 12.0, top: 5.0, bottom: 5.0),
                 child: ElevatedButton(
-                  onPressed: _isButtonDisabled? (){
+                  onPressed: postTextEditingController.text.isNotEmpty || userSelectedFileList!.isNotEmpty
+                      || selectedExpression != "" || taggedUsers.isNotEmpty? (){
                     savePost();
                   } : null,
                   child: widget.post != null?Text("Update"):Text("Post"),

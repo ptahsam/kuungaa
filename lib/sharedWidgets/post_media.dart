@@ -7,6 +7,7 @@ import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/MultiManager/flick_multimanager.dart';
 import 'package:kuungaa/MultiManager/flick_multiplayer.dart';
+import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
 import 'package:page_transition/page_transition.dart';
@@ -376,23 +377,6 @@ class _PostMediaState extends State<PostMedia> {
           }
         }
     );
-  }
-
-  Future<List<Media>> getPostMediaData(String postid) async {
-    List<Media> listImage = [];
-    final DatabaseReference mediaReference = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Posts").child(postid).child("post_media");
-    await mediaReference.once().then((DataSnapshot snapshotPosts){
-      if(snapshotPosts.exists){
-        listImage.clear();
-
-        for(var i in snapshotPosts.value){
-          Media media = Media.fromJson(Map<String, dynamic>.from(i));
-          listImage.add(media);
-        }
-
-      }
-    });
-    return listImage;
   }
 }
 

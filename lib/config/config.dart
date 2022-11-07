@@ -99,6 +99,23 @@ List<Posts> arrangePosts(List<Posts> posts){
   return posts;
 }
 
+Future<List<Media>> getPostMediaData(String postid) async {
+  List<Media> listImage = [];
+  final DatabaseReference mediaReference = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Posts").child(postid).child("post_media");
+  await mediaReference.once().then((DataSnapshot snapshotPosts){
+    if(snapshotPosts.exists){
+      listImage.clear();
+
+      for(var i in snapshotPosts.value){
+        Media media = Media.fromJson(Map<String, dynamic>.from(i));
+        listImage.add(media);
+      }
+
+    }
+  });
+  return listImage;
+}
+
 Future<File> testCompressAndGetFile(File file, String targetPath) async {
 
   var result = await FlutterImageCompress.compressAndGetFile(
