@@ -367,7 +367,15 @@ class _ContextMenuState extends State<ContextMenu> {
           widget.post.poster_id == userCurrentInfo!.user_id! ?
           InkWell(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePost(isSelectMedia: false, isSelectExpression: false, post: widget.post,)));
+              if(widget.post.post_category == "pagesfeed"){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePagePost(pagename: widget.post.kpage!.page_name!, pageid: widget.post.kpage!.page_id!, post: widget.post,)));
+              }else if(widget.post.post_category == "groupsfeed"){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateGroupPost(groupname: widget.post.group!.group_name!, groupid: widget.post.group!.group_id!, groupicon: widget.post.group!.group_icon!, post: widget.post,)));
+              }else if(widget.post.post_category == "newsfeed"){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePost(isSelectMedia: false, isSelectExpression: false, post: widget.post,)));
+              }else if(widget.post.post_category == "travelfeed"){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateTravelPost(post: widget.post,)));
+              }
             },
             child: Padding(
               padding: const EdgeInsets.only(bottom: 9.0),

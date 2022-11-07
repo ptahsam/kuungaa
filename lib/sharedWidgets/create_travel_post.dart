@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
@@ -21,7 +22,11 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
 
 class CreateTravelPost extends StatefulWidget {
-  const CreateTravelPost({Key? key}) : super(key: key);
+  final Posts? post;
+  const CreateTravelPost({
+    Key? key,
+    this.post
+  }) : super(key: key);
 
   @override
   _CreateTravelPostState createState() => _CreateTravelPostState();
@@ -97,7 +102,7 @@ class _CreateTravelPostState extends State<CreateTravelPost> {
                   onPressed: _isButtonDisabled? (){
                     saveTravelPost();
                   } : null,
-                  child: const Text("Post"),
+                  child: widget.post != null?Text("Update"):Text("Post"),
                 ),
               ),
             ],

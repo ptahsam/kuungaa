@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
@@ -17,10 +18,12 @@ import 'package:snippet_coder_utils/hex_color.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
 class CreatePagePost extends StatefulWidget {
+  final Posts? post;
   final String pagename;
   final String pageid;
   const CreatePagePost({
     Key? key,
+    this.post,
     required this.pagename,
     required this.pageid
   }) : super(key: key);
@@ -73,7 +76,7 @@ class _CreatePagePostState extends State<CreatePagePost> {
                   onPressed: _isButtonDisabled? (){
                     savePagePost(widget.pageid);
                   } : null,
-                  child: const Text("Post"),
+                  child: widget.post != null?Text("Update"):Text("Post"),
                 ),
               ),
             ],

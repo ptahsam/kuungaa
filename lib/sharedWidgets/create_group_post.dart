@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
@@ -20,11 +21,13 @@ import 'package:path/path.dart' as path;
 import 'widgets.dart';
 
 class CreateGroupPost extends StatefulWidget {
+  final Posts? post;
   final String groupname;
   final String groupid;
   final String groupicon;
   const CreateGroupPost({
     Key? key,
+    this.post,
     required this.groupname,
     required this.groupid,
     required this.groupicon
@@ -90,7 +93,7 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
                       onPressed: _isButtonDisabled? (){
                         saveGroupPost(widget.groupid);
                       } : null,
-                      child: const Text("Post"),
+                      child: widget.post != null?Text("Update"):Text("Post"),
                     ),
                   ),
                 ),
