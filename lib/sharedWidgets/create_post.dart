@@ -67,6 +67,14 @@ class _CreatePostState extends State<CreatePost> {
     if(widget.post != null){
       selectedExpression = widget.post!.post_expression!;
       postTextEditingController.text = widget.post!.post_description!;
+      if(widget.post!.post_privacy! == "public"){
+        dropdownvalue = "Public";
+      }else if(widget.post!.post_privacy! == "friends"){
+        dropdownvalue = "Friends";
+      }else{
+        dropdownvalue = "Only Me";
+      }
+      userSelectedTagged = widget.post!.taggedUsers!;
     }
   }
 
