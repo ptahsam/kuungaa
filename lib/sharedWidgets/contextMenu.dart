@@ -365,49 +365,43 @@ class _ContextMenuState extends State<ContextMenu> {
           ):const SizedBox.shrink(),*/
 
           widget.post.poster_id == userCurrentInfo!.user_id! ?
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 9.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit,
-                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
-                      //size: 28.0,
-                    ),
-                    const SizedBox(width: 8.0,),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Edit post",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w400,
-                          ),
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePost(isSelectMedia: false, isSelectExpression: false, post: widget.post,)));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 9.0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.edit,
+                    color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.grey,
+                    //size: 28.0,
+                  ),
+                  const SizedBox(width: 8.0,),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Edit post",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
                         ),
-                        /*Text(
-                    "Add post to your saved items",
-                    style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey
-                    ),
-                  ),*/
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      /*Text(
+                  "Add post to your saved items",
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.grey
+                  ),
+                ),*/
+                    ],
+                  ),
+                ],
               ),
-              /*const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.0),
-                child: Divider(
-                  height: 1.0,
-                  color: Colors.grey,
-                ),
-              ),*/
-            ],
+            ),
           ) : const SizedBox.shrink(),
 
           widget.post.poster_id == userCurrentInfo!.user_id! ?

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
 import 'package:kuungaa/allScreens/screens.dart';
 import 'package:kuungaa/config/config.dart';
@@ -21,12 +22,15 @@ import 'widgets.dart';
 
 class CreatePost extends StatefulWidget {
 
+  final Posts? post;
+
   final bool isSelectMedia;
 
   final bool isSelectExpression;
 
   const CreatePost({
     Key? key,
+    this.post,
     required this.isSelectMedia,
     required this.isSelectExpression
   }) : super(key: key);
@@ -88,7 +92,7 @@ class _CreatePostState extends State<CreatePost> {
                   onPressed: _isButtonDisabled? (){
                     savePost();
                   } : null,
-                  child: const Text("Post"),
+                  child: widget.post != null?Text("Update"):Text("Post"),
                 ),
               ),
             ],
