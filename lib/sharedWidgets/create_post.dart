@@ -8,6 +8,7 @@ import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/allScreens/screens.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
@@ -75,8 +76,22 @@ class _CreatePostState extends State<CreatePost> {
       }else{
         dropdownvalue = "Only Me";
       }
-      userSelectedTagged = widget.post!.taggedUsers!;
+      setTaggedUser();
       getEditPostMedia();
+    }
+  }
+
+  setTaggedUser() async {
+    if(widget.post!.taggedUsers!.isNotEmpty){
+      for(var i = 0; i < widget.post!.taggedUsers!.length; i++){
+        Users user = widget.post!.taggedUsers![i];
+        Tagged tagged = Tagged();
+        tagged.userid = user.user_id!;
+        setState(() {
+          taggedUsers.add(tagged);
+          userSelectedTagged = taggedUsers;
+        });
+      }
     }
   }
 
