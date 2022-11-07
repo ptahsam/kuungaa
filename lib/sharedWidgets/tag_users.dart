@@ -246,8 +246,10 @@ class _UsersListState extends State<UsersList> {
     // TODO: implement initState
     super.initState();
     if(taggedUsers.isNotEmpty){
-    for(var i = 0; i < taggedUsers.length; i++){
-    }
+      var contain = taggedUsers.where((Tagged tagged) => tagged.userid == widget.user!.user_id!);
+      if(contain.isNotEmpty){
+        _isChecked = true;
+      }
     }
   }
 
@@ -267,7 +269,6 @@ class _UsersListState extends State<UsersList> {
             Tagged tagged = Tagged();
             tagged.userid = widget.user!.user_id!;
             taggedUsers.add(tagged);
-            print(taggedUsers.length);
           }
         });
       },
