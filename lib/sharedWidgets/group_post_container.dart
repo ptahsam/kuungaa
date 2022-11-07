@@ -84,7 +84,8 @@ class _GroupContainerState extends State<GroupContainer> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
-            arrangePosts(listPosts.reversed.toList());
+            arrangePosts(listPosts);
+            listPosts = listPosts.reversed.toList();
           });
         }
       });
