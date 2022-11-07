@@ -82,7 +82,14 @@ class _CreatePostState extends State<CreatePost> {
 
   getEditPostMedia() async {
     List<Media> mediaList = await getPostMediaImages(widget.post!.post_id!);
-    print(mediaList.length);
+    if(mediaList.isNotEmpty){
+      for(var i = 0; i < mediaList.length; i++){
+        File file = await convertUriToFile(mediaList[i].url!);
+        setState(() {
+          userSelectedFileList!.add(file);
+        });
+      }
+    }
   }
 
   @override

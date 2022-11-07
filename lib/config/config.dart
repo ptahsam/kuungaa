@@ -1126,4 +1126,15 @@ String convertToTimeAgo(int time){
 
 }
 
+Future<File> convertUriToFile(String strURL) async{
+  final http.Response responseData = await http.get(Uri.parse(strURL));
+  Uint8List uint8list = responseData.bodyBytes;
+  var buffer = uint8list.buffer;
+  ByteData byteData = ByteData.view(buffer);
+  var tempDir = await getTemporaryDirectory();
+  File file = await File('${tempDir.path}/files').writeAsBytes(
+      buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+  return file;
+}
+
 String uProfile = "https://firebasestorage.googleapis.com/v0/b/kuungaa-42ba2.appspot.com/o/KUUNGAA%2Fimages%2Fprofile.jpg?alt=media&token=8426002b-381d-4dfb-98aa-b49570cd1303";
