@@ -63,6 +63,11 @@ class _CreatePostState extends State<CreatePost> {
     if(widget.isSelectExpression){
       getUserExpression();
     }
+
+    if(widget.post != null){
+      selectedExpression = widget.post!.post_expression!;
+      postTextEditingController.text = widget.post!.post_description!;
+    }
   }
 
   @override
@@ -84,7 +89,7 @@ class _CreatePostState extends State<CreatePost> {
                 color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,
               ),
             ),
-            title: Text("Create a post", style: TextStyle(fontSize: 18.0, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black)),
+            title: Text("${widget.post != null?"Edit Post":"Create a post"}", style: TextStyle(fontSize: 18.0, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black)),
             actions: [
               Container(
                 padding: const EdgeInsets.only(right: 12.0, top: 5.0, bottom: 5.0),
