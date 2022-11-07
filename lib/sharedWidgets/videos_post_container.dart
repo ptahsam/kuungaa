@@ -97,6 +97,7 @@ class _VideosPostContainerState extends State<VideosPostContainer> {
             post.postUser = postUser;
             setState(() {
               listPosts.add(post);
+              arrangePosts(listPosts);
             });
           }
         }

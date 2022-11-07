@@ -100,6 +100,7 @@ dependencies:
   flutter_contacts: ^1.1.5
   preload_page_view: ^0.1.6
   week_of_year: ^2.0.0
+  soundpool: ^2.3.0
 
 dev_dependencies:
   flutter_test:

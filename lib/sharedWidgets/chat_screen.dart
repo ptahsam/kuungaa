@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
@@ -34,6 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as path;
 import 'package:snippet_coder_utils/hex_color.dart';
+import 'package:soundpool/soundpool.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets.dart';
@@ -80,6 +82,18 @@ class _ChatScreenState extends State<ChatScreen> {
     currentChat.chatIsOpen = true;
     Provider.of<AppData>(context, listen: false).updateCurrentChat(currentChat);
     messageTextEditingController.addListener(handleTextchange);
+    //updateMessageChat();
+  }
+
+  void updateMessageChat() {
+    Future.delayed(Duration.zero,(){
+      List<Message> messages = Provider.of<AppData>(context).chatMessages!;
+      if(Provider.of<AppData>(context).isTyping){
+        Message message = Message();
+        messages.insert(0, message);
+        Provider.of<AppData>(context, listen: false).updateChatMessages(messages);
+      }
+    });
   }
 
    void handleTextchange() {
@@ -111,13 +125,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future initRecorder() async {
     status = await Permission.microphone.request();
+
     if(status != PermissionStatus.granted){
       throw "Microphone access permission not granted";
     }
+
     await recorder.openRecorder();
     setState((){
       isRecorderReady = true;
     });
+
     recorder.setSubscriptionDuration(
       const Duration(microseconds: 500),
     );
@@ -136,8 +153,18 @@ class _ChatScreenState extends State<ChatScreen> {
     final audioFile = File(path!);
   }
 
+  playSound()  async {
+    Soundpool pool = Soundpool(streamType: StreamType.notification);
+
+    int soundId = await rootBundle.load("sounds/song.mp3").then((ByteData soundData) {
+      return pool.load(soundData);
+    });
+    int streamId = await pool.play(soundId);
+}
+
   @override
   Widget build(BuildContext context) {
+    List<Message> chatMessagesList = Provider.of<AppData>(context).chatMessages!;
     return Scaffold(
       backgroundColor: Palette.kuungaaDefault,
       appBar: selectedMessages.isNotEmpty?AppBar(
@@ -307,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                child: Provider.of<AppData>(context).chatMessages != null?
+                child: chatMessagesList.isNotEmpty?
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30.0),
@@ -318,17 +345,19 @@ class _ChatScreenState extends State<ChatScreen> {
                         (double deltaTop, double deltaBottom, double vpHeight) {
                       return deltaTop < (0.5 * vpHeight) && deltaBottom > (0.5 * vpHeight);
                     },
-                    itemCount: Provider.of<AppData>(context).isTyping?Provider.of<AppData>(context).chatMessages!.length + 1:Provider.of<AppData>(context).chatMessages!.length,
+                    itemCount: Provider.of<AppData>(context).isTyping?chatMessagesList.length + 1:chatMessagesList.length,
                     reverse: true,
                     padding: const EdgeInsets.only(top: 15.0),
-                    builder: (context, int index){
+                    builder: (context, int position){
 
-                      Message message = Provider.of<AppData>(context).chatMessages![index];
-                      Message nextMessage =  Provider.of<AppData>(context).chatMessages!.length - 1 > index?Provider.of<AppData>(context).chatMessages![index + 1]:Provider.of<AppData>(context).chatMessages![index];
-                      Message prevMessage = index != 0?Provider.of<AppData>(context).chatMessages![index - 1]:Provider.of<AppData>(context).chatMessages![index];
+                      final int index = Provider.of<AppData>(context).isTyping && position > 0?position - 1:position;
+
+                      Message message = chatMessagesList[index];
+                      Message nextMessage =  chatMessagesList.length - 1 > index?chatMessagesList[index + 1]:chatMessagesList[index];
+                      Message prevMessage = index != 0?chatMessagesList[index - 1]:chatMessagesList[index];
 
                       final bool isMe = message.sender_id == userCurrentInfo!.user_id!;
-                      final bool isFirst = index == Provider.of<AppData>(context).chatMessages!.length - 1;
+                      final bool isFirst = index == chatMessagesList.length - 1;
                       //final bool prevMsgIsMine = prevMessage.sender_id == message.sender_id!;
 
                       return Column(
@@ -370,7 +399,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                   //print("widget ${message.message_id} is in view status :: ${isInView}");
                                 }
                                 updateMessageStatus(message, isInView);
-                                if(Provider.of<AppData>(context).isTyping && index == 0){
+                                if(Provider.of<AppData>(context).isTyping && position == 0){
+                                  playSound();
                                   return Wrap(
                                     alignment: WrapAlignment.start,
                                     children: [
@@ -723,12 +753,12 @@ class _ChatScreenState extends State<ChatScreen> {
         userSelectedFileList!.clear();
         isSending = false;
 
-        Map typingMap = {
+        Map<String, dynamic> typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
         };
 
-        FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
+        FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).update(typingMap);
 
         //displayToastMessage("Your post was uploaded successfully", context);
 

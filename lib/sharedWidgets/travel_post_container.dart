@@ -143,6 +143,7 @@ class _TravelPostContainerState extends State<TravelPostContainer> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
+            arrangePosts(listPosts);
           });
         }
       });

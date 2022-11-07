@@ -104,6 +104,7 @@ class _SinglePagePostState extends State<SinglePagePost> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
+            arrangePosts(listPosts);
           });
         }
       });

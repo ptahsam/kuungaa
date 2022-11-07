@@ -81,6 +81,7 @@ class _PageContainerState extends State<PageContainer> {
         post.postUser = postUser;
         setState(() {
           listPosts.add(post);
+          arrangePosts(listPosts);
         });
       }
     });

@@ -111,6 +111,7 @@ class _SingleUserPostContainerState extends State<SingleUserPostContainer> {
         post.postUser = postUser;
         setState(() {
           listPosts.add(post);
+          arrangePosts(listPosts);
         });
       }
     });

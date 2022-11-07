@@ -104,6 +104,7 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
+            arrangePosts(listPosts);
           });
         }
       });
