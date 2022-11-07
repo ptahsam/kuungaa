@@ -219,12 +219,18 @@ class _UserSettingsState extends State<UserSettings> {
                         Text("Use dark mode", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),),
                       ],
                     ),
-                    Checkbox(
+                    Switch.adaptive(
+                      value: themeChange.darkTheme,
+                      onChanged: (value){
+                        themeChange.darkTheme = value;
+                      },
+                    ),
+                    /*Checkbox(
                       value: themeChange.darkTheme,
                       onChanged: (value) {
                         themeChange.darkTheme = value!;
                       }
-                    ),
+                    ),*/
                   ],
                 ),
               ),
