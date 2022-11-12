@@ -252,16 +252,16 @@ class _CreatePostState extends State<CreatePost> {
                             ),
                           ),
                         ),
-                        child: InkWell(
-                          onTap: () async {
-                            getUserMedia();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  getUserMedia();
+                                },
+                                child: Container(
                                   padding: const EdgeInsets.all(8.0),
                                   width: 55.0,
                                   decoration: BoxDecoration(
@@ -273,24 +273,34 @@ class _CreatePostState extends State<CreatePost> {
                                     color: Colors.green,
                                   ),
                                 ),
-                                const SizedBox(width: 12.0,),
-                                const Expanded(
-                                  child: Text(
-                                      "Photo/Videos"
-                                  ),
+                              ),
+                              const SizedBox(width: 12.0,),
+                              const Expanded(
+                                child: Text(
+                                    "Photo/Videos"
                                 ),
-                                userSelectedFileList!.isNotEmpty ?
-                                Container(
+                              ),
+                              userSelectedFileList!.isNotEmpty ?
+                              InkWell(
+                                onTap: (){
+                                  Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: EditPostMedia(postMediaList: userSelectedFileList!,)));
+                                },
+                                child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                                     decoration: BoxDecoration(
                                       color: Colors.green,
                                       borderRadius: BorderRadius.circular(60.0),
                                     ),
-                                    child: Text(userSelectedFileList!.length.toString())
-                                ) :
-                                const SizedBox.shrink(),
-                              ],
-                            ),
+                                    child: Text(
+                                      userSelectedFileList!.length.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white
+                                      ),
+                                    )
+                                ),
+                              ) :
+                              const SizedBox.shrink(),
+                            ],
                           ),
                         ),
                       ),
@@ -590,5 +600,72 @@ displayToastMessage(String message, BuildContext context)
 {
   Fluttertoast.showToast(msg: message);
 }
+
+class EditPostMedia extends StatefulWidget {
+  final List<File> postMediaList;
+  const EditPostMedia({
+    Key? key,
+    required this.postMediaList
+  }) : super(key: key);
+
+  @override
+  State<EditPostMedia> createState() => _EditPostMediaState();
+}
+
+class _EditPostMediaState extends State<EditPostMedia> {
+
+  PageController? _pageController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black87,
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.postMediaList.length,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, i) {
+              final File media = widget.postMediaList[i];
+              return Image.file(
+                media,
+              );
+            },
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0),
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 

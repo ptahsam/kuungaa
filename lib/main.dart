@@ -26,7 +26,6 @@ import 'package:snippet_coder_utils/hex_color.dart';
 import 'DataHandler/appData.dart';
 import 'allScreens/discussionScreen.dart';
 import 'allScreens/mainScreen.dart';
-import 'sharedWidgets/widgets.dart';
 
 final configurations = Configurations();
 
@@ -56,14 +55,19 @@ void main() async {
   }else{
     await Firebase.initializeApp();
   }
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor: Palette.kuungaaDefault, // navigation bar color
     statusBarColor: Palette.kuungaaDefault, // status bar color
   ));
-  if (defaultTargetPlatform == TargetPlatform.android) {
+
+  if (defaultTargetPlatform == TargetPlatform.android)
+  {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
       AndroidFlutterLocalNotificationsPlugin>()
@@ -78,6 +82,7 @@ void main() async {
   final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
 
   runApp(MyApp(initialLink: initialLink,));
+
 }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -86,8 +91,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   importance: Importance.high,
 );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 DatabaseReference usersRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users");
 
@@ -213,6 +217,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
             )
         );
       }
+
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
