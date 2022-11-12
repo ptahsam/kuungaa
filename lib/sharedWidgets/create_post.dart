@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -632,13 +633,36 @@ class _EditPostMediaState extends State<EditPostMedia> {
           PageView.builder(
             controller: _pageController,
             itemCount: widget.postMediaList.length,
-            scrollDirection: Axis.vertical,
+            scrollDirection: Axis.horizontal,
             itemBuilder: (context, i) {
               final File media = widget.postMediaList[i];
               return Image.file(
                 media,
               );
             },
+          ),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: ListView.builder(
+              itemCount: widget.postMediaList.length,
+              itemBuilder: (ctx, int position){
+                final File media = widget.postMediaList[position];
+                return Container(
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4.0),
+                    image: DecorationImage(
+                      image: ExtendedFileImageProvider(
+                        media
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
           Positioned(
             top: 0,

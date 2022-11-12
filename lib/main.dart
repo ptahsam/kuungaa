@@ -57,8 +57,8 @@ void main() async {
   }
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Palette.kuungaaDefault, // navigation bar color
-    statusBarColor: Palette.kuungaaDefault, // status bar color
+    systemNavigationBarColor: Colors.white, // navigation bar color
+    statusBarColor: Colors.white, // status bar color
   ));
 
   if (defaultTargetPlatform == TargetPlatform.android)
