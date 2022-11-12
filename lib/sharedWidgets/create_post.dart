@@ -134,7 +134,11 @@ class _CreatePostState extends State<CreatePost> {
                 child: ElevatedButton(
                   onPressed: postTextEditingController.text.isNotEmpty || userSelectedFileList!.isNotEmpty
                       || selectedExpression != "" || taggedUsers.isNotEmpty? (){
-                    savePost();
+                    if(widget.post != null){
+                      updatingPost();
+                    }else{
+                      savePost();
+                    }
                   } : null,
                   child: widget.post != null?Text("Update"):Text("Post"),
                 ),
@@ -433,13 +437,126 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 
+  void updatingPost()
+  async{
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context)
+        {
+          return ProgressDialog(message: "Updating post, Please wait...",);
+        }
+    );
+
+    DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').child(widget.post!.post_id!);
+    String refKey = widget.post!.post_id!;
+    String postcitylocation = "";
+    String postcountrylocation = "";
+    String posterId = userCurrentInfo!.user_id!;
+    String description = postTextEditingController.text;
+    List tagged = [];
+    List postmedia = [];
+    String postprivacy = "";
+
+    if(dropdownvalue == "Public"){
+      postprivacy = "public";
+    }else if(dropdownvalue == "Friends"){
+      postprivacy = "friends";
+    }else{
+      postprivacy = "onlyme";
+    }
+
+    if(userSelectedTagged!.isNotEmpty){
+      for(var i = 0; i < userSelectedTagged!.length; i++){
+        Tagged tag = Tagged();
+        tag = userSelectedTagged![i];
+        Map userTaggedDetails = {
+          "userid" : tag.userid!
+        };
+        tagged.add(userTaggedDetails);
+      }
+    }
+
+    if(userSelectedFileList!.isNotEmpty){
+      firebase_storage.Reference fRef = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(refKey);
+      await fRef.listAll().then((result) async {
+        for (var file in result.items) {
+          file.delete();
+        }
+      });
+
+      for(var i = 0; i < userSelectedFileList!.length; i++){
+        String? mimeType = lookupMimeType(userSelectedFileList![i].path);
+        String basename = path.basename(userSelectedFileList![i].path);
+        File file = File(userSelectedFileList![i].path);
+        firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(refKey).child(basename);
+        firebase_storage.UploadTask uploadTask = ref.putFile(file);
+
+        String imageUrl = await(await uploadTask).ref.getDownloadURL();
+
+        Map postmediadetails = {
+          "url" : imageUrl,
+          "type" : mimeType
+        };
+        postmedia.add(postmediadetails);
+
+      }
+      var posttime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : refKey,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "newsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : postmedia,
+        "post_tagged" : tagged.isEmpty? "" : tagged,
+        "post_expression" : selectedExpression,
+      };
+      postRef.update(postDataMap).then((onValue) {
+        imageFileListAll!.clear();
+        createNotification(refKey);
+        Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
+        displayToastMessage("Your post was updated successfully", context);
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+    }else{
+      var posttime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : refKey,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "newsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : "",
+        "post_tagged" : tagged.isEmpty? "" : tagged,
+        "post_expression" : selectedExpression,
+      };
+      postRef.update(postDataMap).then((onValue) {
+        createNotification(refKey);
+        Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
+        displayToastMessage("Your post was updated successfully", context);
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+    }
+  }
+
   void savePost() async{
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context)
         {
-          return ProgressDialog(message: "Uploading your post, Please wait...",);
+          return ProgressDialog(message: "Uploading post, Please wait...",);
         }
     );
     DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').push();
