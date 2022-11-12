@@ -645,23 +645,27 @@ class _EditPostMediaState extends State<EditPostMedia> {
             bottom: 20,
             left: 0,
             right: 0,
-            child: ListView.builder(
-              itemCount: widget.postMediaList.length,
-              itemBuilder: (ctx, int position){
-                final File media = widget.postMediaList[position];
-                return Container(
-                  height: 70,
-                  width: 70,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    image: DecorationImage(
-                      image: ExtendedFileImageProvider(
-                        media
+            child: Container(
+              height: 100.0,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.postMediaList.length,
+                itemBuilder: (ctx, int position){
+                  final File media = widget.postMediaList[position];
+                  return Container(
+                    height: 70,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      image: DecorationImage(
+                        image: ExtendedFileImageProvider(
+                            media
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
           Positioned(
