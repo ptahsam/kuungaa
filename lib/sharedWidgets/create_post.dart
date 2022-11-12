@@ -616,6 +616,7 @@ class EditPostMedia extends StatefulWidget {
 class _EditPostMediaState extends State<EditPostMedia> {
 
   PageController? _pageController;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -634,8 +635,13 @@ class _EditPostMediaState extends State<EditPostMedia> {
             controller: _pageController,
             itemCount: widget.postMediaList.length,
             scrollDirection: Axis.horizontal,
+            onPageChanged: (int j){
+              setState(() {
+                _selectedIndex = j;
+              });
+            },
             itemBuilder: (context, i) {
-              final File media = widget.postMediaList[i];
+              final File media = widget.postMediaList[_selectedIndex];
               return Image.file(
                 media,
               );
@@ -652,14 +658,30 @@ class _EditPostMediaState extends State<EditPostMedia> {
                 itemCount: widget.postMediaList.length,
                 itemBuilder: (ctx, int position){
                   final File media = widget.postMediaList[position];
-                  return Container(
-                    height: 70,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.0),
-                      image: DecorationImage(
-                        image: ExtendedFileImageProvider(
-                            media
+                  return InkWell(
+                    onTap: (){
+                      setState(() {
+                        _selectedIndex = position;
+                      });
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 5.0),
+                      height: 70,
+                      width: 70,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        border: _selectedIndex == position?Border.all(
+                          width: 2.0,
+                          color: Palette.kuungaaDefault
+                        ):Border.all(
+                            width: 2.0,
+                            color: Colors.white
+                        ),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: ExtendedFileImageProvider(
+                            media,
+                          ),
                         ),
                       ),
                     ),
