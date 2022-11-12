@@ -697,6 +697,7 @@ class _EditPostMediaState extends State<EditPostMedia> {
             child: Container(
               padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
                     onTap: (){
@@ -704,6 +705,12 @@ class _EditPostMediaState extends State<EditPostMedia> {
                     },
                     child: Icon(
                       Icons.close,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    "${_selectedIndex + 1}/${widget.postMediaList.length}",
+                    style: TextStyle(
                       color: Colors.white,
                     ),
                   ),
