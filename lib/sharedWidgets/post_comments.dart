@@ -133,128 +133,158 @@ class _PostCommentsState extends State<PostComments> {
             child: FirebaseAnimatedList(
               query: itemRefComment!,
               itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
-                Comments comment = listComments[index];
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          ProfileAvatar(imageUrl: comment.comment_user!.user_profileimage!, radius: 14.0,),
-                          const SizedBox(width: 4.0,),
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    comment.comment_user!.user_firstname! + " " + comment.comment_user!.user_lastname!,
-                                    style: TextStyle(
-                                      color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black87,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      InkWell(
-                        onLongPress: (){
-                          if(widget.posterid == userCurrentInfo!.user_id! || comment.comment_id == userCurrentInfo!.user_id!) {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.0),
-                                    topRight: Radius.circular(15.0)),
-                              ),
-                              context: context,
-                              builder: (context) => buildCommentSheet(comment),
-                            );
-                          }
-                        },
-                        child: Container(
-                          child: Stack(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0.0),
-                                padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 10.0),
-                                decoration: BoxDecoration(
-                                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:HexColor("#e9ecef"),
-
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                if(index + 1 <= listComments.length) {
+                  Comments comment = listComments[index];
+                  return Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            ProfileAvatar(imageUrl: comment.comment_user!
+                                .user_profileimage!, radius: 14.0,),
+                            const SizedBox(width: 4.0,),
+                            Column(
+                              children: [
+                                Row(
                                   children: [
-                                    comment.tagged_user != null?Text(
-                                      "#" + comment.tagged_user!.user_firstname! + " " + comment.tagged_user!.user_lastname!,
+                                    Text(
+                                      comment.comment_user!.user_firstname! +
+                                          " " +
+                                          comment.comment_user!.user_lastname!,
                                       style: TextStyle(
-                                        color: HexColor("#4285F4"),
+                                        color: Provider
+                                            .of<AppData>(context)
+                                            .darkTheme ? Colors.white : Colors
+                                            .black87,
                                       ),
-                                    ):SizedBox.shrink(),
-                                    Text(comment.comment_text!),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              Positioned(
-                                right: 0.0,
-                                bottom: 2.0,
-                                child: MainCommentLikes(postid: widget.postid, commentid: comment.comment_id!,),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20.0, 5.0, 0.0, 0.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            LikeMainComment(postid: widget.postid,commentid: comment.comment_id!,),
-                            SizedBox(width: 7.0,),
-                            InkWell(
-                              onTap: (){
-                                setState(() {
-                                  if(isBoxVisible){
-                                    isBoxVisible = false;
-                                  }else{
-                                    isBoxVisible = true;
-                                  }
-                                });
-                                commentType = "main-comment-reply";
-                                replycommentid = comment.comment_id!;
-                                replyUser = comment.comment_user!;
-                                myFocusNode.requestFocus();
-                              },
-                              child: Text(
-                                "Reply",
-                                style: TextStyle(
-                                    //color: HexColor("#999999"),
-                                    fontSize: 14.0
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 7.0,),
-                            Text(
-                              convertToTimeAgo(comment.comment_time!),
-                              style: TextStyle(
-                                  //color: HexColor("#999999"),
-                                  fontSize: 14.0
-                              ),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                      ChildComment(postid: widget.postid, posterid:widget.posterid, commentid: comment.comment_id!, parentComment: comment, childcommentid: '', type: 'child-comment',),
-                    ],
-                  ),
-                );
+
+                        InkWell(
+                          onLongPress: () {
+                            if (widget.posterid == userCurrentInfo!.user_id! ||
+                                comment.comment_id ==
+                                    userCurrentInfo!.user_id!) {
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15.0),
+                                      topRight: Radius.circular(15.0)),
+                                ),
+                                context: context,
+                                builder: (context) =>
+                                    buildCommentSheet(comment),
+                              );
+                            }
+                          },
+                          child: Container(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(
+                                      20.0, 5.0, 20.0, 0.0),
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10.0, 15.0, 15.0, 10.0),
+                                  decoration: BoxDecoration(
+                                    color: Provider
+                                        .of<AppData>(context)
+                                        .darkTheme
+                                        ? Palette.lessDarker
+                                        : HexColor("#e9ecef"),
+
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      comment.tagged_user != null ? Text(
+                                        "#" + comment.tagged_user!
+                                            .user_firstname! + " " +
+                                            comment.tagged_user!.user_lastname!,
+                                        style: TextStyle(
+                                          color: HexColor("#4285F4"),
+                                        ),
+                                      ) : SizedBox.shrink(),
+                                      Text(comment.comment_text!),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0.0,
+                                  bottom: 2.0,
+                                  child: MainCommentLikes(postid: widget.postid,
+                                    commentid: comment.comment_id!,),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              20.0, 5.0, 0.0, 0.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              LikeMainComment(postid: widget.postid,
+                                commentid: comment.comment_id!,),
+                              SizedBox(width: 7.0,),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (isBoxVisible) {
+                                      isBoxVisible = false;
+                                    } else {
+                                      isBoxVisible = true;
+                                    }
+                                  });
+                                  commentType = "main-comment-reply";
+                                  replycommentid = comment.comment_id!;
+                                  replyUser = comment.comment_user!;
+                                  myFocusNode.requestFocus();
+                                },
+                                child: Text(
+                                  "Reply",
+                                  style: TextStyle(
+                                    //color: HexColor("#999999"),
+                                      fontSize: 14.0
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 7.0,),
+                              Text(
+                                convertToTimeAgo(comment.comment_time!),
+                                style: TextStyle(
+                                  //color: HexColor("#999999"),
+                                    fontSize: 14.0
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ChildComment(postid: widget.postid,
+                          posterid: widget.posterid,
+                          commentid: comment.comment_id!,
+                          parentComment: comment,
+                          childcommentid: '',
+                          type: 'child-comment',),
+                      ],
+                    ),
+                  );
+                }else{
+                  return SizedBox.shrink();
+                }
               }
             ),
           ):Align(

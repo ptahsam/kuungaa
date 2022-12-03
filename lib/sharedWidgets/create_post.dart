@@ -57,6 +57,16 @@ class _CreatePostState extends State<CreatePost> {
   String selectedExpression = "";
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    userSelectedFileList!.clear();
+    userSelectedTagged!.clear();
+    taggedUsers.clear();
+    postTextEditingController.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -746,96 +756,98 @@ class _EditPostMediaState extends State<EditPostMedia> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: widget.postMediaList.length,
-            scrollDirection: Axis.horizontal,
-            onPageChanged: (int j){
-              setState(() {
-                _selectedIndex = j;
-              });
-            },
-            itemBuilder: (context, i) {
-              final File media = widget.postMediaList[_selectedIndex];
-              return Image.file(
-                media,
-              );
-            },
-          ),
-          Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 100.0,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.postMediaList.length,
-                itemBuilder: (ctx, int position){
-                  final File media = widget.postMediaList[position];
-                  return InkWell(
-                    onTap: (){
-                      setState(() {
-                        _selectedIndex = position;
-                      });
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: 5.0),
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        border: _selectedIndex == position?Border.all(
-                          width: 2.0,
-                          color: Palette.kuungaaDefault
-                        ):Border.all(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              itemCount: widget.postMediaList.length,
+              scrollDirection: Axis.horizontal,
+              onPageChanged: (int j){
+                setState(() {
+                  _selectedIndex = j;
+                });
+              },
+              itemBuilder: (context, i) {
+                final File media = widget.postMediaList[_selectedIndex];
+                return Image.file(
+                  media,
+                );
+              },
+            ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 100.0,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.postMediaList.length,
+                  itemBuilder: (ctx, int position){
+                    final File media = widget.postMediaList[position];
+                    return InkWell(
+                      onTap: (){
+                        setState(() {
+                          _selectedIndex = position;
+                        });
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(right: 5.0),
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          border: _selectedIndex == position?Border.all(
                             width: 2.0,
-                            color: Colors.white
-                        ),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: ExtendedFileImageProvider(
-                            media,
+                            color: Palette.kuungaaDefault
+                          ):Border.all(
+                              width: 2.0,
+                              color: Colors.white
+                          ),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: ExtendedFileImageProvider(
+                              media,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 40.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "${_selectedIndex + 1}/${widget.postMediaList.length}",
-                    style: TextStyle(
-                      color: Colors.white,
+                    Text(
+                      "${_selectedIndex + 1}/${widget.postMediaList.length}",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

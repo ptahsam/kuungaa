@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kuungaa/AllWidgets/progressDialog.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
+import 'package:kuungaa/Models/media.dart';
 import 'package:kuungaa/Models/post.dart';
 import 'package:kuungaa/Models/tagged.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/select_expression.dart';
@@ -53,6 +55,56 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
   TextEditingController groupPostTextEditingController = TextEditingController();
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    userGroupSelectedFileList!.clear();
+    userGroupSelectedTagged.clear();
+    taggedUsers.clear();
+    groupPostTextEditingController.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.post != null){
+      //selectedExpression = widget.post!.post_expression!=null||
+       //   widget.post!.post_expression!=""?widget.post!.post_expression!:"";
+      groupPostTextEditingController.text = widget.post!.post_description!=null||
+          widget.post!.post_description!=""?widget.post!.post_description!:"";
+      setTaggedUser();
+      getEditPostMedia();
+    }
+  }
+
+  setTaggedUser() async {
+    if(widget.post!.taggedUsers!.isNotEmpty){
+      for(var i = 0; i < widget.post!.taggedUsers!.length; i++){
+        Users user = widget.post!.taggedUsers![i];
+        Tagged tagged = Tagged();
+        tagged.userid = user.user_id!;
+        setState(() {
+          taggedUsers.add(tagged);
+          userGroupSelectedTagged = taggedUsers;
+        });
+      }
+    }
+  }
+
+  getEditPostMedia() async {
+    List<Media> mediaList = await getPostMediaImages(widget.post!.post_id!);
+    if(mediaList.isNotEmpty){
+      for(var i = 0; i < mediaList.length; i++){
+        File file = await convertUriToFile(mediaList[i].url!);
+        setState(() {
+          userGroupSelectedFileList!.add(file);
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -74,30 +126,50 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
             snap: true,
             elevation: 40.0,
             pinned: true,
-            expandedHeight: 70.0,
-            flexibleSpace: Stack(
-              children: [
-                Positioned.fill(
-                    child: ExtendedImage.network(
-                      widget.groupicon,
-                      fit: BoxFit.cover,
-                    ),
-                ),
-                Positioned(
-                  right: 12.0,
-                  top: 20.0,
-                  bottom: 8.0,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10.0),
-                    child: ElevatedButton(
-                      onPressed: _isButtonDisabled? (){
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 12.0, bottom: 5, top: 5),
+                child: InkWell(
+                  onTap: (){
+                    if(selectedExpression != "" || groupPostTextEditingController.text.isNotEmpty
+                        || userGroupSelectedFileList!.isNotEmpty || userGroupSelectedTagged.isNotEmpty){
+                      if(widget.post != null){
+                        updateGroupPost(widget.groupid);
+                      }else {
                         saveGroupPost(widget.groupid);
-                      } : null,
-                      child: widget.post != null?Text("Update"):Text("Post"),
+                      }
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+                    ),
+                    child: widget.post != null?Center(
+                      child: Text(
+                        "Update",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ):Center(
+                      child: Text(
+                        "Post",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.0,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ],
+              )
+            ],
+            flexibleSpace: ExtendedImage.network(
+              widget.groupicon,
+              fit: BoxFit.cover,
             ),
           ),
           SliverToBoxAdapter(
@@ -384,6 +456,122 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
     );
   }
 
+  void updateGroupPost(String groupid)
+  async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context)
+        {
+          return ProgressDialog(message: "Updating your post, Please wait...",);
+        }
+    );
+
+    DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').child(widget.post!.post_id!);
+    String refKey = widget.post!.post_id!;
+    String postcitylocation = "";
+    String postcountrylocation = "";
+    String posterId = userCurrentInfo!.user_id!;
+    String description = groupPostTextEditingController.text;
+    List tagged = [];
+    List postmedia = [];
+    String postprivacy = "";
+
+    if(dropdownvalue == "Public"){
+      postprivacy = "public";
+    }else if(dropdownvalue == "Friends"){
+      postprivacy = "friends";
+    }else{
+      postprivacy = "onlyme";
+    }
+
+    if(userGroupSelectedTagged.isNotEmpty){
+      for(var i = 0; i < userGroupSelectedTagged.length; i++){
+        Tagged tag = Tagged();
+        tag = userGroupSelectedTagged[i];
+        //print("Tagged user" + tag.userid!);
+        Map userTaggedDetails = {
+          "userid" : tag.userid!
+        };
+        tagged.add(userTaggedDetails);
+      }
+    }
+
+    if(userGroupSelectedFileList!.isNotEmpty){
+      firebase_storage.Reference fRef = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(groupid);
+      await fRef.listAll().then((result) async {
+        for (var file in result.items) {
+          file.delete();
+        }
+      });
+
+      for(var i = 0; i < userGroupSelectedFileList!.length; i++){
+        String? mimeType = lookupMimeType(userGroupSelectedFileList![i].path);
+        //print("User selected file" + mimeType!);
+        File file = File(userGroupSelectedFileList![i].path);
+        String basename = path.basename(userGroupSelectedFileList![i].path);
+        firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(groupid).child(basename);
+        //await ref.putFile(file).whenComplete((snapshot) => {});
+        firebase_storage.UploadTask uploadTask = ref.putFile(file);
+
+        String imageUrl = await(await uploadTask).ref.getDownloadURL();
+
+        Map postmediadetails = {
+          "url" : imageUrl,
+          "type" : mimeType
+        };
+        postmedia.add(postmediadetails);
+      }
+
+      var posttime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : groupid,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "groupsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : postmedia,
+        "post_tagged" : tagged,
+      };
+      postRef.update(postDataMap).then((onValue) {
+        displayToastMessage("Your post was updated successfully", context);
+        imageFileListAll!.clear();
+        createNotification(refKey);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+    }else{
+      var posttime = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> postDataMap = {
+        "poster_id" : posterId,
+        "post_id" : groupid,
+        "post_description" : description,
+        "post_time" : posttime,
+        "post_category" : "groupsfeed",
+        "post_city" : postcitylocation,
+        "post_countryname" : postcountrylocation,
+        "post_privacy" : postprivacy,
+        "post_media" : "",
+        "post_tagged" : tagged,
+      };
+      postRef.update(postDataMap).then((onValue) {
+        createNotification(refKey);
+        displayToastMessage("Your post was updated successfully", context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }).catchError((onError) {
+        Navigator.pop(context);
+        displayToastMessage("An error occurred. Please try again later", context);
+      });
+    }
+  }
+
   void saveGroupPost(String groupid) async{
     showDialog(
         context: context,
@@ -393,6 +581,7 @@ class _CreateGroupPostState extends State<CreateGroupPost> {
           return ProgressDialog(message: "Uploading your post, Please wait...",);
         }
     );
+
     DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').push();
     String refKey = postRef.key;
     String postcitylocation = "";

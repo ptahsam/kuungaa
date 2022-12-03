@@ -103,197 +103,197 @@ class _CreateStoryState extends State<CreateStory> {
           ),*/
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-              child: Container(
-                color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    // A grid view with 3 items per row
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 1.0,
-                    mainAxisSpacing: 1.0,
-                  ),
-                  itemCount: assets.length,
-                  itemBuilder: (_, index) {
-                    return AssetThumbnail(asset: assets[index]);
-                  },
-                ),
-            ),
-          ),
-          Container(
-            height: 150.0,
-            color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const StatusTextEditor()));
-                    },
-                    child: Container(
-                      height: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        gradient: Palette.createStoryTextGradient,
-                        borderRadius: BorderRadius.circular(5.0)
-                      ),
-                      child: Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.all(4.0),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
-                                ),
-                                child: Icon(MdiIcons.text, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),
-                              ),
-                              const Text(
-                                "Text",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                  fontSize: 16.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+                child: Container(
+                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      // A grid view with 3 items per row
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 1.0,
+                      mainAxisSpacing: 1.0,
                     ),
-                  ),
-                ),
-                const SizedBox(width: 4.0,),
-                Expanded(
-                  child: InkWell(
-                    onTap: () async {
-
-                      final cameras = await availableCameras();
-
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TakePhoto(cameras: cameras)));
-
-                      if(result != null){
-                        XFile xFile = result;
-                        File file = File(xFile.path);
-                        Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ImageScreen(imgFile: file, source: "camera",)));
-
-                      }
-
+                    itemCount: assets.length,
+                    itemBuilder: (_, index) {
+                      return AssetThumbnail(asset: assets[index]);
                     },
-                    child: Container(
-                      height: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
+                  ),
+              ),
+            ),
+            Container(
+              height: 150.0,
+              color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.white,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: const StatusTextEditor()));
+                      },
+                      child: Container(
+                        height: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
                           gradient: Palette.createStoryTextGradient,
                           borderRadius: BorderRadius.circular(5.0)
-                      ),
-                      child: Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.all(4.0),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                        ),
+                        child: Center(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  margin: const EdgeInsets.all(4.0),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                                  ),
+                                  child: Icon(MdiIcons.text, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),
                                 ),
-                                child: Icon(MdiIcons.camera, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black),
-                              ),
-                              const Text(
-                                "Photo",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                  fontSize: 16.0,
-                                  color: Colors.white,
+                                const Text(
+                                  "Text",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                    fontSize: 16.0,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4.0,),
-                Expanded(
-                  child: InkWell(
-                    onTap: () async {
-                      final cameras = await availableCameras();
+                  const SizedBox(width: 4.0,),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
 
-                      final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RecordVideo(cameras: cameras)));
+                        final cameras = await availableCameras();
 
-                      if(result != null){
-                        XFile xFile = result;
-                        File file = File(xFile.path);
-                        Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: VideoScreen(vidFile: file, source: "camera",)));
+                        final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TakePhoto(cameras: cameras)));
 
-                      }
-                    },
-                    child: Container(
-                      height: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          gradient: Palette.createStoryTextGradient,
-                          borderRadius: BorderRadius.circular(5.0)
-                      ),
-                      child: Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.all(4.0),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                        if(result != null){
+                          XFile xFile = result;
+                          File file = File(xFile.path);
+                          Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: ImageScreen(imgFile: file, source: "camera",)));
+                        }
+                      },
+                      child: Container(
+                        height: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            gradient: Palette.createStoryTextGradient,
+                            borderRadius: BorderRadius.circular(5.0)
+                        ),
+                        child: Center(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  margin: const EdgeInsets.all(4.0),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                                  ),
+                                  child: Icon(MdiIcons.camera, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black),
                                 ),
-                                child: Icon(MdiIcons.video, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),
-                              ),
-                              const Text(
-                                "Video",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                  fontSize: 16.0,
-                                  color: Colors.white,
+                                const Text(
+                                  "Photo",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                    fontSize: 16.0,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 4.0,),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        final cameras = await availableCameras();
+
+                        final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RecordVideo(cameras: cameras)));
+
+                        if(result != null){
+                          XFile xFile = result;
+                          File file = File(xFile.path);
+                          Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: VideoScreen(vidFile: file, source: "camera",)));
+
+                        }
+                      },
+                      child: Container(
+                        height: double.infinity,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            gradient: Palette.createStoryTextGradient,
+                            borderRadius: BorderRadius.circular(5.0)
+                        ),
+                        child: Center(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  margin: const EdgeInsets.all(4.0),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.white,
+                                  ),
+                                  child: Icon(MdiIcons.video, color: Provider.of<AppData>(context).darkTheme?Colors.white:Colors.black,),
+                                ),
+                                const Text(
+                                  "Video",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                    fontSize: 16.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -423,69 +423,78 @@ class _ImageScreenState extends State<ImageScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 12.0),
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
                   onPressed: () => {
-
                     saveStory(storyTextEditingController.text, file, "image_story", context),
                   },
-                  child: const Text("Post"),
+                  child: const Text(
+                    "Post",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          body: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                    gradient: Palette.createStoryTextGradient
-                ),
-                alignment: Alignment.center,
-                child: Image.file(file),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                    gradient: Palette.storyGradient
-                ),
-              ),
-              Positioned(
-                bottom: 8.0,
-                left: 8.0,
-                right: 8.0,
-                child: TextField(
-                  onChanged: (value) {
-                    //Do something with the user input.
-                  },
-                  controller: storyTextEditingController,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  minLines: 1,
-                  maxLines: 1,
-                  style: const TextStyle(
-                    color: Colors.white,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                      gradient: Palette.createStoryTextGradient
                   ),
-                  decoration: const InputDecoration(
-                    hintText: 'Write text here',
-                    hintStyle: TextStyle(
+                  alignment: Alignment.center,
+                  child: Image.file(file),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                      gradient: Palette.storyGradient
+                  ),
+                ),
+                Positioned(
+                  bottom: 8.0,
+                  left: 8.0,
+                  right: 8.0,
+                  child: TextField(
+                    onChanged: (value) {
+                      //Do something with the user input.
+                    },
+                    controller: storyTextEditingController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    minLines: 1,
+                    maxLines: 1,
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
-                    contentPadding:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.white, width: 0.8),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Palette.kuungaaDefault, width: 0.8),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    decoration: const InputDecoration(
+                      hintText: 'Write text here',
+                      hintStyle: TextStyle(
+                        color: Colors.white,
+                      ),
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.white, width: 0.8),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Palette.kuungaaDefault, width: 0.8),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -514,69 +523,79 @@ class _ImageScreenState extends State<ImageScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 12.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+              ),
               onPressed: () => {
 
                 saveStory(storyTextEditingController.text, widget.imgFile!, "image_story", context),
               },
-              child: const Text("Post"),
+              child: const Text(
+                "Post",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
             ),
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-                gradient: Palette.createStoryTextGradient
-            ),
-            alignment: Alignment.center,
-            child: Image.file(widget.imgFile!),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-                gradient: Palette.storyGradient
-            ),
-          ),
-          Positioned(
-            bottom: 8.0,
-            left: 8.0,
-            right: 8.0,
-            child: TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              controller: storyTextEditingController,
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              minLines: 1,
-              maxLines: 1,
-              style: const TextStyle(
-                color: Colors.white,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                  gradient: Palette.createStoryTextGradient
               ),
-              decoration: const InputDecoration(
-                hintText: 'Write text here',
-                hintStyle: TextStyle(
+              alignment: Alignment.center,
+              child: Image.file(widget.imgFile!),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                  gradient: Palette.storyGradient
+              ),
+            ),
+            Positioned(
+              bottom: 8.0,
+              left: 8.0,
+              right: 8.0,
+              child: TextField(
+                onChanged: (value) {
+                  //Do something with the user input.
+                },
+                controller: storyTextEditingController,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                minLines: 1,
+                maxLines: 1,
+                style: const TextStyle(
                   color: Colors.white,
                 ),
-                contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                  BorderSide(color: Colors.white, width: 0.8),
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                  BorderSide(color: Palette.kuungaaDefault, width: 0.8),
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                decoration: const InputDecoration(
+                  hintText: 'Write text here',
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: Colors.white, width: 0.8),
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                    BorderSide(color: Palette.kuungaaDefault, width: 0.8),
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

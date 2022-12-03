@@ -39,10 +39,15 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getSingleGroupPosts();
+  }
+
+  getSingleGroupPosts(){
     final FirebaseDatabase database = FirebaseDatabase.instance;
     itemRefPosts = database.reference().child('KUUNGAA').child('Posts')
         .orderByChild('post_id').equalTo(widget.groupid);
     itemRefPosts!.onChildAdded.listen(_onEntryAddedPosts);
+    itemRefPosts!.onChildChanged.listen(_onEntryChangedPost);
     itemRefPosts!.onChildRemoved.listen(_onEntryRemovedPosts);
     itemRefPosts!.once().then(_onPosts);
   }
@@ -104,11 +109,53 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
           post.postUser = postUser;
           setState(() {
             listPosts.add(post);
-            arrangePosts(listPosts);
+            arrangeListPosts(listPosts);
           });
         }
       });
     }
+  }
+
+  _onEntryChangedPost(Event event) async {
+    var old = listPosts.singleWhere((entry) {
+      return entry.post_id == event.snapshot.key;
+    });
+    Posts post = Posts();
+    post.post_id = event.snapshot.key;
+    post.pid = event.snapshot.value["post_id"];
+    post.post_description = event.snapshot.value["post_description"];
+    post.post_time = event.snapshot.value["post_time"];
+    post.poster_id = event.snapshot.value["poster_id"];
+    post.post_privacy = event.snapshot.value["post_privacy"];
+    post.post_city = event.snapshot.value["post_city"];
+    post.post_countryname = event.snapshot.value["post_countryname"];
+    post.post_finelocation = event.snapshot.value["post_finelocation"];
+    post.post_expression = event.snapshot.value["post_expression"];
+    post.post_category = event.snapshot.value["post_category"];
+    post.group = await getGroupFromId(event.snapshot.value["post_id"]);
+    DatabaseReference tagRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Posts").child(event.snapshot.key!).child("post_tagged");
+    await tagRef.once().then((DataSnapshot tagSnapshot) async {
+      if(tagSnapshot.exists){
+        if(tagSnapshot.value != ""){
+          List<Users> taggedUsersList = [];
+          for(var i in tagSnapshot.value){
+            Tagged tagged = Tagged.fromJson(Map<String, dynamic>.from(i));
+            DatabaseReference userRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(tagged.userid!);
+            await userRef.once().then((DataSnapshot userSnapshot){
+              Users users = Users.fromSnapshot(userSnapshot);
+              taggedUsersList.add(users);
+            });
+          }
+          post.taggedUsers = taggedUsersList;
+        }
+      }
+    });
+    Users postUser = await AssistantMethods.getCurrentOnlineUser(post.poster_id!);
+    post.postUser = postUser;
+    setState(() {
+      listPosts[listPosts.indexOf(old)] = post;
+      arrangeListPosts(listPosts);
+    });
   }
 
   _onEntryRemovedPosts(Event event) async {
@@ -118,61 +165,71 @@ class _SingleGroupPostState extends State<SingleGroupPost> {
 
     setState(() {
       listPosts.removeWhere((Posts post) => post.post_id == removed.post_id!);
+      arrangeListPosts(listPosts);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return groupHasPosts?Container(
-      padding: const EdgeInsets.only(top: 5.0),
-      child: listPosts.isNotEmpty?FirebaseAnimatedList(
-          physics: const NeverScrollableScrollPhysics(),
-          query: itemRefPosts!,
-          reverse: _anchorToBottom,
-          key: ValueKey<bool>(_anchorToBottom),
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
-            if(snapshot.exists){
-              if(index + 1 <= listPosts.length){
-                return Column(
-                  children: [
-                    SingleGroupPostMainContainer(post: listPosts[index],),
-                    listPosts.length > 1 ?
-                    Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
-                    ) : const SizedBox.shrink(),
-                  ],
-                );
+      padding: const EdgeInsets.only(top: 20.0),
+      child: listPosts.isNotEmpty?RefreshIndicator(
+        onRefresh: (){
+          return Future.delayed(
+            Duration(seconds: 1), () async {
+             getSingleGroupPosts();
+            },
+          );
+        },
+        child: FirebaseAnimatedList(
+            //physics: const NeverScrollableScrollPhysics(),
+            query: itemRefPosts!,
+            reverse: _anchorToBottom,
+            key: ValueKey<bool>(_anchorToBottom),
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder:(_, DataSnapshot snapshot, Animation<double> animation, int index){
+              if(snapshot.exists){
+                if(index + 1 <= listPosts.length){
+                  return Column(
+                    children: [
+                      SingleGroupPostMainContainer(post: listPosts[index],),
+                      listPosts.length > 1 ?
+                      Divider(color: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
+                      ) : const SizedBox.shrink(),
+                    ],
+                  );
+                }else{
+                  return SizedBox.shrink();
+                }
               }else{
-                return SizedBox.shrink();
-              }
-            }else{
-              return Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.13,
-                  width: MediaQuery.of(context).size.width * 0.65,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100]!,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.newspaper,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 6.0,),
-                        Text("There are no posts found!", textAlign: TextAlign.center,),
-                      ],
+                return Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.13,
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100]!,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.newspaper,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 6.0,),
+                          Text("There are no posts found!", textAlign: TextAlign.center,),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
+                );
+              }
             }
-          }
+        ),
       ):SizedBox(
         height: 1000,
         child: ListView.builder(

@@ -99,6 +99,13 @@ List<Posts> arrangePosts(List<Posts> posts){
   return posts;
 }
 
+List<Posts> arrangeListPosts(List<Posts> posts){
+  posts.sort((a, b){
+    return b.post_time!.compareTo(a.post_time!);
+  });
+  return posts;
+}
+
 Future<List<Media>> getPostMediaData(String postid) async {
   List<Media> listImage = [];
   final DatabaseReference mediaReference = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Posts").child(postid).child("post_media");

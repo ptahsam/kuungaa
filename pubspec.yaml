@@ -101,6 +101,8 @@ dependencies:
   preload_page_view: ^0.1.6
   week_of_year: ^2.0.0
   soundpool: ^2.3.0
+  web_socket_channel: ^2.2.0
+  flutter_webrtc: ^0.9.17
 
 dev_dependencies:
   flutter_test:

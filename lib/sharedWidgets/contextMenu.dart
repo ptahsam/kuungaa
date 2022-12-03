@@ -367,6 +367,7 @@ class _ContextMenuState extends State<ContextMenu> {
           widget.post.poster_id == userCurrentInfo!.user_id! ?
           InkWell(
             onTap: (){
+              Navigator.pop(context);
               if(widget.post.post_category == "pagesfeed"){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>CreatePagePost(pagename: widget.post.kpage!.page_name!, pageid: widget.post.kpage!.page_id!, post: widget.post,)));
               }else if(widget.post.post_category == "groupsfeed"){
@@ -508,63 +509,67 @@ class _ContextMenuState extends State<ContextMenu> {
           return ProgressDialog(message: "Deleting your post, Please wait...",);
         }
     );
+
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("KUUNGAA").child("Posts").child(postid);
 
-    await ref.listAll().then((result) async {
+    await ref.delete();
+
+    /*await ref.listAll().then((result) async {
       for (var file in result.items) {
         file.delete();
       }
+    });*/
 
-      DatabaseReference hiddenRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden");
-      await hiddenRef.once().then((hiddenSnap) async {
-        if(hiddenSnap.exists){
-          var hiddenKeys = hiddenSnap.value.keys;
-          for(var hiddenKey in hiddenKeys){
-            await hiddenRef.child(hiddenKey).child(postid).once().then((hiddenPost) async {
-              if(hiddenPost.exists){
-                await hiddenRef.child(hiddenKey).child(postid).remove();
-              }
-            });
-          }
+    DatabaseReference hiddenRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Hidden");
+    await hiddenRef.once().then((hiddenSnap) async {
+      if(hiddenSnap.exists){
+        var hiddenKeys = hiddenSnap.value.keys;
+        for(var hiddenKey in hiddenKeys){
+          await hiddenRef.child(hiddenKey).child(postid).once().then((hiddenPost) async {
+            if(hiddenPost.exists){
+              await hiddenRef.child(hiddenKey).child(postid).remove();
+            }
+          });
         }
-      });
-
-      DatabaseReference folderRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Folders");
-      await folderRef.once().then((folderSnap) async {
-        if(folderSnap.exists){
-          var folderKeys = folderSnap.value.keys;
-          for(var folderKey in folderKeys){
-            DatabaseReference saveRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Saves");
-            await saveRef.once().then((saveSnap) async {
-              if(saveSnap.exists){
-                var saveKeys = saveSnap.value.keys;
-                for(var saveKey in saveKeys){
-                  await saveRef.child(saveKey).child(folderKey).child(postid).once().then((savePost) async {
-                    if(savePost.exists){
-                      await saveRef.child(saveKey).child(folderKey).child(postid).remove();
-                    }
-                  });
-                }
-              }
-            });
-          }
-        }
-      });
-
-      DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').child(postid);
-      await postRef.remove().then((onValue) {
-        if(mounted) {
-          Navigator.pop(context);
-          displayToastMessage("Your post was deleted successfully", context);
-        }
-      }).catchError((onError) {
-        if(mounted) {
-          Navigator.pop(context);
-          displayToastMessage(
-              "An error occurred. Please try again later", context);
-        }
-      });
+      }
     });
+
+    DatabaseReference folderRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Folders");
+    await folderRef.once().then((folderSnap) async {
+      if(folderSnap.exists){
+        var folderKeys = folderSnap.value.keys;
+        for(var folderKey in folderKeys){
+          DatabaseReference saveRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Saves");
+          await saveRef.once().then((saveSnap) async {
+            if(saveSnap.exists){
+              var saveKeys = saveSnap.value.keys;
+              for(var saveKey in saveKeys){
+                await saveRef.child(saveKey).child(folderKey).child(postid).once().then((savePost) async {
+                  if(savePost.exists){
+                    await saveRef.child(saveKey).child(folderKey).child(postid).remove();
+                  }
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+
+    DatabaseReference postRef = FirebaseDatabase.instance.reference().child('KUUNGAA').child('Posts').child(postid);
+    await postRef.remove().then((onValue) {
+      if(mounted) {
+        Navigator.pop(context);
+        displayToastMessage("Your post was deleted successfully", context);
+      }
+    }).catchError((onError) {
+      if(mounted) {
+        Navigator.pop(context);
+        displayToastMessage(
+            "An error occurred. Please try again later", context);
+      }
+    });
+
   }
 
 

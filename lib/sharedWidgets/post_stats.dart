@@ -271,27 +271,33 @@ class _UserReactionContainerState extends State<UserReactionContainer> {
   }
 
   _onEntryAddedLike(Event event) async {
-    setState(() {
-      likes.like_id = event.snapshot.key;
-      likes.liker_id = event.snapshot.value["liker_id"];
-      likes.like_type = event.snapshot.value["like_type"];
-      isLike = true;
-    });
+    if(mounted) {
+      setState(() {
+        likes.like_id = event.snapshot.key;
+        likes.liker_id = event.snapshot.value["liker_id"];
+        likes.like_type = event.snapshot.value["like_type"];
+        isLike = true;
+      });
+    }
   }
 
   _onEntryChangedLike(Event event) async {
-    setState(() {
-      likes.like_id = event.snapshot.key;
-      likes.liker_id = event.snapshot.value["liker_id"];
-      likes.like_type = event.snapshot.value["like_type"];
-      isLike = true;
-    });
+    if(mounted) {
+      setState(() {
+        likes.like_id = event.snapshot.key;
+        likes.liker_id = event.snapshot.value["liker_id"];
+        likes.like_type = event.snapshot.value["like_type"];
+        isLike = true;
+      });
+    }
   }
 
   _onEntryRemovedLike(Event event) async {
-    setState(() {
-      isLike = false;
-    });
+    if(mounted) {
+      setState(() {
+        isLike = false;
+      });
+    }
   }
 
   @override
@@ -492,7 +498,6 @@ class _UserReactionContainerState extends State<UserReactionContainer> {
       }
     });
   }
-
 }
 
 
@@ -514,6 +519,12 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
 
   int selectedIndex = 0;
   final List<String> reactionsMenu = ["All", "Like", "Haha", "Angry", "Love", "Sad", "Wow"];
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -668,51 +679,6 @@ class _ReactionsStatsContainerState extends State<ReactionsStatsContainer> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        /*Container(
-                          height: 30.0,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                width: 2.0,
-                                color: Colors.black
-                              )
-                            )
-                          ),
-                          child: ListView.builder(
-                            itemCount: reactionsMenu.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, int index){
-                              return InkWell(
-                                onTap: (){
-                                  setState(() {
-                                    selectedIndex == index;
-                                  });
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 8),
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: selectedIndex == index?HexColor("#2dce89"):Colors.transparent,
-                                          width: 2.0,
-                                        ),
-                                      )
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      reactionsMenu[index],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 22.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),*/
                         Expanded(
                           child: listLikes.isNotEmpty?ListView.builder(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
@@ -808,6 +774,12 @@ class _PostReactionsContainerState extends State<PostReactionsContainer> {
 
   int likeCount = 0;
   DatabaseReference? itemRefLike;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   void initState() {

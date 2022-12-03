@@ -70,3 +70,4 @@ export 'home_top_appbar.dart';
 export 'spinner.dart';
 export 'contacts.dart';
 export 'terms_and_condition.dart';
+export 'receive_call.dart';

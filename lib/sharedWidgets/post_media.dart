@@ -366,6 +366,7 @@ class _PostMediaState extends State<PostMedia> {
               return const SizedBox(height: 8.0,);
             }
           }else{
+            return SizedBox.shrink();
             return Shimmer.fromColors(
               baseColor: Provider.of<AppData>(context).darkTheme?Palette.mediumDarker:Colors.grey[300]!,
               highlightColor: Provider.of<AppData>(context).darkTheme?Palette.lessDarker:Colors.grey[100]!,

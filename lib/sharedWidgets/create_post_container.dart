@@ -115,8 +115,8 @@ class _CreatePostContainerState extends State<CreatePostContainer> {
                       Expanded(
                         child: InkWell(
                           onTap: (){
-                            displayToastMessage("This feature is currently under development.", context);
-                            //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: AgoraLive()));
+                            //displayToastMessage("This feature is currently under development.", context);
+                            Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ReceiveCall()));
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 7.0, vertical: 5.0),

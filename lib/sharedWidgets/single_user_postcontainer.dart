@@ -111,7 +111,7 @@ class _SingleUserPostContainerState extends State<SingleUserPostContainer> {
         post.postUser = postUser;
         setState(() {
           listPosts.add(post);
-          arrangePosts(listPosts);
+          arrangeListPosts(listPosts);
         });
       }
     });
@@ -124,6 +124,7 @@ class _SingleUserPostContainerState extends State<SingleUserPostContainer> {
 
     setState(() {
       listPosts.removeWhere((Posts post) => post.post_id == removed.post_id!);
+      arrangeListPosts(listPosts);
     });
   }
 
