@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:kuungaa/config/config.dart';
+import 'package:kuungaa/config/palette.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -178,6 +180,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
     localVideo.initialize();
     remoteVideo.initialize();
     initialization();
+    registerPeerConnectionListeners();
     super.initState();
   }
 
@@ -192,9 +195,10 @@ class _ReceiveCallState extends State<ReceiveCall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: Palette.kuungaaDefault,
+      /*appBar: AppBar(
         title: const Text("Flutter webrtc websocket"),
-      ),
+      ),*/
       body: Stack(
         children: [
           SizedBox(
@@ -203,9 +207,12 @@ class _ReceiveCallState extends State<ReceiveCall> {
             child: RTCVideoView(
               remoteVideo,
               mirror: false,
+              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+              filterQuality: FilterQuality.high,
             ),
           ),
           Positioned(
+            top: 10,
             right: 10,
             child: SizedBox(
               height: 200,
@@ -213,6 +220,8 @@ class _ReceiveCallState extends State<ReceiveCall> {
               child: RTCVideoView(
                 localVideo,
                 mirror: true,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                filterQuality: FilterQuality.high,
               ),
             ),
           ),
@@ -220,33 +229,47 @@ class _ReceiveCallState extends State<ReceiveCall> {
       ),
       floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FloatingActionButton(
             backgroundColor: Colors.amberAccent,
-            onPressed: () => registerPeerConnectionListeners(),
-            child: const Icon(Icons.settings_applications_rounded),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.green,
-            onPressed: () => {makeCall()},
-            child: const Icon(Icons.call_outlined),
+            //onPressed: () => registerPeerConnectionListeners(),
+            onPressed: () => {
+
+            },
+            child: const Icon(
+              Icons.settings_applications_rounded,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: 10),
           FloatingActionButton(
             backgroundColor: Colors.redAccent,
+            onPressed: (){
+
+            },
+            //onPressed: () => {makeCall()},
+            child: const Icon(
+              Icons.call_outlined,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
             onPressed: () {
-              channel.sink.add(
+              /*channel.sink.add(
                 jsonEncode(
                   {
                     "event": "msg",
                     "data": "Hi this is an offer",
                   },
                 ),
-              );
+              );*/
             },
             child: const Icon(
-              Icons.call_end_outlined,
+              MdiIcons.microphone,
+              color: Colors.black,
             ),
           ),
         ],
