@@ -206,8 +206,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
             child: RTCVideoView(
               remoteVideo,
               mirror: false,
-              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-              filterQuality: FilterQuality.high,
             ),
           ),
           Positioned(
@@ -219,8 +217,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
               child: RTCVideoView(
                 localVideo,
                 mirror: true,
-                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                filterQuality: FilterQuality.high,
               ),
             ),
           ),
