@@ -180,7 +180,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
     localVideo.initialize();
     remoteVideo.initialize();
     initialization();
-    registerPeerConnectionListeners();
     super.initState();
   }
 
@@ -235,7 +234,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
             backgroundColor: Colors.amberAccent,
             //onPressed: () => registerPeerConnectionListeners(),
             onPressed: () => {
-
+            registerPeerConnectionListeners(),
             },
             child: const Icon(
               Icons.settings_applications_rounded,
