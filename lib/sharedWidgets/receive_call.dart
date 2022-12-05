@@ -28,6 +28,11 @@ class _ReceiveCallState extends State<ReceiveCall> {
   RTCPeerConnection? peerConnection;
 
   bool showOnScreen = false;
+  bool loudSpeaker = false;
+
+  void setLoudSpeaker(){
+    remoteStream!.getAudioTracks()[0].enableSpeakerphone(loudSpeaker);
+  }
 
   // Connecting with websocket Server
   void connectToServer() {
@@ -273,6 +278,9 @@ class _ReceiveCallState extends State<ReceiveCall> {
           FloatingActionButton(
             backgroundColor: Colors.white,
             onPressed: () {
+              setState(() {
+                loudSpeaker = !loudSpeaker;
+              });
               /*channel.sink.add(
                 jsonEncode(
                   {
@@ -282,9 +290,9 @@ class _ReceiveCallState extends State<ReceiveCall> {
                 ),
               );*/
             },
-            child: const Icon(
+            child: Icon(
               MdiIcons.microphone,
-              color: Colors.black,
+              color: loudSpeaker?Palette.kuungaaDefault:Colors.black,
             ),
           ),
         ],
