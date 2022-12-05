@@ -21,6 +21,8 @@ import 'package:kuungaa/config/SharedPreferences.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/config/themedata.dart';
+import 'package:kuungaa/sharedWidgets/receive_call.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 import 'DataHandler/appData.dart';
@@ -165,6 +167,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     super.dispose();
   }
 
+  getIncomingCalls(){
+    FirebaseDatabase.instance.reference().child("KUUNGAA").child("Calls").orderByChild("calleeid")
+        .equalTo(FirebaseAuth.instance.currentUser!.uid).onChildAdded.listen((event) {
+          if(event.snapshot.exists){
+            var data = event.snapshot.value;
+            if(data["status"] == "unanswered"){
+              Future.delayed(Duration.zero,()
+              async {
+                Navigator.push(context, PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: const ReceiveCall()));
+              });
+            }
+          }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -220,6 +239,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
       }
 
     });
+
+    getIncomingCalls();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
