@@ -29,6 +29,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
 
   bool showOnScreen = false;
   bool loudSpeaker = false;
+  String cameraMode = 'user';
 
   void setLoudSpeaker(){
     remoteStream!.getAudioTracks()[0].enableSpeakerphone(loudSpeaker);
@@ -112,7 +113,19 @@ class _ReceiveCallState extends State<ReceiveCall> {
   void initialization() async {
     // Getting video feed from the user camera
     localStream = await navigator.mediaDevices
-        .getUserMedia({'video': true, 'audio': false});
+        .getUserMedia({
+          'audio': false,
+          'video': {
+            'mandatory': {
+              'minWidth':
+              '640', // Provide your own width, height and frame rate here
+              'minHeight': '480',
+              'minFrameRate': '30',
+            },
+            'facingMode': cameraMode,
+            'optional': [],
+          }
+        });
 
     // Set the local video to display
     localVideo.srcObject = localStream;
@@ -255,7 +268,26 @@ class _ReceiveCallState extends State<ReceiveCall> {
             backgroundColor: Colors.amberAccent,
             //onPressed: () => registerPeerConnectionListeners(),
             onPressed: () => {
-            registerPeerConnectionListeners(),
+              registerPeerConnectionListeners(),
+            },
+            child: const Icon(
+              Icons.cameraswitch,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+            backgroundColor: Colors.blueGrey,
+            onPressed: (){
+              if(cameraMode == 'user'){
+                setState((){
+                  cameraMode = 'environment';
+                });
+              }else{
+                setState(() {
+                  cameraMode = 'user';
+                });
+              }
             },
             child: const Icon(
               Icons.settings_applications_rounded,
