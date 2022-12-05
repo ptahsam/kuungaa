@@ -175,9 +175,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
             if(data["status"] == "unanswered"){
               Future.delayed(Duration.zero,()
               async {
-                Navigator.push(context, PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: const ReceiveCall()));
+                Navigator.pushNamed(context, "/receivecall");
               });
             }
           }
@@ -346,6 +344,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               '/register': (context) => const RegisterScreen(),
               '/login': (context) => const LoginPage(),
               '/forgotpassword': (context) => const ForgotpasswordScreen(),
+              '/receivecall': (context) => const ReceiveCall(),
               LoginPage.idScreen: (context) => const LoginPage(),
               MainPage.idScreen: (context) => const MainPage(),
               NavScreen.idScreen: (context) => const NavScreen(),
