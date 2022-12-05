@@ -212,7 +212,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
             ),
           ),
           Positioned(
-            top: 70,
+            top: 40,
             right: 10,
             child: InkWell(
               onTap: (){
@@ -221,8 +221,8 @@ class _ReceiveCallState extends State<ReceiveCall> {
                 });
               },
               child: Container(
-                height: 150,
-                width: 150,
+                height: 120,
+                width: 120,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
                   border: Border.all(
