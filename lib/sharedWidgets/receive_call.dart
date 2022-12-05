@@ -25,6 +25,8 @@ class _ReceiveCallState extends State<ReceiveCall> {
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
 
+  bool showOnScreen = false;
+
   // Connecting with websocket Server
   void connectToServer() {
     try {
@@ -204,20 +206,35 @@ class _ReceiveCallState extends State<ReceiveCall> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: RTCVideoView(
-              remoteVideo,
+              showOnScreen?localVideo:remoteVideo,
               mirror: false,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
           ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: SizedBox(
-              height: 200,
-              width: 200,
-              child: RTCVideoView(
-                localVideo,
-                mirror: true,
+          InkWell(
+            onTap: (){
+              setState(() {
+                showOnScreen = !showOnScreen;
+              });
+            },
+            child: Positioned(
+              top: 40,
+              right: 10,
+              child: Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.0),
+                  border: Border.all(
+                    width: 1.0,
+                    color: Palette.kuungaaDefault,
+                  ),
+                ),
+                child: RTCVideoView(
+                  showOnScreen?remoteVideo:localVideo,
+                  mirror: true,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                ),
               ),
             ),
           ),
