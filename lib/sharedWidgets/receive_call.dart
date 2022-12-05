@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:kuungaa/config/config.dart';
@@ -196,6 +197,15 @@ class _ReceiveCallState extends State<ReceiveCall> {
     );
   }
 
+  void _toggleCamera() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+
+    final videoTrack = localStream!
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    await Helper.switchCamera(videoTrack);
+  }
+
   @override
   void initState() {
     connectToServer();
@@ -271,7 +281,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
               registerPeerConnectionListeners(),
             },
             child: const Icon(
-              Icons.cameraswitch,
+              Icons.settings_applications_rounded,
               color: Colors.white,
             ),
           ),
@@ -279,18 +289,10 @@ class _ReceiveCallState extends State<ReceiveCall> {
           FloatingActionButton(
             backgroundColor: Colors.blueGrey,
             onPressed: (){
-              if(cameraMode == 'user'){
-                setState((){
-                  cameraMode = 'environment';
-                });
-              }else{
-                setState(() {
-                  cameraMode = 'user';
-                });
-              }
+              _toggleCamera();
             },
             child: const Icon(
-              Icons.settings_applications_rounded,
+              Icons.cameraswitch,
               color: Colors.white,
             ),
           ),
