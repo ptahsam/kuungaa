@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -27,7 +29,10 @@ class _ReceiveCallState extends State<ReceiveCall> {
   late final WebSocketChannel channel;
   MediaStream? remoteStream;
   RTCPeerConnection? peerConnection;
+  MediaRecorder? _mediaRecorder;
+  bool get _isRec => _mediaRecorder != null;
 
+  bool _isTorchOn = false;
   bool showOnScreen = false;
   bool loudSpeaker = false;
   String cameraMode = 'user';
@@ -206,6 +211,53 @@ class _ReceiveCallState extends State<ReceiveCall> {
     await Helper.switchCamera(videoTrack);
   }
 
+  void _startRecording() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+    if (Platform.isIOS) {
+      print('Recording is not available on iOS');
+      return;
+    }
+    // TODO(rostopira): request write storage permission
+    final storagePath = await getExternalStorageDirectory();
+    if (storagePath == null) throw Exception('Can\'t find storagePath');
+
+    final filePath = storagePath.path + '/kuungaa/${userCurrentInfo!.user_firstname!}.mp4';
+    _mediaRecorder = MediaRecorder();
+    setState(() {});
+
+    final videoTrack = localStream
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    await _mediaRecorder!.start(
+      filePath,
+      videoTrack: videoTrack,
+    );
+  }
+
+  void _stopRecording() async {
+    await _mediaRecorder?.stop();
+    setState(() {
+      _mediaRecorder = null;
+    });
+  }
+
+  void _toggleTorch() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+
+    final videoTrack = localStream!
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    final has = await videoTrack.hasTorch();
+    if (has) {
+      print('[TORCH] Current camera supports torch mode');
+      setState(() => _isTorchOn = !_isTorchOn);
+      await videoTrack.setTorch(_isTorchOn);
+      print('[TORCH] Torch state is now ${_isTorchOn ? 'on' : 'off'}');
+    } else {
+      print('[TORCH] Current camera does not support torch mode');
+    }
+  }
+
   @override
   void initState() {
     connectToServer();
@@ -227,9 +279,20 @@ class _ReceiveCallState extends State<ReceiveCall> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Palette.kuungaaDefault,
-      /*appBar: AppBar(
-        title: const Text("Flutter webrtc websocket"),
-      ),*/
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        //title: const Text("Flutter webrtc websocket"),
+        actions: [
+          IconButton(
+            icon: Icon(_isTorchOn ? Icons.flash_off : Icons.flash_on),
+            onPressed: _toggleTorch,
+          ),
+          IconButton(
+            icon: Icon(_isRec ? Icons.stop : Icons.fiber_manual_record),
+            onPressed: _isRec ? _stopRecording : _startRecording,
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           SizedBox(
