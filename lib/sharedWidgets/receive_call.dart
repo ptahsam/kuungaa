@@ -211,15 +211,15 @@ class _ReceiveCallState extends State<ReceiveCall> {
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
           ),
-          InkWell(
-            onTap: (){
-              setState(() {
-                showOnScreen = !showOnScreen;
-              });
-            },
-            child: Positioned(
-              top: 40,
-              right: 10,
+          Positioned(
+            top: 70,
+            right: 10,
+            child: InkWell(
+              onTap: (){
+                setState(() {
+                  showOnScreen = !showOnScreen;
+                });
+              },
               child: Container(
                 height: 150,
                 width: 150,
@@ -259,11 +259,11 @@ class _ReceiveCallState extends State<ReceiveCall> {
           FloatingActionButton(
             backgroundColor: Colors.redAccent,
             onPressed: (){
-
+              Navigator.of(context).pop();
             },
             //onPressed: () => {makeCall()},
             child: const Icon(
-              Icons.call_outlined,
+              Icons.call_end_outlined,
               color: Colors.white,
             ),
           ),
