@@ -11,6 +11,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class ReceiveCall extends StatefulWidget {
   const ReceiveCall({Key? key}) : super(key: key);
 
+  static const String idScreen = "callPage";
+
   @override
   State<ReceiveCall> createState() => _ReceiveCallState();
 }

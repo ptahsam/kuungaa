@@ -140,6 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   AppData appData = AppData();
   Timer? _timerLink;
+  bool onCall = false;
 
   Future<void> _retrieveDynamicLink() async {
     final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
@@ -173,9 +174,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           if(event.snapshot.exists){
             var data = event.snapshot.value;
             if(data["status"] == "unanswered"){
-              Future.delayed(Duration.zero,()
-              async {
-                Navigator.pushNamed(context, "/receivecall");
+              setState(() {
+                onCall = true;
               });
             }
           }
@@ -339,7 +339,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),*/
             //initialRoute: FirebaseAuth.instance.currentUser == null? LoginPage.idScreen : NavScreen.idScreen,
-            home: FirebaseAuth.instance.currentUser == null?LoginPage():NavScreen(postid: widget.initialLink != null?widget.initialLink!.link.queryParameters["pid"]:"",),
+            home: FirebaseAuth.instance.currentUser == null?onCall?ReceiveCall():LoginPage():NavScreen(postid: widget.initialLink != null?widget.initialLink!.link.queryParameters["pid"]:"",),
             routes: {
               '/register': (context) => const RegisterScreen(),
               '/login': (context) => const LoginPage(),
@@ -352,6 +352,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               DiscussionPage.idScreen: (context) => const DiscussionPage(),
               VideosPage.idScreen: (context) => const VideosPage(),
               FriendsPage.idScreen: (context) => const FriendsPage(),
+              ReceiveCall.idScreen: (context) => const ReceiveCall(),
             },
             /*routes: {
               '/': (context) => const LoginPage(),
