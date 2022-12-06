@@ -219,6 +219,7 @@ class _MakeCallState extends State<MakeCall> {
     localVideo.initialize();
     remoteVideo.initialize();
     initialization();
+    saveCallDetails();
     super.initState();
   }
 
