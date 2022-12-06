@@ -294,7 +294,8 @@ class _ChatScreenState extends State<ChatScreen> {
             //iconSize: 36.0,
             color: Colors.white,
             onPressed: (){
-              displayToastMessage("This feature is currently under development.", context);
+              //displayToastMessage("This feature is currently under development.", context);
+              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: MakeCall()));
               //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: MakeCall(username: widget.chat.opponentUser!.user_id!,)));
             },
           ),

@@ -1,26 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class ReceiveCall extends StatefulWidget {
-  const ReceiveCall({Key? key}) : super(key: key);
-
-  static const String idScreen = "callPage";
+class MakeCall extends StatefulWidget {
+  const MakeCall({Key? key}) : super(key: key);
 
   @override
-  State<ReceiveCall> createState() => _ReceiveCallState();
+  State<MakeCall> createState() => _MakeCallState();
 }
 
-class _ReceiveCallState extends State<ReceiveCall> {
+class _MakeCallState extends State<MakeCall> {
 
   final RTCVideoRenderer localVideo = RTCVideoRenderer();
   final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
@@ -36,9 +29,19 @@ class _ReceiveCallState extends State<ReceiveCall> {
   bool loudSpeaker = false;
   String cameraMode = 'user';
 
-  void setLoudSpeaker(){
-    remoteStream!.getAudioTracks()[0].enableSpeakerphone(loudSpeaker);
-  }
+  // STUN server configuration
+  Map<String, dynamic> configuration = {
+    'iceServers': [
+      {
+        'urls': [
+          'stun:stun.l.google.com:19302',
+          'stun:stun1.l.google.com:19302',
+          'stun:stun2.l.google.com:19302'
+        ]
+      }
+    ]
+  };
+
 
   // Connecting with websocket Server
   void connectToServer() {
@@ -48,24 +51,23 @@ class _ReceiveCallState extends State<ReceiveCall> {
       channel.stream.listen(
               (message) async {
             Map<String, dynamic> decoded = jsonDecode(message);
-            print("peter connect ::" + message.toString());
-            if (decoded["type"] == "offer") {
+            if (decoded["type"] == "answer") {
               // Set the offer SDP to remote description
               await peerConnection?.setRemoteDescription(
                 RTCSessionDescription(
-                  decoded["offer"]["sdp"],
-                  decoded["offer"]["type"],
+                  decoded["answer"]["sdp"],
+                  decoded["answer"]["type"],
                 ),
               );
 
               // Create an answer
-              RTCSessionDescription answer = await peerConnection!.createAnswer();
+              //RTCSessionDescription answer = await peerConnection!.createAnswer();
 
               // Set the answer as an local description
-              await peerConnection!.setLocalDescription(answer);
+              //await peerConnection!.setLocalDescription(answer);
 
               // Send the answer to the other peer
-              channel.sink.add(
+              /*channel.sink.add(
                 jsonEncode(
                   {
                     "type": "send_answer",
@@ -73,7 +75,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
                     "username": userCurrentInfo!.user_id!
                   },
                 ),
-              );
+              );*/
             }
             // If client receive an Ice candidate from the peer
             else if (decoded["type"] == "candidate") {
@@ -101,36 +103,23 @@ class _ReceiveCallState extends State<ReceiveCall> {
     }
   }
 
-  // STUN server configuration
-  Map<String, dynamic> configuration = {
-    'iceServers': [
-      {
-        'urls': [
-          'stun:stun.l.google.com:19302',
-          'stun:stun1.l.google.com:19302',
-          'stun:stun2.l.google.com:19302'
-        ]
-      }
-    ]
-  };
-
   // This must be done as soon as app loads
   void initialization() async {
     // Getting video feed from the user camera
     localStream = await navigator.mediaDevices
         .getUserMedia({
-          'audio': false,
-          'video': {
-            'mandatory': {
-              'minWidth':
-              '640', // Provide your own width, height and frame rate here
-              'minHeight': '480',
-              'minFrameRate': '30',
-            },
-            'facingMode': cameraMode,
-            'optional': [],
-          }
-        });
+      'audio': false,
+      'video': {
+        'mandatory': {
+          'minWidth':
+          '640', // Provide your own width, height and frame rate here
+          'minHeight': '480',
+          'minFrameRate': '30',
+        },
+        'facingMode': cameraMode,
+        'optional': [],
+      }
+    });
 
     // Set the local video to display
     localVideo.srcObject = localStream;
@@ -144,25 +133,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
     });
   }
 
-  void makeCall() async {
-    // Creating a offer for remote peer
-    RTCSessionDescription offer = await peerConnection!.createOffer();
-
-    // Setting own SDP as local description
-    await peerConnection?.setLocalDescription(offer);
-
-    // Sending the offer
-    channel.sink.add(
-      jsonEncode(
-        {
-          "type": "store_offer",
-          "offer": offer.toMap(),
-          "username": userCurrentInfo!.user_id!
-        },
-      ),
-    );
-  }
-
   // Help to debug our code
   void registerPeerConnectionListeners() {
     peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
@@ -171,7 +141,7 @@ class _ReceiveCallState extends State<ReceiveCall> {
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
       channel.sink.add(
-        jsonEncode({"type": "send_candidate", "candidate": candidate.toMap(), "username": userCurrentInfo!.user_id!}),
+        jsonEncode({"type": "store_candidate", "candidate": candidate.toMap(), "username": userCurrentInfo!.user_id!}),
       );
     };
 
@@ -195,71 +165,26 @@ class _ReceiveCallState extends State<ReceiveCall> {
       setState(() {});
     };
 
+    makeCall();
+  }
+
+  void makeCall() async {
+    // Creating a offer for remote peer
+    RTCSessionDescription offer = await peerConnection!.createOffer();
+
+    // Setting own SDP as local description
+    await peerConnection?.setLocalDescription(offer);
+
+    // Sending the offer
     channel.sink.add(
       jsonEncode(
         {
-          "type": "join_call",
+          "type": "store_offer",
+          "offer": offer.toMap(),
           "username": userCurrentInfo!.user_id!
         },
       ),
     );
-  }
-
-  void _toggleCamera() async {
-    if (localStream == null) throw Exception('Stream is not initialized');
-
-    final videoTrack = localStream!
-        .getVideoTracks()
-        .firstWhere((track) => track.kind == 'video');
-    await Helper.switchCamera(videoTrack);
-  }
-
-  void _startRecording() async {
-    if (localStream == null) throw Exception('Stream is not initialized');
-    if (Platform.isIOS) {
-      print('Recording is not available on iOS');
-      return;
-    }
-    // TODO(rostopira): request write storage permission
-    final storagePath = await getExternalStorageDirectory();
-    Directory dir = Directory('/storage/emulated/0/Download');
-    if (dir.path == null) throw Exception('Can\'t find storagePath');
-
-    final filePath = dir.path + '/kuungaa/${DateTime.now().millisecondsSinceEpoch}.mp4';
-    _mediaRecorder = MediaRecorder();
-    setState(() {});
-
-    final videoTrack = localStream
-        .getVideoTracks()
-        .firstWhere((track) => track.kind == 'video');
-    await _mediaRecorder!.start(
-      filePath,
-      videoTrack: videoTrack,
-    );
-  }
-
-  void _stopRecording() async {
-    await _mediaRecorder?.stop();
-    setState(() {
-      _mediaRecorder = null;
-    });
-  }
-
-  void _toggleTorch() async {
-    if (localStream == null) throw Exception('Stream is not initialized');
-
-    final videoTrack = localStream!
-        .getVideoTracks()
-        .firstWhere((track) => track.kind == 'video');
-    final has = await videoTrack.hasTorch();
-    if (has) {
-      print('[TORCH] Current camera supports torch mode');
-      setState(() => _isTorchOn = !_isTorchOn);
-      await videoTrack.setTorch(_isTorchOn);
-      print('[TORCH] Torch state is now ${_isTorchOn ? 'on' : 'off'}');
-    } else {
-      print('[TORCH] Current camera does not support torch mode');
-    }
   }
 
   @override
@@ -282,21 +207,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Palette.kuungaaDefault,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        //title: const Text("Flutter webrtc websocket"),
-        actions: [
-          IconButton(
-            icon: Icon(_isTorchOn ? Icons.flash_off : Icons.flash_on),
-            onPressed: _toggleTorch,
-          ),
-          IconButton(
-            icon: Icon(_isRec ? Icons.stop : Icons.fiber_manual_record),
-            onPressed: _isRec ? _stopRecording : _startRecording,
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           SizedBox(
@@ -350,50 +260,6 @@ class _ReceiveCallState extends State<ReceiveCall> {
             child: const Icon(
               Icons.settings_applications_rounded,
               color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.blueGrey,
-            onPressed: (){
-              _toggleCamera();
-            },
-            child: const Icon(
-              Icons.cameraswitch,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.redAccent,
-            onPressed: (){
-              Navigator.of(context).pop();
-            },
-            //onPressed: () => {makeCall()},
-            child: const Icon(
-              Icons.call_end_outlined,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.white,
-            onPressed: () {
-              setState(() {
-                loudSpeaker = !loudSpeaker;
-              });
-              /*channel.sink.add(
-                jsonEncode(
-                  {
-                    "event": "msg",
-                    "data": "Hi this is an offer",
-                  },
-                ),
-              );*/
-            },
-            child: Icon(
-              MdiIcons.microphone,
-              color: loudSpeaker?Palette.kuungaaDefault:Colors.black,
             ),
           ),
         ],
