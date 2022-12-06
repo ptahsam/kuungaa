@@ -103,6 +103,15 @@ class _MakeCallState extends State<MakeCall> {
             }
           }
       );
+
+      channel.sink.add(
+        jsonEncode(
+          {
+            "type": "store_user",
+            "username": userCurrentInfo!.user_id!
+          },
+        ),
+      );
     }
     catch (e) {
       throw "ERROR $e";
@@ -170,17 +179,6 @@ class _MakeCallState extends State<MakeCall> {
       remoteVideo.srcObject = stream;
       setState(() {});
     };
-
-    channel.sink.add(
-      jsonEncode(
-        {
-          "type": "store_user",
-          "username": userCurrentInfo!.user_id!
-        },
-      ),
-    );
-
-    makeCall();
   }
 
   void saveCallDetails(){
@@ -220,6 +218,8 @@ class _MakeCallState extends State<MakeCall> {
     remoteVideo.initialize();
     initialization();
     saveCallDetails();
+    registerPeerConnectionListeners();
+    makeCall();
     super.initState();
   }
 
@@ -282,7 +282,7 @@ class _MakeCallState extends State<MakeCall> {
             backgroundColor: Colors.amberAccent,
             //onPressed: () => registerPeerConnectionListeners(),
             onPressed: () => {
-              registerPeerConnectionListeners(),
+              //registerPeerConnectionListeners(),
             },
             child: const Icon(
               Icons.settings_applications_rounded,
