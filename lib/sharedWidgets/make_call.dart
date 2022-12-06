@@ -218,7 +218,6 @@ class _MakeCallState extends State<MakeCall> {
     remoteVideo.initialize();
     initialization();
     saveCallDetails();
-    registerPeerConnectionListeners();
     makeCall();
     super.initState();
   }
@@ -282,7 +281,7 @@ class _MakeCallState extends State<MakeCall> {
             backgroundColor: Colors.amberAccent,
             //onPressed: () => registerPeerConnectionListeners(),
             onPressed: () => {
-              //registerPeerConnectionListeners(),
+              registerPeerConnectionListeners(),
             },
             child: const Icon(
               Icons.settings_applications_rounded,
