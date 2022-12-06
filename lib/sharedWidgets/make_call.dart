@@ -1,13 +1,19 @@
 import 'dart:convert';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MakeCall extends StatefulWidget {
-  const MakeCall({Key? key}) : super(key: key);
+  final Users user;
+  const MakeCall({
+    Key? key,
+    required this.user
+  }) : super(key: key);
 
   @override
   State<MakeCall> createState() => _MakeCallState();
@@ -165,7 +171,27 @@ class _MakeCallState extends State<MakeCall> {
       setState(() {});
     };
 
+    channel.sink.add(
+      jsonEncode(
+        {
+          "type": "store_user",
+          "username": userCurrentInfo!.user_id!
+        },
+      ),
+    );
+
     makeCall();
+  }
+
+  void saveCallDetails(){
+    DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Calls").push();
+    var callID = dbRef.key;
+    dbRef.set({
+      "callid" : callID,
+      "calleeid" : widget.user.user_id!,
+      "callerid": userCurrentInfo!.user_id!,
+      "status": "unanswered"
+    });
   }
 
   void makeCall() async {
