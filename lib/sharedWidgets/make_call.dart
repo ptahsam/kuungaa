@@ -145,6 +145,10 @@ class _MakeCallState extends State<MakeCall> {
     localStream.getTracks().forEach((track) {
       peerConnection?.addTrack(track, localStream);
     });
+
+    registerPeerConnectionListeners();
+
+    makeCall();
   }
 
   // Help to debug our code
@@ -290,7 +294,7 @@ class _MakeCallState extends State<MakeCall> {
           FloatingActionButton(
             backgroundColor: Colors.blue,
             onPressed: (){
-              makeCall();
+              //makeCall();
             },
             child: Icon(
               Icons.call,
