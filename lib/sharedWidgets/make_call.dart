@@ -65,6 +65,7 @@ class _MakeCallState extends State<MakeCall> {
 
       channel.stream.listen(
               (message) async {
+                print(message);
             Map<String, dynamic> decoded = jsonDecode(message);
             if (decoded["type"] == "answer") {
               // Set the offer SDP to remote description
@@ -158,6 +159,9 @@ class _MakeCallState extends State<MakeCall> {
     };
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
+      if(candidate.candidate == null){
+        return null;
+      }
       channel.sink.add(
         jsonEncode({"type": "store_candidate", "candidate": candidate.toMap(), "username": userCurrentInfo!.user_id!}),
       );
