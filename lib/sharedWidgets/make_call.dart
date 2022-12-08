@@ -54,6 +54,15 @@ class _MakeCallState extends State<MakeCall> {
     try {
       channel = WebSocketChannel.connect(Uri.parse(url));
 
+      channel.sink.add(
+        jsonEncode(
+          {
+            "type": "store_user",
+            "username": userCurrentInfo!.user_id!
+          },
+        ),
+      );
+
       channel.stream.listen(
               (message) async {
             Map<String, dynamic> decoded = jsonDecode(message);
@@ -103,15 +112,6 @@ class _MakeCallState extends State<MakeCall> {
             }
           }
       );
-
-      channel.sink.add(
-        jsonEncode(
-          {
-            "type": "store_user",
-            "username": userCurrentInfo!.user_id!
-          },
-        ),
-      );
     }
     catch (e) {
       throw "ERROR $e";
@@ -126,8 +126,7 @@ class _MakeCallState extends State<MakeCall> {
       'audio': false,
       'video': {
         'mandatory': {
-          'minWidth':
-          '640', // Provide your own width, height and frame rate here
+          'minWidth': '640', // Provide your own width, height and frame rate here
           'minHeight': '480',
           'minFrameRate': '30',
         },
@@ -218,7 +217,6 @@ class _MakeCallState extends State<MakeCall> {
     remoteVideo.initialize();
     initialization();
     saveCallDetails();
-    makeCall();
     super.initState();
   }
 
@@ -285,6 +283,17 @@ class _MakeCallState extends State<MakeCall> {
             },
             child: const Icon(
               Icons.settings_applications_rounded,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(width: 10.0,),
+          FloatingActionButton(
+            backgroundColor: Colors.blue,
+            onPressed: (){
+              makeCall();
+            },
+            child: Icon(
+              Icons.call,
               color: Colors.white,
             ),
           ),
