@@ -145,6 +145,8 @@ class _MakeCallState extends State<MakeCall> {
     // When connection establish, it send to the remote peer
     localStream.getTracks().forEach((track) {
       peerConnection?.addTrack(track, localStream);
+      peerConnection!.addStream(localStream);
+
     });
 
     registerPeerConnectionListeners();
