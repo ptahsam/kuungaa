@@ -87,6 +87,8 @@ void main() async {
           channelName: 'Chat',
           channelDescription: 'Kuungaa chat',
           channelShowBadge: true,
+          playSound: true,
+          soundSource: 'resource://raw/ic_notif_sound',
           importance: NotificationImportance.High,
           ledColor: Colors.white,
           defaultColor: const Color(0xFF2dce89),
