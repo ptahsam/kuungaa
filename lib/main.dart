@@ -88,6 +88,8 @@ void main() async {
           channelDescription: 'Kuungaa chat',
           channelShowBadge: true,
           importance: NotificationImportance.High,
+          ledColor: Colors.white,
+          defaultColor: const Color(0xFF2dce89),
         ),
       ],
 
@@ -119,8 +121,8 @@ void main() async {
 
 // Declared as global, outside of any class
 Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
-  AwesomeNotifications().createNotification(
-      content: message.data["channelKey"] == "chat"?NotificationContent( //with image from URL
+  message.data["channelKey"] == "chat"?AwesomeNotifications().createNotification(
+      content: NotificationContent( //with image from URL
           id: 1,
           channelKey: 'chat',
           groupKey: 'chat_s', //channel configuration key
@@ -128,15 +130,29 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           title: message.data["title"],
           body: message.data["body"],
           notificationLayout: NotificationLayout.Inbox,
-      ):NotificationContent( //with image from URL
-          id: 1,
-          channelKey: 'basic', //channel configuration key
-          title: message.data["title"],
-          body: message.data["body"],
-          bigPicture: message.data["image"],
-          notificationLayout: NotificationLayout.BigPicture,
-          payload: {"name":"flutter"}
-      )
+
+      ),
+      actionButtons: [
+        NotificationActionButton(
+            key: 'REPLY',
+            label: 'Reply',
+            autoDismissible: true,
+            requireInputText: true),
+        NotificationActionButton(
+            key: 'READ', label: 'Mark as read', autoDismissible: true),
+        NotificationActionButton(
+            key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
+      ]
+  ):AwesomeNotifications().createNotification(
+    content: NotificationContent( //with image from URL
+        id: 1,
+        channelKey: 'basic', //channel configuration key
+        title: message.data["title"],
+        body: message.data["body"],
+        bigPicture: message.data["image"],
+        notificationLayout: NotificationLayout.BigPicture,
+        payload: {"name":"flutter"}
+    )
   );
 }
 
