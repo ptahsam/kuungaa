@@ -384,9 +384,9 @@ sendUserNotification(String notifMessage, String notifRecip, String type){
 
       if(type == "Chat"){
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip)
-        .once().then((DataSnapshot userSnapshot){
-          String sendername = userSnapshot.value["user_firstname"] + " " + userSnapshot.value["user_lastname"];
-          sendChatFSM(snapshot.value.toString(), notifMessage, sendername);
+        .once().then((DataSnapshot userSnapshot) async {
+          Users user = await AssistantMethods.getCurrentOnlineUser(userSnapshot.value["user_id"]);
+          sendChatFSM(snapshot.value.toString(), notifMessage, user);
         });
       }
     }
@@ -434,7 +434,7 @@ dynamic constructFCMPayload(String userToken, String notifMsg) {
   return jsonEncode(res);
 }
 
-sendChatFSM(String userToken, String notifMsg, String sendername ) async {
+sendChatFSM(String userToken, String notifMsg, Users user) async {
   const postUrl = 'https://fcm.googleapis.com/fcm/send';
   const server_key = "AAAA_MU4yec:APA91bGOaDzvHE-EQZiMMxQ7mahv1y0oG9ONCqIJCap_ktSBW1xg10PIt_KI4Q6DW6Zf6xL-yCEMNGpcpkAHtl-bSwHjM-TX_Ay0twQtpbB6qIl8L3gfhtXuriEPHKynOd8l7AmAzka9";
   Map<String, dynamic> data;
@@ -444,12 +444,14 @@ sendChatFSM(String userToken, String notifMsg, String sendername ) async {
     ],
     "collapse_key": "type_a",
     "notification": {
-      "title": sendername,
+      "title": user.user_firstname! + " " + user.user_lastname!,
       "body": notifMsg,
     },
     'data': {
-      "title": sendername,
+      "title": user.user_firstname! + " " + user.user_lastname!,
       "body": notifMsg,
+      "channelKey": 'chat',
+      "icon": user.user_profileimage!,
     },
   };
 

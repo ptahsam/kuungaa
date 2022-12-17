@@ -81,8 +81,20 @@ void main() async {
           importance: NotificationImportance.High,
         ),
         //add more notification type with different configuration
+        NotificationChannel(
+          channelGroupKey: 'chat_s',
+          channelKey: 'chat',
+          channelName: 'Chat',
+          channelDescription: 'Kuungaa chat',
+          channelShowBadge: true,
+          importance: NotificationImportance.High,
+        ),
+      ],
 
-      ]
+    channelGroups: [
+      NotificationChannelGroup(channelGroupKey: 'chat_s', channelGroupName: 'Chat'),
+    ],
+
   );
 
 
@@ -108,7 +120,16 @@ void main() async {
 // Declared as global, outside of any class
 Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
   AwesomeNotifications().createNotification(
-      content: NotificationContent( //with image from URL
+      content: message.data["channelKey"] == "chat"?NotificationContent( //with image from URL
+          id: 1,
+          channelKey: 'chat',
+          groupKey: 'chat_s', //channel configuration key
+          customSound: 'resource://drawable/ic_notif_sound',
+          icon: message.data["icon"],
+          title: message.data["title"],
+          body: message.data["body"],
+          notificationLayout: NotificationLayout.Inbox,
+      ):NotificationContent( //with image from URL
           id: 1,
           channelKey: 'basic', //channel configuration key
           title: message.data["title"],
