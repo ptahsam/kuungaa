@@ -91,7 +91,7 @@ void main() async {
           channelDescription: 'Kuungaa chat',
           channelShowBadge: true,
           playSound: true,
-          soundSource: 'resource://raw/ic_notif_sound.mp3',
+          soundSource: 'resource://raw/ic_notif_sound',
           importance: NotificationImportance.High,
           vibrationPattern: lowVibrationPattern,
           ledColor: Colors.white,
@@ -132,7 +132,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           id: 1,
           channelKey: 'chat',
           groupKey: 'chat_s', //channel configuration key
-          customSound: 'resource://raw/ic_notif_sound.mp3',
+          customSound: 'resource://raw/ic_notif_sound',
           title: message.data["title"],
           body: message.data["body"],
           notificationLayout: NotificationLayout.Inbox,
