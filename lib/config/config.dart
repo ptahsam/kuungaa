@@ -443,10 +443,6 @@ sendChatFSM(String userToken, String notifMsg, Users user) async {
       "${userToken}"
     ],
     "collapse_key": "type_a",
-    "notification": {
-      "title": user.user_firstname! + " " + user.user_lastname!,
-      "body": notifMsg,
-    },
     'data': {
       "title": user.user_firstname! + " " + user.user_lastname!,
       "body": notifMsg,
