@@ -316,7 +316,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
     });*/
 
-    getIncomingCalls();
+    //getIncomingCalls();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
