@@ -199,7 +199,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             isDangerousOption: true,
             autoDismissible: true),
       ],
-      schedule: NotificationInterval(interval: 30)
+      //schedule: NotificationInterval(interval: 30)
      ):
   AwesomeNotifications().createNotification(
     content: NotificationContent( //with image from URL
