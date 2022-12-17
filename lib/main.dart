@@ -124,7 +124,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           id: 1,
           channelKey: 'chat',
           groupKey: 'chat_s', //channel configuration key
-          customSound: 'resource://sounds/ic_notif_sound',
+          customSound: 'resource://raw/ic_notif_sound',
           icon: message.data["icon"],
           title: message.data["title"],
           body: message.data["body"],
