@@ -99,7 +99,6 @@
            android:enabled="true"
            android:exported="false"
            android:stopWithTask="true"
-           android:foregroundServiceType="ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL"
            ></service>
 
     </application>
