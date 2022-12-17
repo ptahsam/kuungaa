@@ -389,6 +389,14 @@ sendUserNotification(String notifMessage, String notifRecip, String type){
           sendChatFSM(snapshot.value.toString(), notifMessage, user);
         });
       }
+
+      if(type == "Call"){
+        FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip)
+            .once().then((DataSnapshot userSnapshot) async {
+          Users user = await AssistantMethods.getCurrentOnlineUser(userSnapshot.value["user_id"]);
+          sendCallFSM(snapshot.value.toString(), notifMessage, user);
+        });
+      }
     }
   });
 }
@@ -432,6 +440,41 @@ dynamic constructFCMPayload(String userToken, String notifMsg) {
 
   print(res.toString());
   return jsonEncode(res);
+}
+
+sendCallFSM(String userToken, String notifMsg, Users user) async {
+  const postUrl = 'https://fcm.googleapis.com/fcm/send';
+  const server_key = "AAAA_MU4yec:APA91bGOaDzvHE-EQZiMMxQ7mahv1y0oG9ONCqIJCap_ktSBW1xg10PIt_KI4Q6DW6Zf6xL-yCEMNGpcpkAHtl-bSwHjM-TX_Ay0twQtpbB6qIl8L3gfhtXuriEPHKynOd8l7AmAzka9";
+  Map<String, dynamic> data;
+  data = {
+    "registration_ids": [
+      "${userToken}"
+    ],
+    "collapse_key": "type_a",
+    "notification": {
+      "title": "Incoming Call",
+      "body": user.user_firstname! + " " + user.user_lastname!,
+    },
+    'data': {
+      "title": "Incoming Call",
+      "body": user.user_firstname! + " " + user.user_lastname!,
+      "channelKey": 'call',
+      "icon": user.user_profileimage!,
+    },
+  };
+
+  final response =
+  await http.post(Uri.parse(postUrl), body: json.encode(data), headers: {
+    'content-type': 'application/json',
+    'Authorization': 'key='+server_key
+  });
+
+  print(response.body);
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 sendChatFSM(String userToken, String notifMsg, Users user) async {

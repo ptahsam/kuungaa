@@ -82,6 +82,8 @@ void main() async {
           soundSource: 'resource://raw/ic_notif_sound',
           vibrationPattern: lowVibrationPattern,
           importance: NotificationImportance.High,
+          ledColor: Colors.white,
+          defaultColor: const Color(0xFF2dce89),
         ),
         //add more notification type with different configuration
         NotificationChannel(
@@ -94,6 +96,18 @@ void main() async {
           soundSource: 'resource://raw/ic_notif_sound',
           importance: NotificationImportance.High,
           vibrationPattern: lowVibrationPattern,
+          ledColor: Colors.white,
+          defaultColor: const Color(0xFF2dce89),
+        ),
+
+        NotificationChannel(
+          channelGroupKey: 'call_s',
+          channelKey: 'call',
+          channelName: 'Call',
+          channelDescription: 'Kuungaa call',
+          channelShowBadge: true,
+          importance: NotificationImportance.High,
+          vibrationPattern: highVibrationPattern,
           ledColor: Colors.white,
           defaultColor: const Color(0xFF2dce89),
         ),
@@ -151,7 +165,41 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
         NotificationActionButton(
             key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
       ]
-  ):AwesomeNotifications().createNotification(
+  ):message.data["channelKey"] == "call"?
+  AwesomeNotifications().createNotification(
+    // await AndroidForegroundService.startAndroidForegroundService(
+    //     foregroundStartMode: ForegroundStartMode.stick,
+    //     foregroundServiceType: ForegroundServiceType.phoneCall,
+      content: NotificationContent(
+          id: 100,
+          channelKey: 'call',
+          groupKey: 'call_s',
+          title: message.data["title"],
+          body: message.data["body"],
+          category: NotificationCategory.Call,
+          largeIcon: 'asset://images/profile.jpg',
+          roundedLargeIcon: true,
+          wakeUpScreen: true,
+          fullScreenIntent: true,
+          autoDismissible: false,
+          backgroundColor: const Color(0xFF2dce89),
+          payload: {'username': '${message.data["body"]}'}),
+      actionButtons: [
+        NotificationActionButton(
+            key: 'ACCEPT',
+            label: 'Accept Call',
+            actionType: ActionType.Default,
+            color: Colors.green,
+            autoDismissible: true),
+        NotificationActionButton(
+            key: 'REJECT',
+            label: 'Reject',
+            actionType: ActionType.SilentAction,
+            isDangerousOption: true,
+            autoDismissible: true),
+      ],
+      schedule: NotificationInterval(interval: 30)):
+  AwesomeNotifications().createNotification(
     content: NotificationContent( //with image from URL
         id: 1,
         channelKey: 'basic', //channel configuration key
