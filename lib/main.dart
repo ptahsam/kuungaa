@@ -78,6 +78,9 @@ void main() async {
           channelName: 'Basic notifications',
           channelDescription: 'Notification channel for basic tests',
           channelShowBadge: true,
+          playSound: true,
+          soundSource: 'resource://raw/ic_notif_sound',
+          vibrationPattern: lowVibrationPattern,
           importance: NotificationImportance.High,
         ),
         //add more notification type with different configuration
@@ -90,6 +93,7 @@ void main() async {
           playSound: true,
           soundSource: 'resource://raw/ic_notif_sound',
           importance: NotificationImportance.High,
+          vibrationPattern: lowVibrationPattern,
           ledColor: Colors.white,
           defaultColor: const Color(0xFF2dce89),
         ),
@@ -132,7 +136,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           title: message.data["title"],
           body: message.data["body"],
           notificationLayout: NotificationLayout.Inbox,
-
+          largeIcon: 'asset://images/profile.jpg',
       ),
       actionButtons: [
         NotificationActionButton(
