@@ -365,19 +365,32 @@ saveGeneralNotification(String notifMessage, String notifRecip, String notifType
   };
 
   dbRef.set(notifMap).then((onValue){
-    print("sending notif");
-    DatabaseReference dbRefUser = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip).child("user_tokenid");
-    dbRefUser.once().then((DataSnapshot snapshot){
-      if(snapshot.exists){
-        print("sending notif");
-        sendFcmNotif(snapshot.value.toString(), userCurrentInfo!.user_firstname! + " " + userCurrentInfo!.user_lastname! + " " + notifMessage);
-      }
-    });
-
+    sendUserNotification(notifRecip, notifRecip, "General");
   }).catchError((onError) {
 
   });
 
+}
+
+sendUserNotification(String notifMessage, String notifRecip, String type){
+  DatabaseReference dbRefUser = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip).child("user_tokenid");
+  dbRefUser.once().then((DataSnapshot snapshot){
+    if(snapshot.exists){
+      if(type == "General") {
+        sendFSM(snapshot.value.toString(),
+            userCurrentInfo!.user_firstname! + " " +
+                userCurrentInfo!.user_lastname! + " " + notifMessage);
+      }
+
+      if(type == "Chat"){
+        FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip)
+        .once().then((DataSnapshot userSnapshot){
+          String sendername = userSnapshot.value["user_firstname"] + " " + userSnapshot.value["user_lastname"];
+          sendChatFSM(snapshot.value.toString(), notifMessage, sendername);
+        });
+      }
+    }
+  });
 }
 
 Future<void> sendFcmNotif(String userToken, String notifMsg) async {
@@ -400,8 +413,8 @@ Future<void> sendFcmNotif(String userToken, String notifMsg) async {
 
 }
 
-String constructFCMPayload(String userToken, String notifMsg) {
-  var res = jsonEncode({
+dynamic constructFCMPayload(String userToken, String notifMsg) {
+  Map<String, dynamic> res = {
     'token': userToken,
     'notification': {
       "body" : notifMsg,
@@ -415,10 +428,76 @@ String constructFCMPayload(String userToken, String notifMsg) {
     },
     'to': userToken,
 
-  });
+  };
 
   print(res.toString());
-  return res;
+  return jsonEncode(res);
+}
+
+sendChatFSM(String userToken, String notifMsg, String sendername ) async {
+  const postUrl = 'https://fcm.googleapis.com/fcm/send';
+  const server_key = "AAAA_MU4yec:APA91bGOaDzvHE-EQZiMMxQ7mahv1y0oG9ONCqIJCap_ktSBW1xg10PIt_KI4Q6DW6Zf6xL-yCEMNGpcpkAHtl-bSwHjM-TX_Ay0twQtpbB6qIl8L3gfhtXuriEPHKynOd8l7AmAzka9";
+  Map<String, dynamic> data;
+  data = {
+    "registration_ids": [
+      "${userToken}"
+    ],
+    "collapse_key": "type_a",
+    "notification": {
+      "title": sendername,
+      "body": notifMsg,
+    },
+    'data': {
+      "title": sendername,
+      "body": notifMsg,
+    },
+  };
+
+  final response =
+  await http.post(Uri.parse(postUrl), body: json.encode(data), headers: {
+    'content-type': 'application/json',
+    'Authorization': 'key='+server_key
+  });
+
+  print(response.body);
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+sendFSM(String userToken, String notifMsg) async {
+  const postUrl = 'https://fcm.googleapis.com/fcm/send';
+  const server_key = "AAAA_MU4yec:APA91bGOaDzvHE-EQZiMMxQ7mahv1y0oG9ONCqIJCap_ktSBW1xg10PIt_KI4Q6DW6Zf6xL-yCEMNGpcpkAHtl-bSwHjM-TX_Ay0twQtpbB6qIl8L3gfhtXuriEPHKynOd8l7AmAzka9";
+  Map<String, dynamic> data;
+  data = {
+    "registration_ids": [
+      "${userToken}"
+    ],
+    "collapse_key": "type_a",
+    "notification": {
+      "title": "Kuungaa Social Network",
+      "body": notifMsg,
+    },
+    'data': {
+      "title": "Kuungaa Social Network",
+      "body": notifMsg,
+    },
+  };
+
+  final response =
+  await http.post(Uri.parse(postUrl), body: json.encode(data), headers: {
+    'content-type': 'application/json',
+    'Authorization': 'key='+server_key
+  });
+
+  print(response.body);
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 getFieldValue(String postid, String field) {
@@ -665,7 +744,6 @@ String convertToDay(int timestamp){
     return t.toString() + " " + m + ", " + d + " at " + convertToPMAM(timestamp);
   }
   return t.toString() + " " + d + ", " + m + " " + y + "\n at " + convertToPMAM(timestamp);
-
 }
 
 String convertToPMAM(int timestamp) {

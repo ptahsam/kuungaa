@@ -751,10 +751,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
       msgRef.set(msgMap).then((onValue) {
 
-        messageTextEditingController.text = "";
-        userSelectedFileList!.clear();
-        isSending = false;
-
         Map<String, dynamic> typingMap = {
           "isTyping" : false,
           "member_id" : userCurrentInfo!.user_id!
@@ -762,7 +758,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).update(typingMap);
 
+        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat");
         //displayToastMessage("Your post was uploaded successfully", context);
+        messageTextEditingController.text = "";
+        userSelectedFileList!.clear();
+        isSending = false;
 
       }).catchError((onError) {
         isSending = false;
@@ -787,8 +787,6 @@ class _ChatScreenState extends State<ChatScreen> {
       };
 
       msgRef.set(msgMap).then((onValue) {
-        messageTextEditingController.text = "";
-        isSending = false;
 
         Map typingMap = {
           "isTyping" : false,
@@ -797,7 +795,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
 
+        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat");
         //displayToastMessage("Your post was uploaded successfully", context);
+        messageTextEditingController.text = "";
+        isSending = false;
       }).catchError((onError) {
         isSending = false;
         Navigator.pop(context);

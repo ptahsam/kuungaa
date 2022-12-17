@@ -640,7 +640,7 @@ class _CreatePostState extends State<CreatePost> {
           imageFileListAll!.clear();
           //taggedUsers.clear();
           createNotification(refKey);
-          print("sending notif in post");
+          //print("sending notif in post");
           Navigator.pushNamedAndRemoveUntil(context, NavScreen.idScreen, (route) => false);
           displayToastMessage("Your post was uploaded successfully", context);
         }).catchError((onError) {

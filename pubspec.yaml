@@ -78,7 +78,7 @@ dependencies:
   permission_handler: ^6.0.0
   websocket_manager: ^0.2.2
   firebase_messaging: ^11.2.12
-  flutter_local_notifications: ^9.4.0
+  awesome_notifications: ^0.7.4+1
   shared_preferences: ^2.0.13
   image_picker: ^0.8.5
   firebase_dynamic_links: ^4.2.2

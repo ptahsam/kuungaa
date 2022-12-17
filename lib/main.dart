@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,7 +9,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kuungaa/allScreens/forgotPasswordScreen.dart';
 import 'package:kuungaa/allScreens/friendScreen.dart';
@@ -69,12 +69,29 @@ void main() async {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  AwesomeNotifications().initialize(
+      'resource://drawable/ic_stat_notif',
+      [            // notification icon
+        NotificationChannel(
+          channelGroupKey: 'basic_test',
+          channelKey: 'basic',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          channelShowBadge: true,
+          importance: NotificationImportance.High,
+        ),
+        //add more notification type with different configuration
 
-  await flutterLocalNotificationsPlugin
+      ]
+  );
+
+
+  FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessage);
+
+  /*await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
       AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+      ?.createNotificationChannel(channel);*/
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -88,13 +105,28 @@ void main() async {
 
 }
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
+// Declared as global, outside of any class
+Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
+  AwesomeNotifications().createNotification(
+      content: NotificationContent( //with image from URL
+          id: 1,
+          channelKey: 'basic', //channel configuration key
+          title: message.data["title"],
+          body: message.data["body"],
+          bigPicture: message.data["image"],
+          notificationLayout: NotificationLayout.BigPicture,
+          payload: {"name":"flutter"}
+      )
+  );
+}
+
+/*const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
   'High Importance Notifications', // title// description
   importance: Importance.high,
-);
+);*/
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 DatabaseReference usersRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users");
 
@@ -191,16 +223,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     darkThemePreference.setDarkTheme(true);
     getCurrentAppTheme();
     //var initializationSettingsAndroid = new AndroidInitializationSettings('ic_launcher');
-    var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');
-    var initialzationSettingsIos = const IOSInitializationSettings();
-    var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid, iOS: initialzationSettingsIos);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    //var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');
+    //var initialzationSettingsIos = const IOSInitializationSettings();
+    //var initializationSettings = InitializationSettings(android: initialzationSettingsAndroid, iOS: initialzationSettingsIos);
+    //flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen(firebaseBackgroundMessage);
+
+    /*FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       AppleNotification? apple = message.notification?.apple;
-      if (notification != null && android != null) {
+      /*if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -216,9 +250,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               ),
             )
         );
-      }
+      }*/
 
-      if (notification != null && apple != null) {
+      /*if (notification != null && apple != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -234,9 +268,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               ),
             )
         );
-      }
+      }*/
 
-    });
+    });*/
 
     getIncomingCalls();
 
