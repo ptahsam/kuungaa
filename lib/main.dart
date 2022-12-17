@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/android_foreground_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -166,10 +167,9 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
       ]
   ):message.data["channelKey"] == "call"?
-  AwesomeNotifications().createNotification(
-    // await AndroidForegroundService.startAndroidForegroundService(
-    //     foregroundStartMode: ForegroundStartMode.stick,
-    //     foregroundServiceType: ForegroundServiceType.phoneCall,
+     AndroidForegroundService.startAndroidForegroundService(
+         foregroundStartMode: ForegroundStartMode.stick,
+         foregroundServiceType: ForegroundServiceType.phoneCall,
       content: NotificationContent(
           id: 100,
           channelKey: 'call',
@@ -178,6 +178,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           body: message.data["body"],
           category: NotificationCategory.Call,
           largeIcon: 'asset://images/profile.jpg',
+          bigPicture: 'asset://images/profile.jpg',
           roundedLargeIcon: true,
           wakeUpScreen: true,
           fullScreenIntent: true,
@@ -198,7 +199,8 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             isDangerousOption: true,
             autoDismissible: true),
       ],
-      schedule: NotificationInterval(interval: 30)):
+      schedule: NotificationInterval(interval: 30)
+     ):
   AwesomeNotifications().createNotification(
     content: NotificationContent( //with image from URL
         id: 1,

@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
    <application
         android:label="Kuungaa"
@@ -93,6 +94,13 @@
 
         <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyC0f4vakJg3x1YrnrOZcFvOZibLPgXHfOk"/>
+
+       <service android:name="me.carda.awesome_notifications.core.services.ForegroundService"
+           android:enabled="true"
+           android:exported="false"
+           android:stopWithTask="true"
+           android:foregroundServiceType="ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL"
+           ></service>
 
     </application>
 </manifest>
