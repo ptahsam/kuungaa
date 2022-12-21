@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kuungaa/Models/notification_controller.dart';
 import 'package:kuungaa/allScreens/forgotPasswordScreen.dart';
 import 'package:kuungaa/allScreens/friendScreen.dart';
 import 'package:kuungaa/allScreens/loginScreen.dart';
@@ -31,6 +32,7 @@ import 'allScreens/discussionScreen.dart';
 import 'allScreens/mainScreen.dart';
 
 final configurations = Configurations();
+ReceivedAction? initialAction;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -120,6 +122,9 @@ void main() async {
 
   );
 
+  initialAction = await AwesomeNotifications()
+      .getInitialNotificationAction(removeFromActionEvents: false);
+
 
   FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessage);
 
@@ -167,9 +172,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
       ]
   ):message.data["channelKey"] == "call"?
-     AndroidForegroundService.startAndroidForegroundService(
-         foregroundStartMode: ForegroundStartMode.stick,
-         foregroundServiceType: ForegroundServiceType.phoneCall,
+     AwesomeNotifications().createNotification(
       content: NotificationContent(
           id: 100,
           channelKey: 'call',
@@ -308,6 +311,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     });
   }
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -316,6 +320,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     DarkThemePreference darkThemePreference = DarkThemePreference();
     darkThemePreference.setDarkTheme(true);
     getCurrentAppTheme();
+    NotificationsController.initializeNotificationsEventListeners();
     //var initializationSettingsAndroid = new AndroidInitializationSettings('ic_launcher');
     //var initialzationSettingsAndroid = const AndroidInitializationSettings('@drawable/ic_stat_notif');
     //var initialzationSettingsIos = const IOSInitializationSettings();
