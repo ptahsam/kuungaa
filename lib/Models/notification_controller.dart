@@ -4,7 +4,10 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:kuungaa/Models/routes.dart';
+import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
+import 'package:kuungaa/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsController {
@@ -207,9 +210,9 @@ class NotificationsController {
         break;
 
       case 'ACCEPT':
-        print("accepting call");
-        /*loadSingletonPage(App.navigatorKey.currentState,
-            targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);*/
+        //print("accepting call");
+        loadSingletonPage(MyApp.navigatorKey.currentState,
+            targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);
         break;
 
       default:

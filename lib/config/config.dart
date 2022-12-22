@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -452,8 +453,7 @@ sendCallFSM(String userToken, String notifMsg, Users user) async {
     ],
     "collapse_key": "type_a",
     "notification": {
-      "title": "Incoming Call",
-      "body": user.user_firstname! + " " + user.user_lastname!,
+
     },
     'data': {
       "title": "Incoming Call",
@@ -487,8 +487,7 @@ sendChatFSM(String userToken, String notifMsg, Users user) async {
     ],
     "collapse_key": "type_a",
     "notification": {
-      "title": user.user_firstname! + " " + user.user_lastname!,
-      "body": notifMsg,
+
     },
     'data': {
       "title": user.user_firstname! + " " + user.user_lastname!,
@@ -522,8 +521,7 @@ sendFSM(String userToken, String notifMsg) async {
     ],
     "collapse_key": "type_a",
     "notification": {
-      "title": "Kuungaa Social Network",
-      "body": notifMsg,
+
     },
     'data': {
       "title": "Kuungaa Social Network",
@@ -1256,6 +1254,17 @@ String convertToTimeAgo(int time){
   }
   return msgtime;
 
+}
+
+void loadSingletonPage(NavigatorState? navigatorState,
+    {required String targetPage, required ReceivedAction receivedAction}) {
+  // Avoid to open the notification details page over another details page already opened
+  // Navigate into pages, avoiding to open the notification details page over another details page already opened
+  navigatorState?.pushNamedAndRemoveUntil(targetPage,
+          (route) {
+        return (route.settings.name != targetPage) || route.isFirst;
+      },
+      arguments: receivedAction);
 }
 
 Future<File> convertUriToFile(String strURL) async{

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_notifications/android_foreground_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,9 +23,7 @@ import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/config/themedata.dart';
 import 'package:kuungaa/sharedWidgets/receive_call.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:snippet_coder_utils/hex_color.dart';
 import 'DataHandler/appData.dart';
 import 'allScreens/discussionScreen.dart';
 import 'allScreens/mainScreen.dart';
@@ -261,6 +258,10 @@ class MyApp extends StatefulWidget {
     this.initialLink
   }) : super(key: key);
 
+  // The navigator key is necessary to navigate using static methods
+  static final GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -487,6 +488,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               FriendsPage.idScreen: (context) => const FriendsPage(),
               ReceiveCall.idScreen: (context) => const ReceiveCall(),
             },
+            navigatorKey: MyApp.navigatorKey,
             /*routes: {
               '/': (context) => const LoginPage(),
               '/register': (context) => const RegisterPage(),

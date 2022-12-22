@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:anim_search_bar/anim_search_bar.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:kuungaa/config/config.dart';
@@ -12,7 +13,11 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ReceiveCall extends StatefulWidget {
-  const ReceiveCall({Key? key}) : super(key: key);
+  final ReceivedAction? receivedAction;
+  const ReceiveCall({
+    Key? key,
+    this.receivedAction
+  }) : super(key: key);
 
   static const String idScreen = "callPage";
 
