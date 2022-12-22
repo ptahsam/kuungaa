@@ -325,17 +325,23 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
         fit: StackFit.expand,
         children: [
           // Image
-          videoReady?RTCVideoView(
-            showOnScreen?remoteVideo:localVideo,
-            mirror: true,
-            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-          ):Image(
+          Image(
             image: widget.receivedAction!.largeIconImage!,
             fit: BoxFit.cover,
           ),
           // Black Layer
           const DecoratedBox(
             decoration: BoxDecoration(color: Colors.black45),
+          ),
+          RTCVideoView(
+            localVideo,
+            mirror: true,
+            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+          ),
+          RTCVideoView(
+            remoteVideo,
+            mirror: true,
+            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
