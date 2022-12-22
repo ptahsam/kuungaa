@@ -360,147 +360,134 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SafeArea(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    Column(
-                      crossAxisAlignment: _timer!=null?CrossAxisAlignment.start:CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.receivedAction!.payload?['username']?.replaceAll(r'\s+', r'\n')
-                              ?? 'Unknown',
-                          maxLines: 4,
-                          style: _timer!=null?TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.white,
-                          ):themeData
-                              .textTheme
-                              .headline3
-                              ?.copyWith(color: Colors.white),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.receivedAction!.payload?['username']?.replaceAll(r'\s+', r'\n')
+                        ?? 'Unknown',
+                    maxLines: 4,
+                    style: _timer!=null?TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.white,
+                    ):themeData
+                        .textTheme
+                        .headline3
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  Text(
+                    _timer == null ?
+                    'Incoming call' : 'Call in progress: ${printDuration(_secondsElapsed)}',
+                    style: _timer!=null?TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ):themeData
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Colors.white54, fontSize: _timer == null ? 20 : 12),
+                  ),
+                  const SizedBox(height: 50),
+                  _timer == null ?
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                          onPressed: (){},
+                          style: ButtonStyle(
+                            overlayColor: MaterialStateProperty.all<Color>(Colors.white12),
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(FontAwesomeIcons.solidClock, color: Colors.white54),
+                              Text('Reminder me', style:  themeData
+                                  .textTheme
+                                  .headline6
+                                  ?.copyWith(color: Colors.white54, fontSize: 12, height: 2))
+                            ],
+                          )
+                      ),
+                      const SizedBox(),
+                      TextButton(
+                        onPressed: (){},
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.all<Color>(Colors.white12),
                         ),
-                        Text(
-                          _timer == null ?
-                          'Incoming call' : 'Call in progress: ${printDuration(_secondsElapsed)}',
-                          style: _timer!=null?TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.white,
-                          ):themeData
+                        child: Column(
+                          children: [
+                            const Icon(FontAwesomeIcons.solidEnvelope, color: Colors.white54),
+                            Text('Message', style:  themeData
+                                .textTheme
+                                .headline6
+                                ?.copyWith(color: Colors.white54, fontSize: 12, height: 2))
+                          ],
+                        ),
+                      )
+                    ],
+                  ) : const SizedBox(),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.all(Radius.circular(45)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: _timer == null ?
+                      [
+                        RoundedButton(
+                          press: finishCall,
+                          color: Colors.red,
+                          icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.white),
+                        ),
+                        SingleSliderToConfirm(
+                          onConfirmation: (){
+                            Vibration.vibrate(duration: 100);
+                            startCallingTimer();
+                            registerPeerConnectionListeners();
+                          },
+                          width: mediaQueryData.size.width * 0.55,
+                          backgroundColor: Colors.white60,
+                          text: 'Slide to Talk',
+                          stickToEnd: true,
+                          textStyle: Theme.of(context)
                               .textTheme
                               .headline6
-                              ?.copyWith(color: Colors.white54, fontSize: _timer == null ? 20 : 12),
+                              ?.copyWith(color: Colors.white, fontSize: mediaQueryData.size.width * 0.05),
+                          sliderButtonContent: RoundedButton(
+                            press: (){},
+                            color: Colors.white,
+                            icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.green),
+                          ),
+                        )
+                      ] :
+                      [
+                        RoundedButton(
+                          press: (){
+                            setState(() {
+                              isSound = !isSound;
+                            });
+                          },
+                          color: Colors.white,
+                          icon: Icon(
+                            isSound?FontAwesomeIcons.microphone:FontAwesomeIcons.volumeMute,
+                            color: Colors.black,
+                          ),
+                        ),
+                        RoundedButton(
+                          press: finishCall,
+                          color: Colors.red,
+                          icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.white),
+                        ),
+                        RoundedButton(
+                          press: (){},
+                          color: Colors.white,
+                          icon: const Icon(FontAwesomeIcons.volumeUp, color: Colors.black),
                         ),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 50),
-                        _timer == null ?
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextButton(
-                                onPressed: (){},
-                                style: ButtonStyle(
-                                  overlayColor: MaterialStateProperty.all<Color>(Colors.white12),
-                                ),
-                                child: Column(
-                                  children: [
-                                    const Icon(FontAwesomeIcons.solidClock, color: Colors.white54),
-                                    Text('Reminder me', style:  themeData
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(color: Colors.white54, fontSize: 12, height: 2))
-                                  ],
-                                )
-                            ),
-                            const SizedBox(),
-                            TextButton(
-                              onPressed: (){},
-                              style: ButtonStyle(
-                                overlayColor: MaterialStateProperty.all<Color>(Colors.white12),
-                              ),
-                              child: Column(
-                                children: [
-                                  const Icon(FontAwesomeIcons.solidEnvelope, color: Colors.white54),
-                                  Text('Message', style:  themeData
-                                      .textTheme
-                                      .headline6
-                                      ?.copyWith(color: Colors.white54, fontSize: 12, height: 2))
-                                ],
-                              ),
-                            )
-                          ],
-                        ) : const SizedBox(),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: const BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.all(Radius.circular(45)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: _timer == null ?
-                            [
-                              RoundedButton(
-                                press: finishCall,
-                                color: Colors.red,
-                                icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.white),
-                              ),
-                              SingleSliderToConfirm(
-                                onConfirmation: (){
-                                  Vibration.vibrate(duration: 100);
-                                  startCallingTimer();
-                                  registerPeerConnectionListeners();
-                                },
-                                width: mediaQueryData.size.width * 0.55,
-                                backgroundColor: Colors.white60,
-                                text: 'Slide to Talk',
-                                stickToEnd: true,
-                                textStyle: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    ?.copyWith(color: Colors.white, fontSize: mediaQueryData.size.width * 0.05),
-                                sliderButtonContent: RoundedButton(
-                                  press: (){},
-                                  color: Colors.white,
-                                  icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.green),
-                                ),
-                              )
-                            ] :
-                            [
-                              RoundedButton(
-                                press: (){
-                                  setState(() {
-                                    isSound = !isSound;
-                                  });
-                                },
-                                color: Colors.white,
-                                icon: Icon(
-                                    isSound?FontAwesomeIcons.microphone:FontAwesomeIcons.volumeMute,
-                                    color: Colors.black,
-                                ),
-                              ),
-                              RoundedButton(
-                                press: finishCall,
-                                color: Colors.red,
-                                icon: const Icon(FontAwesomeIcons.phoneAlt, color: Colors.white),
-                              ),
-                              RoundedButton(
-                                press: (){},
-                                color: Colors.white,
-                                icon: const Icon(FontAwesomeIcons.volumeUp, color: Colors.black),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
