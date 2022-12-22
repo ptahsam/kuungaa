@@ -48,7 +48,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
   Duration _secondsElapsed = Duration.zero;
 
   void startCallingTimer() {
-    const oneSec = Duration(seconds: 1);
+    const oneSec = Duration(seconds: 1000);
     cancelNotification(widget.receivedAction!.id!);
     AndroidForegroundService.stopForeground(widget.receivedAction!.id!);
 
