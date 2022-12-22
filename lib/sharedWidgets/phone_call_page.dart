@@ -380,7 +380,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
           Positioned(
             right: 20,
             bottom: 120,
-            child: Column(
+            child: _timer != null?Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -402,7 +402,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                   icon: Icon(Icons.cameraswitch,),
                 ),
               ],
-            ),
+            ):SizedBox.shrink(),
           ),
           Positioned(
             top: 70,
@@ -420,6 +420,8 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
               ),
             ):SizedBox.shrink(),
           ),
+
+
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SafeArea(
