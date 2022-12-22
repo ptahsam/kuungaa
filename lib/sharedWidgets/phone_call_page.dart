@@ -352,23 +352,33 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                   widget.receivedAction!.payload?['username']?.replaceAll(r'\s+', r'\n')
                       ?? 'Unknown',
                   style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 24.0,
                     fontWeight: FontWeight.bold,
-                    color: Palette.kuungaaDefault
+                    color: Colors.white,
+                    decoration: TextDecoration.none
                   ),
                 ),
-                Text(
-                  printDuration(_secondsElapsed),
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Palette.kuungaaDefault
+                SizedBox(height: 10.0),
+                Container(
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.0),
+                    color: Colors.black54.withOpacity(0.5),
+                  ),
+                  child: Text(
+                    printDuration(_secondsElapsed),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                        decoration: TextDecoration.none
+                    ),
                   ),
                 )
               ],
             ):SizedBox.shrink(),
           ),
           Positioned(
-            top: 50,
+            top: 70,
             right: 20,
             child: _timer!=null?Container(
               height: 120,
