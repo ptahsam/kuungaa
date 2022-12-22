@@ -345,7 +345,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
           Positioned(
             top: 50,
             left: 20,
-            child: Column(
+            child: _timer != null?Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -365,7 +365,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                   ),
                 )
               ],
-            ),
+            ):SizedBox.shrink(),
           ),
           Positioned(
             top: 50,
