@@ -180,7 +180,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           groupKey: 'call_s',
           title: message.data["title"],
           body: message.data["body"],
-          category: NotificationCategory.Service,
+          category: NotificationCategory.Call,
           largeIcon: 'asset://images/profile.jpg',
           bigPicture: 'asset://images/profile.jpg',
           roundedLargeIcon: true,
