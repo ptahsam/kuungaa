@@ -212,7 +212,7 @@ class NotificationsController {
       case 'ACCEPT':
         print("accepting call");
         loadSingletonPage(MyApp.navigatorKey.currentState,
-            targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);
+            targetPage: '/receivecall', receivedAction: receivedAction);
         break;
 
       default:
