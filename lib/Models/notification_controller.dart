@@ -210,15 +210,15 @@ class NotificationsController {
         break;
 
       case 'ACCEPT':
-        //print("accepting call");
+        print("accepting call");
         loadSingletonPage(MyApp.navigatorKey.currentState,
             targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);
         break;
 
       default:
         print("accepting call");
-        /*loadSingletonPage(App.navigatorKey.currentState,
-            targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);*/
+        loadSingletonPage(MyApp.navigatorKey.currentState,
+            targetPage: PAGE_PHONE_CALL, receivedAction: receivedAction);
         break;
     }
   }
@@ -227,7 +227,7 @@ class NotificationsController {
     ReceivedAction? receivedAction = await AwesomeNotifications()
         .getInitialNotificationAction();
 
-    if(receivedAction?.channelKey == 'call_channel') {
+    if(receivedAction?.channelKey == 'call') {
       initialCallAction = receivedAction;
     }
   }
