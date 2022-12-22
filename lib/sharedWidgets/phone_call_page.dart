@@ -331,15 +331,34 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
           const DecoratedBox(
             decoration: BoxDecoration(color: Colors.black45),
           ),
-          RTCVideoView(
-            localVideo,
-            mirror: true,
-            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: RTCVideoView(
+              showOnScreen?localVideo:remoteVideo,
+              mirror: false,
+              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            ),
           ),
-          RTCVideoView(
-            remoteVideo,
-            mirror: true,
-            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+          Positioned(
+            top: 40,
+            right: 10,
+            child: InkWell(
+              onTap: (){
+                setState(() {
+                  showOnScreen = !showOnScreen;
+                });
+              },
+              child: Container(
+                height: 120,
+                width: 120,
+                child: RTCVideoView(
+                  showOnScreen?remoteVideo:localVideo,
+                  mirror: true,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                ),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
