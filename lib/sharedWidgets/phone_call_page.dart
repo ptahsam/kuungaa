@@ -39,6 +39,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
   bool _isTorchOn = false;
   bool showOnScreen = false;
   bool loudSpeaker = false;
+  bool isSound = false;
   bool videoReady = false;
   String cameraMode = 'user';
 
@@ -145,7 +146,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
     // Getting video feed from the user camera
     localStream = await navigator.mediaDevices
         .getUserMedia({
-      'audio': false,
+      'audio': isSound,
       'video': {
         'mandatory': {
           'minWidth':
@@ -335,7 +336,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: RTCVideoView(
-              showOnScreen?localVideo:remoteVideo,
+              remoteVideo,
               mirror: false,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
@@ -343,20 +344,13 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
           Positioned(
             top: 40,
             right: 10,
-            child: InkWell(
-              onTap: (){
-                setState(() {
-                  showOnScreen = !showOnScreen;
-                });
-              },
-              child: Container(
-                height: 120,
-                width: 120,
-                child: RTCVideoView(
-                  showOnScreen?remoteVideo:localVideo,
-                  mirror: true,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                ),
+            child: Container(
+              height: 120,
+              width: 120,
+              child: RTCVideoView(
+                localVideo,
+                mirror: true,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
               ),
             ),
           ),
@@ -377,7 +371,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                   ),
                   Text(
                     _timer == null ?
-                    'Incoming call' : 'Call in progress: ${_secondsElapsed}',
+                    'Incoming call' : 'Call in progress: ${printDuration(_secondsElapsed)}',
                     style: themeData
                         .textTheme
                         .headline6
@@ -460,9 +454,16 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                       ] :
                       [
                         RoundedButton(
-                          press: (){},
+                          press: (){
+                            setState(() {
+                              isSound = !isSound;
+                            });
+                          },
                           color: Colors.white,
-                          icon: const Icon(FontAwesomeIcons.microphone, color: Colors.black),
+                          icon: Icon(
+                              isSound?FontAwesomeIcons.microphone:FontAwesomeIcons.volumeMute,
+                              color: Colors.black,
+                          ),
                         ),
                         RoundedButton(
                           press: finishCall,
