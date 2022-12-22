@@ -71,8 +71,6 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
     try {
       channel = WebSocketChannel.connect(Uri.parse(url));
 
-      registerPeerConnectionListeners();
-
       channel.stream.listen(
               (message) async {
             Map<String, dynamic> decoded = jsonDecode(message);
@@ -424,6 +422,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                           onConfirmation: (){
                             Vibration.vibrate(duration: 100);
                             startCallingTimer();
+                            registerPeerConnectionListeners();
                           },
                           width: mediaQueryData.size.width * 0.55,
                           backgroundColor: Colors.white60,
