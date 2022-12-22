@@ -191,7 +191,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             label: 'Accept Call',
             actionType: ActionType.Default,
             color: Colors.green,
-            autoDismissible: true),
+            autoDismissible: false),
         NotificationActionButton(
             key: 'REJECT',
             label: 'Reject',
