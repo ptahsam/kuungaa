@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/android_foreground_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -170,14 +171,16 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
             key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
       ]
   ):message.data["channelKey"] == "call"?
-     AwesomeNotifications().createNotification(
+  AndroidForegroundService.startAndroidForegroundService(
+    foregroundStartMode: ForegroundStartMode.stick,
+    foregroundServiceType: ForegroundServiceType.phoneCall,
       content: NotificationContent(
           id: 100,
           channelKey: 'call',
           groupKey: 'call_s',
           title: message.data["title"],
           body: message.data["body"],
-          category: NotificationCategory.Call,
+          category: NotificationCategory.Service,
           largeIcon: 'asset://images/profile.jpg',
           bigPicture: 'asset://images/profile.jpg',
           roundedLargeIcon: true,
