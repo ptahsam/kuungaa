@@ -343,6 +343,22 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
             ),
           ),
           Positioned(
+            top: 70,
+            right: 20,
+            child: _timer!=null?Container(
+              height: 120,
+              width: 120,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: RTCVideoView(
+                  localVideo,
+                  mirror: true,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                ),
+              ),
+            ):SizedBox.shrink(),
+          ),
+          Positioned(
             top: 50,
             left: 20,
             child: _timer != null?Column(
@@ -404,23 +420,6 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
               ],
             ):SizedBox.shrink(),
           ),
-          Positioned(
-            top: 70,
-            right: 20,
-            child: _timer!=null?Container(
-              height: 120,
-              width: 120,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: RTCVideoView(
-                  localVideo,
-                  mirror: true,
-                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-                ),
-              ),
-            ):SizedBox.shrink(),
-          ),
-
 
           Padding(
             padding: const EdgeInsets.all(20.0),
