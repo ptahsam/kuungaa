@@ -1,13 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:awesome_notifications/android_foreground_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class PhoneCallPage extends StatefulWidget {
 
@@ -22,6 +27,20 @@ class PhoneCallPage extends StatefulWidget {
 }
 
 class _PhoneCallPageState extends State<PhoneCallPage> {
+  final RTCVideoRenderer localVideo = RTCVideoRenderer();
+  final RTCVideoRenderer remoteVideo = RTCVideoRenderer();
+  late final MediaStream localStream;
+  late final WebSocketChannel channel;
+  MediaStream? remoteStream;
+  RTCPeerConnection? peerConnection;
+  MediaRecorder? _mediaRecorder;
+  bool get _isRec => _mediaRecorder != null;
+
+  bool _isTorchOn = false;
+  bool showOnScreen = false;
+  bool loudSpeaker = false;
+  bool videoReady = false;
+  String cameraMode = 'user';
 
   Timer? _timer;
   Duration _secondsElapsed = Duration.zero;
@@ -47,9 +66,238 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
     Navigator.pop(context);
   }
 
+  // Connecting with websocket Server
+  void connectToServer() {
+    try {
+      channel = WebSocketChannel.connect(Uri.parse(url));
+
+      registerPeerConnectionListeners();
+
+      channel.stream.listen(
+              (message) async {
+            Map<String, dynamic> decoded = jsonDecode(message);
+            print("peter connect ::" + message.toString());
+            if (decoded["type"] == "offer") {
+              // Set the offer SDP to remote description
+              await peerConnection?.setRemoteDescription(
+                RTCSessionDescription(
+                  decoded["offer"]["sdp"],
+                  decoded["offer"]["type"],
+                ),
+              );
+
+              // Create an answer
+              RTCSessionDescription answer = await peerConnection!.createAnswer();
+
+              // Set the answer as an local description
+              await peerConnection!.setLocalDescription(answer);
+
+              // Send the answer to the other peer
+              channel.sink.add(
+                jsonEncode(
+                  {
+                    "type": "send_answer",
+                    "answer": answer.toMap(),
+                    "username": userCurrentInfo!.user_id!
+                  },
+                ),
+              );
+            }
+            // If client receive an Ice candidate from the peer
+            else if (decoded["type"] == "candidate") {
+              // It add to the RTC peer connection
+              peerConnection?.addCandidate(RTCIceCandidate(
+                  decoded["candidate"]["candidate"],
+                  decoded["candidate"]["sdpMid"],
+                  decoded["candidate"]["sdpMLineIndex"]));
+            }
+            // If Client recive an reply of their offer as answer
+
+            else if (decoded["event"] == "answer") {
+              await peerConnection?.setRemoteDescription(RTCSessionDescription(
+                  decoded["data"]["sdp"], decoded["data"]["type"]));
+            }
+            // If no condition fulfilled? printout the message
+            else {
+              print(decoded);
+            }
+          }
+      );
+    }
+    catch (e) {
+      throw "ERROR $e";
+    }
+  }
+
+  // STUN server configuration
+  Map<String, dynamic> configuration = {
+    'iceServers': [
+      {
+        'urls': [
+          'stun:stun.l.google.com:19302',
+          'stun:stun1.l.google.com:19302',
+          'stun:stun2.l.google.com:19302'
+        ]
+      }
+    ]
+  };
+
+  // This must be done as soon as app loads
+  void initialization() async {
+    // Getting video feed from the user camera
+    localStream = await navigator.mediaDevices
+        .getUserMedia({
+      'audio': false,
+      'video': {
+        'mandatory': {
+          'minWidth':
+          '640', // Provide your own width, height and frame rate here
+          'minHeight': '480',
+          'minFrameRate': '30',
+        },
+        'facingMode': cameraMode,
+        'optional': [],
+      }
+    });
+
+    // Set the local video to display
+    localVideo.srcObject = localStream;
+    // Initializing the peer connecion
+    peerConnection = await createPeerConnection(configuration);
+    setState(() {});
+    // Adding the local media to peer connection
+    // When connection establish, it send to the remote peer
+    localStream.getTracks().forEach((track) {
+      peerConnection?.addTrack(track, localStream);
+    });
+  }
+
+  void makeCall() async {
+    // Creating a offer for remote peer
+    RTCSessionDescription offer = await peerConnection!.createOffer();
+
+    // Setting own SDP as local description
+    await peerConnection?.setLocalDescription(offer);
+
+    // Sending the offer
+    channel.sink.add(
+      jsonEncode(
+        {
+          "type": "store_offer",
+          "offer": offer.toMap(),
+          "username": userCurrentInfo!.user_id!
+        },
+      ),
+    );
+  }
+
+  // Help to debug our code
+  void registerPeerConnectionListeners() {
+    peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
+      print('ICE gathering state changed: $state');
+    };
+
+    peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
+      channel.sink.add(
+        jsonEncode({"type": "send_candidate", "candidate": candidate.toMap(), "username": userCurrentInfo!.user_id!}),
+      );
+    };
+
+    peerConnection?.onConnectionState = (RTCPeerConnectionState state) {
+      print('Connection state change: $state');
+    };
+
+    peerConnection?.onSignalingState = (RTCSignalingState state) {
+      print('Signaling state change: $state');
+    };
+
+    peerConnection?.onTrack = ((tracks) {
+      tracks.streams[0].getTracks().forEach((track) {
+        remoteStream?.addTrack(track);
+      });
+    });
+
+    // When stream is added from the remote peer
+    peerConnection?.onAddStream = (MediaStream stream) {
+      remoteVideo.srcObject = stream;
+      videoReady = true;
+      setState(() {});
+    };
+
+    channel.sink.add(
+      jsonEncode(
+        {
+          "type": "join_call",
+          "username": userCurrentInfo!.user_id!
+        },
+      ),
+    );
+  }
+
+  void _toggleCamera() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+
+    final videoTrack = localStream!
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    await Helper.switchCamera(videoTrack);
+  }
+
+  void _startRecording() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+    if (Platform.isIOS) {
+      print('Recording is not available on iOS');
+      return;
+    }
+    // TODO(rostopira): request write storage permission
+    final storagePath = await getExternalStorageDirectory();
+    Directory dir = Directory('/storage/emulated/0/Download');
+    if (dir.path == null) throw Exception('Can\'t find storagePath');
+
+    final filePath = dir.path + '/kuungaa/${DateTime.now().millisecondsSinceEpoch}.mp4';
+    _mediaRecorder = MediaRecorder();
+    setState(() {});
+
+    final videoTrack = localStream
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    await _mediaRecorder!.start(
+      filePath,
+      videoTrack: videoTrack,
+    );
+  }
+
+  void _stopRecording() async {
+    await _mediaRecorder?.stop();
+    setState(() {
+      _mediaRecorder = null;
+    });
+  }
+
+  void _toggleTorch() async {
+    if (localStream == null) throw Exception('Stream is not initialized');
+
+    final videoTrack = localStream!
+        .getVideoTracks()
+        .firstWhere((track) => track.kind == 'video');
+    final has = await videoTrack.hasTorch();
+    if (has) {
+      print('[TORCH] Current camera supports torch mode');
+      setState(() => _isTorchOn = !_isTorchOn);
+      await videoTrack.setTorch(_isTorchOn);
+      print('[TORCH] Torch state is now ${_isTorchOn ? 'on' : 'off'}');
+    } else {
+      print('[TORCH] Current camera does not support torch mode');
+    }
+  }
+
   @override
   void initState() {
     lockScreenPortrait();
+    connectToServer();
+    localVideo.initialize();
+    remoteVideo.initialize();
+    initialization();
     super.initState();
     if(widget.receivedAction!.buttonKeyPressed == 'ACCEPT') {
       //startCallingTimer();
@@ -77,7 +325,11 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
         fit: StackFit.expand,
         children: [
           // Image
-          Image(
+          videoReady?RTCVideoView(
+            showOnScreen?remoteVideo:localVideo,
+            mirror: true,
+            objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+          ):Image(
             image: widget.receivedAction!.largeIconImage!,
             fit: BoxFit.cover,
           ),
