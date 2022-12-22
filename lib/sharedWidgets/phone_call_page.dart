@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kuungaa/config/config.dart';
+import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/sharedWidgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vibration/vibration.dart';
@@ -342,7 +343,32 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
             ),
           ),
           Positioned(
-            top: 100,
+            top: 50,
+            left: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.receivedAction!.payload?['username']?.replaceAll(r'\s+', r'\n')
+                      ?? 'Unknown',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Palette.kuungaaDefault
+                  ),
+                ),
+                Text(
+                  printDuration(_secondsElapsed),
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Palette.kuungaaDefault
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            top: 50,
             right: 20,
             child: _timer!=null?Container(
               height: 120,
@@ -363,29 +389,22 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  _timer == null?Text(
                     widget.receivedAction!.payload?['username']?.replaceAll(r'\s+', r'\n')
                         ?? 'Unknown',
                     maxLines: 4,
-                    style: _timer!=null?TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.white,
-                    ):themeData
+                    style: themeData
                         .textTheme
                         .headline3
                         ?.copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    _timer == null ?
-                    'Incoming call' : 'Call in progress: ${printDuration(_secondsElapsed)}',
-                    style: _timer!=null?TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ):themeData
+                  ):SizedBox.shrink(),
+                  _timer == null?Text(
+                    'Incoming call',
+                    style: themeData
                         .textTheme
                         .headline6
                         ?.copyWith(color: Colors.white54, fontSize: _timer == null ? 20 : 12),
-                  ),
+                  ):SizedBox.shrink(),
                   const SizedBox(height: 50),
                   _timer == null ?
                   Row(
