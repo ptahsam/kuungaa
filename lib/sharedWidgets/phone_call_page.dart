@@ -48,7 +48,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
   Duration _secondsElapsed = Duration.zero;
 
   void startCallingTimer() {
-    const oneSec = Duration(seconds: 1000);
+    const oneSec = Duration(seconds: 1);
     cancelNotification(widget.receivedAction!.id!);
     AndroidForegroundService.stopForeground(widget.receivedAction!.id!);
 
@@ -376,6 +376,33 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                 )
               ],
             ):SizedBox.shrink(),
+          ),
+          Positioned(
+            right: 20,
+            bottom: 120,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                RoundedButton(
+                  press: _toggleTorch,
+                  color: Colors.blueAccent,
+                  icon: Icon(_isTorchOn ? Icons.flash_off : Icons.flash_on),
+                ),
+                Spacer(),
+                RoundedButton(
+                  press: _isRec ? _stopRecording : _startRecording,
+                  color: Palette.kuungaaDefault,
+                  icon: Icon(_isRec ? Icons.stop : Icons.fiber_manual_record, color: _isRec?Colors.red:Colors.white,),
+                ),
+                Spacer(),
+                RoundedButton(
+                  press: _toggleCamera,
+                  color: Colors.grey,
+                  icon: Icon(Icons.cameraswitch,),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 70,
