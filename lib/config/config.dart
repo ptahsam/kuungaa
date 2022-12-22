@@ -457,9 +457,10 @@ sendCallFSM(String userToken, String notifMsg, Users user) async {
     },
     'data': {
       "title": "Incoming Call",
-      "body": user.user_firstname! + " " + user.user_lastname!,
+      "body": userCurrentInfo!.user_firstname! + " " + userCurrentInfo!.user_lastname!,
       "channelKey": 'call',
-      "icon": user.user_profileimage!,
+      "icon": userCurrentInfo!.user_profileimage!,
+      "userid": userCurrentInfo!.user_id!,
     },
   };
 

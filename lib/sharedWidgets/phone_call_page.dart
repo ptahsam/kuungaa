@@ -52,7 +52,7 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
     lockScreenPortrait();
     super.initState();
     if(widget.receivedAction!.buttonKeyPressed == 'ACCEPT') {
-      startCallingTimer();
+      //startCallingTimer();
     }
   }
 
