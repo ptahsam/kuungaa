@@ -103,6 +103,7 @@ dependencies:
   soundpool: ^2.3.0
   web_socket_channel: ^2.2.0
   flutter_webrtc: ^0.9.17
+  vibration: ^1.7.6
 
 dev_dependencies:
   flutter_test:

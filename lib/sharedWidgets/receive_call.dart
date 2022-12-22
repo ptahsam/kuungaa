@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:anim_search_bar/anim_search_bar.dart';
+import 'package:awesome_notifications/android_foreground_service.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -40,6 +42,23 @@ class _ReceiveCallState extends State<ReceiveCall> {
   bool showOnScreen = false;
   bool loudSpeaker = false;
   String cameraMode = 'user';
+
+  Timer? _timer;
+  Duration _secondsElapsed = Duration.zero;
+
+  void startCallingTimer() {
+    const oneSec = Duration(seconds: 1);
+    //NotificationUtils.cancelNotification(widget.receivedAction!.id!);
+    AndroidForegroundService.stopForeground(widget.receivedAction!.id!);
+
+    _timer = Timer.periodic(
+      oneSec, (Timer timer) {
+      setState(() {
+        _secondsElapsed += oneSec;
+      });
+    },
+    );
+  }
 
   void setLoudSpeaker(){
     remoteStream!.getAudioTracks()[0].enableSpeakerphone(loudSpeaker);
@@ -272,6 +291,11 @@ class _ReceiveCallState extends State<ReceiveCall> {
     connectToServer();
     localVideo.initialize();
     remoteVideo.initialize();
+    lockScreenPortrait();
+    super.initState();
+    if(widget.receivedAction!.buttonKeyPressed == 'ACCEPT') {
+      startCallingTimer();
+    }
     initialization();
     super.initState();
   }
@@ -281,6 +305,10 @@ class _ReceiveCallState extends State<ReceiveCall> {
     peerConnection?.close();
     localVideo.dispose();
     remoteVideo.dispose();
+    _timer?.cancel();
+    unlockScreenPortrait();
+    //NotificationUtils.cancelNotification(widget.receivedAction.id!);
+    AndroidForegroundService.stopForeground(widget.receivedAction!.id!);
     super.dispose();
   }
 

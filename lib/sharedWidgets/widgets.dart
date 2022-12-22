@@ -72,3 +72,5 @@ export 'contacts.dart';
 export 'terms_and_condition.dart';
 export 'receive_call.dart';
 export 'make_call.dart';
+export 'phone_call_page.dart';
+export 'single_slider.dart';

@@ -1269,6 +1269,26 @@ void loadSingletonPage(NavigatorState? navigatorState,
   navigatorState?.pushNamed(targetPage, arguments: receivedAction);
 }
 
+void lockScreenPortrait() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+}
+
+void unlockScreenPortrait() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+}
+
+Future<void> cancelNotification(int id) async {
+ await AwesomeNotifications().cancel(id);
+}
+
 Future<File> convertUriToFile(String strURL) async{
   final http.Response responseData = await http.get(Uri.parse(strURL));
   Uint8List uint8list = responseData.bodyBytes;

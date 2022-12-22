@@ -22,6 +22,7 @@ import 'package:kuungaa/config/SharedPreferences.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/config/themedata.dart';
+import 'package:kuungaa/sharedWidgets/phone_call_page.dart';
 import 'package:kuungaa/sharedWidgets/receive_call.dart';
 import 'package:provider/provider.dart';
 import 'DataHandler/appData.dart';
@@ -478,7 +479,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               '/register': (context) => const RegisterScreen(),
               '/login': (context) => const LoginPage(),
               '/forgotpassword': (context) => const ForgotpasswordScreen(),
-              '/receivecall': (context) => const ReceiveCall(),
+              '/receivecall': (context) =>  PhoneCallPage(receivedAction: ModalRoute.of(context)!.settings.arguments == null
+                  ? NotificationsController.initialCallAction
+                  : ModalRoute.of(context)!.settings.arguments as ReceivedAction),
               LoginPage.idScreen: (context) => const LoginPage(),
               MainPage.idScreen: (context) => const MainPage(),
               NavScreen.idScreen: (context) => const NavScreen(),
