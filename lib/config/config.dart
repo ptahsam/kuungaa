@@ -546,9 +546,56 @@ sendFSM(String userToken, String notifMsg) async {
   }
 }
 
+Future<Chat> getChatFromID(String chatid) async{
+  Chat chat = Chat();
+  DatabaseReference userChatRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid);
+  await userChatRef.once().then((DataSnapshot dataSnapshot) async {
+    if(dataSnapshot.exists){
+      chat.chat_createddate = dataSnapshot.value["chat_createddate"];
+      chat.chat_id = dataSnapshot.value["chat_id"];
+      chat.chat_creatorid = dataSnapshot.value["chat_creatorid"];
+      chat.chat_partnerid = dataSnapshot.value["chat_partnerid"];
+      DatabaseReference memberRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("members");
+      await memberRef.once().then((DataSnapshot members){
+        var zees = members.value.keys;
+        var data = members.value;
+        for(var zee in zees){
+          if(data[zee]["member_id"] != userCurrentInfo!.user_id!){
+            chat.chat_opponentid = data[zee]["member_id"];
+          }
+        }
+      });
+      chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(chat.chat_opponentid!);
+    }
+  });
+  return chat;
+}
+
 int createUniqueID(int maxValue) {
   Random random = Random();
   return random.nextInt(maxValue);
+}
+
+replyToChat(ReceivedAction receivedAction) async{
+  DatabaseReference msgRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(receivedAction.payload!['chatid']!).child("messages").push();
+
+  String msgkey = msgRef.key;
+  var time = DateTime.now().millisecondsSinceEpoch;
+  String status = "0";
+
+  Map msgMap = {
+    "message_id" : msgkey,
+    "message" : receivedAction.buttonKeyInput,
+    "time_created" : time,
+    "message_status" : status,
+    "message_media" : "",
+    "sender_id" : userCurrentInfo!.user_id!
+  };
+
+  msgRef.set(msgMap).then((value) async {
+    Chat chat = await getChatFromID(receivedAction.payload!['chatid']!);
+    sendUserNotification(receivedAction.buttonKeyInput, chat.opponentUser!.user_id!, "Chat", receivedAction.payload!['chatid']!);
+  });
 }
 
 Future<void> createMessagingNotification(

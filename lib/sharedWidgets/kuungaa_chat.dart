@@ -476,31 +476,6 @@ class _KuungaaChatState extends State<KuungaaChat> {
     return userChatList.reversed.toList();
   }
 
-  Future<Chat> getChatFromID(String chatid) async{
-    Chat chat = Chat();
-    DatabaseReference userChatRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid);
-    await userChatRef.once().then((DataSnapshot dataSnapshot) async {
-      if(dataSnapshot.exists){
-        chat.chat_createddate = dataSnapshot.value["chat_createddate"];
-        chat.chat_id = dataSnapshot.value["chat_id"];
-        chat.chat_creatorid = dataSnapshot.value["chat_creatorid"];
-        chat.chat_partnerid = dataSnapshot.value["chat_partnerid"];
-        DatabaseReference memberRef = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(chatid).child("members");
-        await memberRef.once().then((DataSnapshot members){
-          var zees = members.value.keys;
-          var data = members.value;
-          for(var zee in zees){
-            if(data[zee]["member_id"] != userCurrentInfo!.user_id!){
-              chat.chat_opponentid = data[zee]["member_id"];
-            }
-          }
-        });
-        chat.opponentUser = await AssistantMethods.getCurrentOnlineUser(chat.chat_opponentid!);
-      }
-    });
-    return chat;
-  }
-
   void navigateToChat(String? payload) {
     Future.delayed(Duration.zero,()
       async{

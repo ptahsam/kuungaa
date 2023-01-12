@@ -186,6 +186,7 @@ class NotificationsController {
         largeIcon: receivedAction.largeIcon,
         message: receivedAction.buttonKeyInput,
       );
+      replyToChat(receivedAction);
     } else {
       loadSingletonPage(MyApp.navigatorKey.currentState,
           targetPage: '/receivemessage', receivedAction: receivedAction);
