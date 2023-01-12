@@ -82,12 +82,12 @@ class NotificationsController {
     // SilentBackgroundAction runs on background thread and cannot show
     // UI/visual elements
     if (receivedAction.actionType != ActionType.SilentBackgroundAction) {
-      Fluttertoast.showToast(
+      /*Fluttertoast.showToast(
           msg:
           '${isSilentAction ? 'Silent action' : 'Action'} received on ${_toSimpleEnum(receivedAction.actionLifeCycle!)}',
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: isSilentAction ? Colors.blueAccent : Palette.kuungaaDefault,
-          gravity: ToastGravity.BOTTOM);
+          gravity: ToastGravity.BOTTOM);*/
     }
 
     switch (receivedAction.channelKey) {
@@ -187,8 +187,8 @@ class NotificationsController {
         message: receivedAction.buttonKeyInput,
       );*/
     } else {
-      /*loadSingletonPage(App.navigatorKey.currentState,
-          targetPage: PAGE_NOTIFICATION_DETAILS, receivedAction: receivedAction);*/
+      loadSingletonPage(MyApp.navigatorKey.currentState,
+          targetPage: '/receivemessage', receivedAction: receivedAction);
     }
   }
 

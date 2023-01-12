@@ -23,6 +23,7 @@ import 'package:kuungaa/config/SharedPreferences.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:kuungaa/config/themedata.dart';
+import 'package:kuungaa/sharedWidgets/kuungaa_chat.dart';
 import 'package:kuungaa/sharedWidgets/phone_call_page.dart';
 import 'package:kuungaa/sharedWidgets/receive_call.dart';
 import 'package:provider/provider.dart';
@@ -157,18 +158,21 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           notificationLayout: NotificationLayout.Inbox,
           largeIcon: message.data["icon"] != "" && message.data["icon"] != null?message.data["icon"]:'asset://images/profile.jpg',
           roundedLargeIcon: true,
-          hideLargeIconOnExpand: true
+          hideLargeIconOnExpand: true,
+          payload: {'chatid': '${message.data["chatid"]}'},
       ),
       actionButtons: [
         NotificationActionButton(
             key: 'REPLY',
             label: 'Reply',
             autoDismissible: true,
-            requireInputText: true),
+            requireInputText: true,
+        ),
         NotificationActionButton(
-            key: 'READ', label: 'Mark as read', autoDismissible: true),
-        NotificationActionButton(
-            key: 'ARCHIVE', label: 'Archive', autoDismissible: true)
+            key: 'READ', label: 'Mark as read', autoDismissible: true,
+        ),
+        /*NotificationActionButton(
+            key: 'ARCHIVE', label: 'Archive', autoDismissible: true)*/
       ]
   ):message.data["channelKey"] == "call"?
   AndroidForegroundService.startAndroidForegroundService(
@@ -483,6 +487,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
               '/login': (context) => const LoginPage(),
               '/forgotpassword': (context) => const ForgotpasswordScreen(),
               '/receivecall': (context) =>  PhoneCallPage(receivedAction: ModalRoute.of(context)!.settings.arguments == null
+                  ? NotificationsController.initialCallAction
+                  : ModalRoute.of(context)!.settings.arguments as ReceivedAction),
+              '/receivemessage': (context) =>  KuungaaChat(receivedAction: ModalRoute.of(context)!.settings.arguments == null
                   ? NotificationsController.initialCallAction
                   : ModalRoute.of(context)!.settings.arguments as ReceivedAction),
               LoginPage.idScreen: (context) => const LoginPage(),

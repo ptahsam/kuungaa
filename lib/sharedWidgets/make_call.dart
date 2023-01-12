@@ -197,7 +197,7 @@ class _MakeCallState extends State<MakeCall> {
       "callerid": userCurrentInfo!.user_id!,
       "status": "unanswered"
     });
-    sendUserNotification("Start Call", widget.user.user_id!, "Call");
+    sendUserNotification("Start Call", widget.user.user_id!, "Call", "");
   }
 
   void makeCall() async {

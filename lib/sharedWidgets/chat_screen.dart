@@ -758,7 +758,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).update(typingMap);
 
-        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat");
+        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat", widget.chat.chat_id!);
         //displayToastMessage("Your post was uploaded successfully", context);
         messageTextEditingController.text = "";
         userSelectedFileList!.clear();
@@ -795,7 +795,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Chats").child(widget.chat.chat_id!).child("members").child(userCurrentInfo!.user_id!).set(typingMap);
 
-        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat");
+        sendUserNotification(messageTextEditingController.text, widget.chat.opponentUser!.user_id!, "Chat", widget.chat.chat_id!);
         //displayToastMessage("Your post was uploaded successfully", context);
         messageTextEditingController.text = "";
         isSending = false;

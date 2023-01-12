@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
@@ -14,7 +15,13 @@ import 'package:provider/provider.dart';
 
 import 'widgets.dart';
 class KuungaaChat extends StatefulWidget {
-  const KuungaaChat({Key? key}) : super(key: key);
+  final ReceivedAction? receivedAction;
+  const KuungaaChat({
+    Key? key,
+    this.receivedAction
+  }) : super(
+      key: key,
+  );
 
   @override
   _KuungaaChatState createState() => _KuungaaChatState();

@@ -366,14 +366,14 @@ saveGeneralNotification(String notifMessage, String notifRecip, String notifType
   };
 
   dbRef.set(notifMap).then((onValue){
-    sendUserNotification(notifRecip, notifRecip, "General");
+    sendUserNotification(notifRecip, notifRecip, "General", "");
   }).catchError((onError) {
 
   });
 
 }
 
-sendUserNotification(String notifMessage, String notifRecip, String type){
+sendUserNotification(String notifMessage, String notifRecip, String type , String chatid){
   DatabaseReference dbRefUser = FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip).child("user_tokenid");
   dbRefUser.once().then((DataSnapshot snapshot){
     if(snapshot.exists){
@@ -387,7 +387,7 @@ sendUserNotification(String notifMessage, String notifRecip, String type){
         FirebaseDatabase.instance.reference().child("KUUNGAA").child("Users").child(notifRecip)
         .once().then((DataSnapshot userSnapshot) async {
           Users user = await AssistantMethods.getCurrentOnlineUser(userSnapshot.value["user_id"]);
-          sendChatFSM(snapshot.value.toString(), notifMessage, user);
+          sendChatFSM(snapshot.value.toString(), notifMessage, user, chatid);
         });
       }
 
@@ -478,7 +478,7 @@ sendCallFSM(String userToken, String notifMsg, Users user) async {
   }
 }
 
-sendChatFSM(String userToken, String notifMsg, Users user) async {
+sendChatFSM(String userToken, String notifMsg, Users user, String chatid) async {
   const postUrl = 'https://fcm.googleapis.com/fcm/send';
   const server_key = "AAAA_MU4yec:APA91bGOaDzvHE-EQZiMMxQ7mahv1y0oG9ONCqIJCap_ktSBW1xg10PIt_KI4Q6DW6Zf6xL-yCEMNGpcpkAHtl-bSwHjM-TX_Ay0twQtpbB6qIl8L3gfhtXuriEPHKynOd8l7AmAzka9";
   Map<String, dynamic> data;
@@ -495,6 +495,7 @@ sendChatFSM(String userToken, String notifMsg, Users user) async {
       "body": notifMsg,
       "channelKey": 'chat',
       "icon": userCurrentInfo!.user_profileimage!,
+      "chatid": chatid,
     },
   };
 
