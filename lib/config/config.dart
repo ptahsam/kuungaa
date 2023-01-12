@@ -600,6 +600,7 @@ replyToChat(ReceivedAction receivedAction) async{
 
 Future<void> createMessagingNotification(
 {
+  required ReceivedAction receivedAction,
   required String channelKey,
   required String groupKey,
   required String chatName,
@@ -633,6 +634,7 @@ Future<void> createMessagingNotification(
         requireInputText: true,
       )
     ]);
+    replyToChat(receivedAction);
 }
 
 getFieldValue(String postid, String field) {

@@ -179,6 +179,7 @@ class NotificationsController {
       ReceivedAction receivedAction) async {
     if (receivedAction.buttonKeyPressed == 'REPLY') {
       await createMessagingNotification(
+        receivedAction: receivedAction,
         channelKey: 'chat',
         groupKey: 'chat_s',
         chatName: '${receivedAction.title}',
@@ -186,7 +187,6 @@ class NotificationsController {
         largeIcon: receivedAction.largeIcon,
         message: receivedAction.buttonKeyInput,
       );
-      replyToChat(receivedAction);
     } else {
       loadSingletonPage(MyApp.navigatorKey.currentState,
           targetPage: '/receivemessage', receivedAction: receivedAction);

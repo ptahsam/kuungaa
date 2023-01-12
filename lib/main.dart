@@ -149,12 +149,14 @@ void main() async {
 Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
   message.data["channelKey"] == "chat"?AwesomeNotifications().createNotification(
       content: NotificationContent( //with image from URL
-          id: 1,
+          id: createUniqueID(AwesomeNotifications.maxID),
           channelKey: 'chat',
           groupKey: 'chat_s', //channel configuration key
           customSound: 'resource://raw/ic_notif_sound',
           title: message.data["title"],
           body: message.data["body"],
+          summary: message.data["title"],
+          category: NotificationCategory.Message,
           notificationLayout: NotificationLayout.Inbox,
           largeIcon: message.data["icon"] != "" && message.data["icon"] != null?message.data["icon"]:'asset://images/profile.jpg',
           roundedLargeIcon: true,
