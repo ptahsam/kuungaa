@@ -178,14 +178,14 @@ class NotificationsController {
   static Future<void> receiveChatNotificationAction(
       ReceivedAction receivedAction) async {
     if (receivedAction.buttonKeyPressed == 'REPLY') {
-      /*await NotificationUtils.createMessagingNotification(
-        channelKey: 'chats',
-        groupKey: 'jhonny_group',
-        chatName: 'Jhonny\'s Group',
-        username: 'you',
-        largeIcon: 'asset://assets/images/rock-disc.jpg',
+      await createMessagingNotification(
+        channelKey: 'chat',
+        groupKey: 'chat_s',
+        chatName: '${receivedAction.title}',
+        username: 'You',
+        largeIcon: receivedAction.largeIcon,
         message: receivedAction.buttonKeyInput,
-      );*/
+      );
     } else {
       loadSingletonPage(MyApp.navigatorKey.currentState,
           targetPage: '/receivemessage', receivedAction: receivedAction);

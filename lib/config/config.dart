@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -543,6 +544,48 @@ sendFSM(String userToken, String notifMsg) async {
   } else {
     return false;
   }
+}
+
+int createUniqueID(int maxValue) {
+  Random random = Random();
+  return random.nextInt(maxValue);
+}
+
+Future<void> createMessagingNotification(
+{
+  required String channelKey,
+  required String groupKey,
+  required String chatName,
+  required String username,
+  required String message,
+  String? largeIcon,
+  bool checkPermission = true}) async {
+    await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: createUniqueID(AwesomeNotifications.maxID),
+      groupKey: groupKey,
+      channelKey: channelKey,
+      summary: chatName,
+      title: username,
+      body: message,
+      largeIcon: largeIcon,
+      notificationLayout: NotificationLayout.Messaging,
+      category: NotificationCategory.Message
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: 'REPLY',
+        label: 'Reply',
+        requireInputText: true,
+        autoDismissible: false,
+      ),
+      NotificationActionButton(
+        key: 'READ',
+        label: 'Mark as Read',
+        autoDismissible: true,
+        requireInputText: true,
+      )
+    ]);
 }
 
 getFieldValue(String postid, String field) {
