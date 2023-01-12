@@ -366,7 +366,7 @@ saveGeneralNotification(String notifMessage, String notifRecip, String notifType
   };
 
   dbRef.set(notifMap).then((onValue){
-    sendUserNotification(notifRecip, notifRecip, "General", "");
+    sendUserNotification(notifRecip, notifMessage, "General", "");
   }).catchError((onError) {
 
   });

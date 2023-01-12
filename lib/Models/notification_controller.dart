@@ -135,7 +135,7 @@ class NotificationsController {
 
   static Future<void> receiveButtonInputText(
       ReceivedAction receivedAction) async {
-    debugPrint('Input Button Message: "${receivedAction.buttonKeyInput}"');
+    print('Input Button Message: "${receivedAction.buttonKeyInput}"');
     Fluttertoast.showToast(
         msg: 'Msg: ${receivedAction.buttonKeyInput}',
         backgroundColor: Palette.kuungaaDefault,

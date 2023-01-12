@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:kuungaa/Assistants/assistantMethods.dart';
 import 'package:kuungaa/DataHandler/appData.dart';
 import 'package:kuungaa/Models/chat.dart';
-import 'package:kuungaa/Models/user.dart';
 import 'package:kuungaa/config/config.dart';
 import 'package:kuungaa/config/palette.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-
 
 import 'widgets.dart';
 class KuungaaChat extends StatefulWidget {
@@ -34,14 +32,16 @@ class _KuungaaChatState extends State<KuungaaChat> {
   @override
   void initState() {
     // TODO: implement initState
+
     if(widget.receivedAction != null){
       navigateToChat(widget.receivedAction!.payload?['chatid']);
     }
+
     super.initState();
     AssistantMethods.getChats(context);
     AssistantMethods.getChatUsers(context);
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -503,10 +503,12 @@ class _KuungaaChatState extends State<KuungaaChat> {
 
   void navigateToChat(String? payload) {
     Future.delayed(Duration.zero,()
-    async{
-      Chat chat = await getChatFromID(payload!);
-      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ChatScreen(chat: chat,)));
-    });
+      async{
+        Chat chat = await getChatFromID(payload!);
+        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ChatScreen(chat: chat,)));
+      }
+    );
   }
+
 }
 
