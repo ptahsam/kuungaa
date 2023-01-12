@@ -620,7 +620,7 @@ Future<void> createMessagingNotification(
       notificationLayout: NotificationLayout.Messaging,
       category: NotificationCategory.Message
     ),
-    actionButtons: [
+    /*actionButtons: [
       NotificationActionButton(
         key: 'REPLY',
         label: 'Reply',
@@ -633,7 +633,8 @@ Future<void> createMessagingNotification(
         autoDismissible: true,
         requireInputText: true,
       )
-    ]);
+    ]*/
+    );
     replyToChat(receivedAction);
 }
 
