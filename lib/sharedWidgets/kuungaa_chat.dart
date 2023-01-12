@@ -34,7 +34,7 @@ class _KuungaaChatState extends State<KuungaaChat> {
   @override
   void initState() {
     // TODO: implement initState
-    if(widget.receivedAction!.payload?['chatid'] != null && widget.receivedAction!.payload?['chatid'] != ""){
+    if(widget.receivedAction != null){
       navigateToChat(widget.receivedAction!.payload?['chatid']);
     }
     super.initState();
