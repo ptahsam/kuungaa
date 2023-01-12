@@ -472,10 +472,13 @@ class _PhoneCallPageState extends State<PhoneCallPage> {
                         child: Column(
                           children: [
                             const Icon(FontAwesomeIcons.solidEnvelope, color: Colors.white54),
-                            Text('Message', style:  themeData
+                            Text(
+                              'Message',
+                              style:  themeData
                                 .textTheme
                                 .headline6
-                                ?.copyWith(color: Colors.white54, fontSize: 12, height: 2))
+                                ?.copyWith(color: Colors.white54, fontSize: 12, height: 2),
+                            )
                           ],
                         ),
                       )

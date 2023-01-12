@@ -491,10 +491,10 @@ sendChatFSM(String userToken, String notifMsg, Users user) async {
 
     },
     'data': {
-      "title": user.user_firstname! + " " + user.user_lastname!,
+      "title": userCurrentInfo!.user_firstname! + " " + userCurrentInfo!.user_lastname!,
       "body": notifMsg,
       "channelKey": 'chat',
-      "icon": user.user_profileimage!,
+      "icon": userCurrentInfo!.user_profileimage!,
     },
   };
 

@@ -155,7 +155,7 @@ Future<void> firebaseBackgroundMessage(RemoteMessage message) async {
           title: message.data["title"],
           body: message.data["body"],
           notificationLayout: NotificationLayout.Inbox,
-          largeIcon: 'asset://images/profile.jpg',
+          largeIcon: message.data["icon"] != "" && message.data["icon"] != null?message.data["icon"]:'asset://images/profile.jpg',
           roundedLargeIcon: true,
           hideLargeIconOnExpand: true
       ),
